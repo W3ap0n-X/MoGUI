@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BepInEx;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -246,8 +242,6 @@ namespace MoGUI
              Func<object> text = null,
              string valType = "none",
              Func<object> placeholder = null,
-             string orientation = "horizontal",
-             string labelPlacement = "before"
         )
         {
             Type = type;
@@ -259,8 +253,6 @@ namespace MoGUI
             Text = text;
             ValType = valType;
             Placeholder = placeholder;
-            Orientation = orientation;
-            LabelPlacement = labelPlacement;
         }
 
         public MoGCArgs(Type type, object value = null,
@@ -270,8 +262,6 @@ namespace MoGUI
              object text = null,
              string valType = null,
              object placeholder = null,
-             string orientation = "horizontal",
-             string labelPlacement = "before",
             MoGuiMeta meta = null
         )
         {
@@ -284,8 +274,6 @@ namespace MoGUI
             Text = ConvertString(text);
             ValType = valType;
             Placeholder = ConvertString(placeholder);
-            Orientation = orientation;
-            LabelPlacement = labelPlacement;
         }
 
         public Func<object> ConvertString(object obj)
