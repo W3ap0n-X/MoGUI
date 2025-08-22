@@ -18,7 +18,6 @@ namespace MoGUI
         {
             Type = type;
             OnEditAction = onValueChanged;
-            // This is the single, container GameObject for the whole component.
             
             _valOptions = options;
             _baseOptions = new List<string>();
@@ -35,7 +34,6 @@ namespace MoGUI
         {
             Type = type;
             OnEditAction = onValueChanged;
-            // This is the single, container GameObject for the whole component.
             
             _baseOptions = options;
 
@@ -76,16 +74,10 @@ namespace MoGUI
             captionText.text = "Select...";
             _dropdown.captionText = captionText;
 
-            // Create the arrow indicator object
             GameObject arrowObject = new GameObject(PluginName + "_" + Name + "_DropdownLabelArrow");
 
             arrowObject.transform.SetParent(dropdownObject.transform, false);
 
-            // Add an Image component to display the arrow sprite
-            //Image arrowImage = arrowObject.AddComponent<Image>();
-            //// Set a sprite for the arrow. You'll need to have one available.
-            //// arrowImage.sprite = YourArrowSprite;
-            //arrowImage.color = Color.gray; // A neutral color
 
             Text dragSymbol = arrowObject.AddComponent<Text>();
             dragSymbol.text = "︾";
@@ -94,12 +86,11 @@ namespace MoGUI
             dragSymbol.color = Meta.DDLFontColor;
             dragSymbol.alignment = TextAnchor.MiddleCenter;
 
-            // Position the arrow on the right side of the button
             RectTransform arrowRect = arrowObject.GetComponent<RectTransform>();
             arrowRect.anchorMin = new Vector2(1, 0.5f);
             arrowRect.anchorMax = new Vector2(1, 0.5f);
             arrowRect.pivot = new Vector2(1, 0.5f);
-            arrowRect.sizeDelta = new Vector2(20, 20); // Set the size of the arrow
+            arrowRect.sizeDelta = new Vector2(20, 20);
             arrowRect.anchoredPosition = new Vector2(-10, 0);
 
 
@@ -129,14 +120,10 @@ namespace MoGUI
             viewportRect.offsetMin = Vector2.zero;
             viewportRect.offsetMax = Vector2.zero;
 
-            // Add an Image component. It defines the bounds for the Mask.
             Image viewportImage = viewportObject.AddComponent<Image>();
             viewportImage.color = Meta.DDLListColor;
-            //viewportImage.color = new Color(0, 0, 0, 0); // The color is transparent, but the rect is still used.
-
-            // Add the Mask component. It must be on the same object as the Image.
             Mask viewportMask = viewportObject.AddComponent<Mask>();
-            viewportMask.showMaskGraphic = true; // This prevents the transparent image from being rendered.
+            viewportMask.showMaskGraphic = true;
 
 
 
@@ -191,10 +178,8 @@ namespace MoGUI
             checkmarkImage.color = new Color(0.8f, 0.8f, 0.8f, 0.4f);
             checkmarkImage.rectTransform.anchorMin = new Vector2(0, 0);
             checkmarkImage.rectTransform.anchorMax = new Vector2(1, 1);
-            checkmarkImage.rectTransform.offsetMin = new Vector2(0, 0); // No padding from bottom-left
+            checkmarkImage.rectTransform.offsetMin = new Vector2(0, 0); 
             checkmarkImage.rectTransform.offsetMax = new Vector2(0, 0);
-            //checkmarkImage.rectTransform.sizeDelta = new Vector2(10, 10);
-            //checkmarkImage.rectTransform.anchoredPosition = new Vector2(-15, 0);
             itemToggle.graphic = checkmarkImage;
 
             _dropdown.itemText = itemLabel;
@@ -261,7 +246,6 @@ namespace MoGUI
         public override void UpdateText()
         {
             Selected = GetSelected(_dropdown.value);
-            // This can be used to update the selected value or options dynamically
         }
     }
 

@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 namespace MoGUI
 {
-    class MoGui 
+    public class MoGui 
     {
         GameObject Canvas;
         public MoGuiPanel RootPanel;
@@ -144,7 +144,7 @@ namespace MoGUI
 
         }
 
-        public MoGuiControl(string pluginName, string name, Vector2 size) // : this(pluginName, name)
+        public MoGuiControl(string pluginName, string name, Vector2 size) 
         {
             PluginName = pluginName;
             Name = name;
@@ -153,7 +153,7 @@ namespace MoGUI
             _Init();
         }
 
-        public MoGuiControl(string pluginName, string name, Vector2 size, Vector2 pos) // : this(pluginName, name, size)
+        public MoGuiControl(string pluginName, string name, Vector2 size, Vector2 pos) 
         {
 
             PluginName = pluginName;
@@ -164,7 +164,7 @@ namespace MoGUI
             _Init();
         }
 
-        public MoGuiControl(MoGuiMeta meta, string name, Vector2 size, Vector2 pos) // : this(pluginName, name, size)
+        public MoGuiControl(MoGuiMeta meta, string name, Vector2 size, Vector2 pos) 
         {
 
             Meta = new MoGuiMeta(meta, name);
@@ -196,7 +196,7 @@ namespace MoGUI
 
                 layoutGroup.spacing = Meta.TxtMargin;
                 layoutGroup.childForceExpandWidth = true;
-                layoutGroup.childForceExpandHeight = true;
+                layoutGroup.childForceExpandHeight = false;
             }
             else
             {
@@ -205,7 +205,7 @@ namespace MoGUI
 
                 layoutGroup.spacing = Meta.TxtMargin;
                 layoutGroup.childForceExpandWidth = true;
-                layoutGroup.childForceExpandHeight = true;
+                layoutGroup.childForceExpandHeight = false;
             }
 
 
@@ -223,9 +223,7 @@ namespace MoGUI
         public Action OnClickAction;
         public Func<object> OnUpdateAction;
         public Action<object> OnEditAction;
-        public Func<object> Value;
         public Func<object> Text;
-        public Func<object> Placeholder;
         public string ValType;
         public string Orientation;
         public string LabelPlacement;
@@ -240,8 +238,7 @@ namespace MoGUI
              Func<object> onUpdateAction = null,
              Action<object> onEditAction = null,
              Func<object> text = null,
-             string valType = "none",
-             Func<object> placeholder = null,
+             string valType = "none"
         )
         {
             Type = type;
@@ -249,10 +246,8 @@ namespace MoGUI
             OnClickAction = onClickAction;
             OnUpdateAction = onUpdateAction;
             OnEditAction = onEditAction;
-            Value = value;
             Text = text;
             ValType = valType;
-            Placeholder = placeholder;
         }
 
         public MoGCArgs(Type type, object value = null,
@@ -261,7 +256,6 @@ namespace MoGUI
              Action<object> onEditAction = null,
              object text = null,
              string valType = null,
-             object placeholder = null,
             MoGuiMeta meta = null
         )
         {
@@ -270,10 +264,8 @@ namespace MoGUI
             OnClickAction = onClickAction;
             OnUpdateAction = onUpdateAction;
             OnEditAction = onEditAction;
-            Value = ConvertString(value);
             Text = ConvertString(text);
             ValType = valType;
-            Placeholder = ConvertString(placeholder);
         }
 
         public Func<object> ConvertString(object obj)
@@ -334,11 +326,7 @@ namespace MoGUI
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            // Capture the initial state when the user first clicks.
-            // We'll use these to calculate the new size.
             originalMousePosition = eventData.position;
-
-            
             if (rectTransformParent != null)
             {
                 originalPanelSize = rectTransformParent.sizeDelta;
@@ -355,20 +343,14 @@ namespace MoGUI
 
         public void OnDrag(PointerEventData eventData)
         {
-            // Calculate the difference in mouse position since the click began.
             Vector2 mouseDelta = eventData.position - originalMousePosition;
-
-            // Add the mouse movement to the original size of the panel.
             Vector2 newSize = originalPanelSize + mouseDelta;
-
-            //// Update the panel's sizeDelta.
-            //rectTransform.sizeDelta = newSize;
 
             if (rectTransformParent != null)
             {
                 rectTransformParent.sizeDelta = new Vector2(
-                Mathf.Max(newSize.x, 250), // Enforce a minimum width
-                Mathf.Max(newSize.y, 200)  // Enforce a minimum height
+                Mathf.Max(newSize.x, 250), 
+                Mathf.Max(newSize.y, 200)  
             );
             }
             else if (rectTransform != null)
@@ -488,15 +470,6 @@ namespace MoGUI
         // Other
         public ControlOrientation Orientation;
         public ControlLabelPlacement LabelPlacement;
-
-
-
-
-
-
-
-
-
 
         public MoGuiMeta(string pluginName, string name
             , int? txtMargin = null

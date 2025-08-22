@@ -10,12 +10,31 @@ namespace MoGUI
     {
         Action<bool> OnClickAction;
         public MoGuiTxt Text;
-        Func<bool> Value;
+        Func<bool> boundValue;
+        bool _value;
+        public bool Value
+        {
+            get 
+            { 
+                if(boundValue != null)
+                {
+                    return boundValue();
+                } else
+                {
+                    return _value;
+                }
+            }
+            set 
+            {
 
+                 _value = value; 
+
+            }
+        }
 
         public MoGuiToggle(MoGuiMeta meta, string name, Func<bool> value, Func<object> text, Action<bool> onClickAction) : base(meta, name)
         {
-            Value = value;
+            boundValue = value;
 
             switch (Meta.ToggleLabelPlacement)
             {
@@ -34,9 +53,11 @@ namespace MoGUI
 
 
         }
-        public MoGuiToggle(MoGuiMeta meta, string name, Func<bool> value, string text, Action<bool> onClickAction) : base(meta, name)
+
+        public MoGuiToggle(MoGuiMeta meta, string name, bool value, Func<object> text, Action<bool> onClickAction) : base(meta, name)
         {
-            Value = value;
+            _value = value;
+
             switch (Meta.ToggleLabelPlacement)
             {
                 case ControlLabelPlacement.before:
@@ -52,7 +73,9 @@ namespace MoGUI
                     break;
             }
 
+
         }
+
 
         public override void _Init()
         {
@@ -98,7 +121,7 @@ namespace MoGUI
             checkmarkImage.color = Meta.ToggleCheckColor;
 
             toggleComponent.graphic = checkmarkImage;
-            toggleComponent.isOn = Value();
+            toggleComponent.isOn = Value;
             OnClickAction = onClickAction;
 
             toggleComponent.onValueChanged.AddListener(_OnClickAction);
@@ -118,12 +141,12 @@ namespace MoGUI
             if (Text != null)
             {
                 Text.UpdateText(text);
-                Text.Obj.transform.SetParent(Container.transform, false);
+                Text.Container.transform.SetParent(Container.transform, false);
             }
             else
             {
                 Text = new MoGuiTxt(Meta, Name + "_" + label, text);
-                Text.Obj.transform.SetParent(Container.transform, false);
+                Text.Container.transform.SetParent(Container.transform, false);
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
 
@@ -133,12 +156,12 @@ namespace MoGUI
             if (Text != null)
             {
                 Text.UpdateText(onUpdateAction);
-                Text.Obj.transform.SetParent(Container.transform, false);
+                Text.Container.transform.SetParent(Container.transform, false);
             }
             else
             {
                 Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
-                Text.Obj.transform.SetParent(Container.transform, false);
+                Text.Container.transform.SetParent(Container.transform, false);
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
 
@@ -146,56 +169,95 @@ namespace MoGUI
         public override void UpdateText()
         {
             Text.UpdateText();
-            Obj.GetComponent<Toggle>().isOn = Value();
+            if (boundValue != null) {
+                Obj.GetComponent<Toggle>().isOn = Value;
+            } else
+            {
+                Value = Obj.GetComponent<Toggle>().isOn;
+            }
+            
         }
     }
 
     public class MoCaToggle : MoGCArgs
     {
-        public new Func<bool> Value;
+        
         public new Action<bool> OnClickAction;
+
+
+        public Func<bool> boundValue;
+        public bool _value;
+
+
         public MoCaToggle(Func<bool> value,
              Action<bool> onClickAction,
              Func<object> text = null,
             MoGuiMeta meta = null
-        ) : base(typeof(MoGuiToggle), meta, text: text)
+        ) : this(onClickAction, text, meta)
         {
-            OnClickAction = onClickAction;
-            Value = value;
+            boundValue = value;
         }
 
         public MoCaToggle(bool value,
              Action<bool> onClickAction,
              Func<object> text = null,
             MoGuiMeta meta = null
-        ) : base(typeof(MoGuiToggle), meta, text: text)
+        ) : this(onClickAction, text, meta)
         {
-            OnClickAction = onClickAction;
-            Value = ConvertValue(value);
+            _value = value;
         }
 
         public MoCaToggle(Func<bool> value,
              Action<bool> onClickAction,
-             object text,
+             string text = null,
             MoGuiMeta meta = null
-        ) : this(value, meta: meta, onClickAction: onClickAction)
+        ) : this(onClickAction, text, meta)
         {
-            Text = ConvertString(text);
+            boundValue = value;
         }
 
         public MoCaToggle(bool value,
              Action<bool> onClickAction,
-             object text,
+             string text = null,
             MoGuiMeta meta = null
-        ) : this(value, meta: meta, onClickAction: onClickAction)
+        ) : this( onClickAction, text, meta)
         {
-            Text = ConvertString(text);
+            _value = value;
         }
 
-
-        Func<bool> ConvertValue(bool obj)
+        MoCaToggle(
+             Action<bool> onClickAction,
+             Func<object> text,
+             
+            MoGuiMeta meta
+        ) : this(text, meta)
         {
-            return () => obj;
+            OnClickAction = onClickAction;
+        }
+
+        MoCaToggle(
+             Action<bool> onClickAction,
+             string text,
+
+            MoGuiMeta meta
+        ) : this(text, meta)
+        {
+            OnClickAction = onClickAction;
+        }
+        MoCaToggle(
+             Func<object> text,
+
+            MoGuiMeta meta
+        ) : base(typeof(MoGuiToggle), meta, text: text)
+        {
+        }
+
+        MoCaToggle(
+             string text,
+
+            MoGuiMeta meta
+        ) : base(typeof(MoGuiToggle), meta, text:text)
+        {
         }
     }
 

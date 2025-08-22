@@ -67,6 +67,8 @@ namespace MoGUI
             {
                 Text = new MoGuiTxt(Meta, Name + "_" + label, text);
                 Text.Container.transform.SetParent(Obj.transform, false);
+                HorizontalLayoutGroup layoutGroup = Text.Container.GetComponent<HorizontalLayoutGroup>();
+                layoutGroup.childForceExpandHeight = true;
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
             }
 
@@ -84,6 +86,8 @@ namespace MoGUI
             {
                 Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
                 Text.Container.transform.SetParent(Obj.transform, false);
+                HorizontalLayoutGroup layoutGroup = Text.Container.GetComponent<HorizontalLayoutGroup>();
+                layoutGroup.childForceExpandHeight = true;
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
             }
 

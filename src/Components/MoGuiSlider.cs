@@ -70,10 +70,12 @@ namespace MoGUI
         Func<float> _boundMin;
         Func<float> _boundMax;
 
-        public MoGuiSlider(MoGuiMeta meta, string name, Func<object> text, Vector2 range, Func<object> onUpdateAction, Action<object> onEditAction, string type) : base(meta, name)
+        public MoGuiSlider(MoGuiMeta meta, string name, Func<object> text, Vector2 range, Func<object> onUpdateAction, Action<object> onEditAction, string type, Func<float> boundMin = null, Func<float> boundMax = null) : base(meta, name)
         {
             MinValue = range.x;
             MaxValue = range.y;
+            
+            
             OnUpdateAction = onUpdateAction;
             Type = type;
             OnEditAction = onEditAction;
@@ -93,14 +95,22 @@ namespace MoGUI
                     break;
             }
 
-
+            if (boundMin != null)
+            {
+                bindMin(boundMin);
+            }
+            if (boundMax != null)
+            {
+                bindMax(boundMax);
+            }
 
         }
 
-        public MoGuiSlider(MoGuiMeta meta, string name, string text, Vector2 range, Func<object> onUpdateAction, Action<object> onEditAction, string type) : base(meta, name)
+        public MoGuiSlider(MoGuiMeta meta, string name, string text, Vector2 range, Func<object> onUpdateAction, Action<object> onEditAction, string type, Func<float> boundMin = null, Func<float> boundMax = null) : base(meta, name)
         {
             MinValue = range.x;
             MaxValue = range.y;
+            
             OnUpdateAction = onUpdateAction;
             Type = type;
             OnEditAction = onEditAction;
@@ -119,7 +129,14 @@ namespace MoGUI
                     break;
             }
 
-
+            if (boundMin != null)
+            {
+                bindMin(boundMin);
+            }
+            if (boundMax != null)
+            {
+                bindMax(boundMax);
+            }
 
 
         }
@@ -136,6 +153,7 @@ namespace MoGUI
             RectTransform sliderRect = sliderObject.AddComponent<RectTransform>();
             sliderRect.anchorMin = new Vector2(0, 0);
             sliderRect.anchorMax = new Vector2(1, 1);
+            
 
             LayoutElement layoutElement = sliderObject.AddComponent<LayoutElement>();
             layoutElement.minWidth = Meta.SliderSize.x;
@@ -147,21 +165,17 @@ namespace MoGUI
             Slider.minValue = MinValue;
             Slider.maxValue = MaxValue;
 
-            //YOTOMOD.YotoSnapper._Log.LogMessage("MogUImin:" + MinValue + " max:" + MaxValue);
-
             Slider.wholeNumbers = Type == "int" ? true : false;
             
             GameObject backgroundObject = new GameObject(PluginName + "_" + Name + "_" + "SliderBackground");
             backgroundObject.transform.SetParent(sliderObject.transform, false);
             RectTransform backgroundRect = backgroundObject.AddComponent<RectTransform>();
 
-            // Stretch the background across the whole slider
             backgroundRect.anchorMin = Vector2.zero;
             backgroundRect.anchorMax = Vector2.one;
 
-            // Use offsets to make the background thinner vertically.
-            backgroundRect.offsetMin = new Vector2(0, 10); // Push up from the bottom
-            backgroundRect.offsetMax = new Vector2(0, -10); // Push down from the top
+            backgroundRect.offsetMin = new Vector2(0, 10);
+            backgroundRect.offsetMax = new Vector2(0, -10);
 
             Image backgroundImage = backgroundObject.AddComponent<Image>();
             backgroundImage.color = Meta.SliderTrackColor;
@@ -171,29 +185,27 @@ namespace MoGUI
             RectTransform fillAreaRect = fillAreaObject.AddComponent<RectTransform>();
             fillAreaRect.anchorMin = Vector2.zero;
             fillAreaRect.anchorMax = Vector2.one;
-            fillAreaRect.offsetMin = Vector2.zero;
-            fillAreaRect.offsetMax = Vector2.zero;
+            fillAreaRect.offsetMin = new Vector2(0, 0);
+            fillAreaRect.offsetMax = new Vector2(0,0);
 
             GameObject fillObject = new GameObject(PluginName + "_" + Name + "_" + "SliderFill");
             fillObject.transform.SetParent(fillAreaObject.transform, false);
             RectTransform fillRect = fillObject.AddComponent<RectTransform>();
             fillRect.anchorMin = Vector2.zero;
             fillRect.anchorMax = Vector2.one;
-            fillRect.offsetMin = new Vector2(0, 12); // Slightly higher than the track
-            fillRect.offsetMax = new Vector2(0, -12); // Slightly lower than the track
+            fillRect.offsetMin = new Vector2(0, 12);
+            fillRect.offsetMax = new Vector2(0, -12);
             Image fillImage = fillObject.AddComponent<Image>();
             fillImage.color = Meta.SliderFillColor;
             Slider.fillRect = fillImage.rectTransform;
 
             GameObject handleObject = new GameObject(PluginName + "_" + Name + "_" + "SliderHandle");
-            //handleObject.transform.SetParent(fillAreaObject.transform, false);
             handleObject.transform.SetParent(sliderObject.transform, false);
             RectTransform handleRect = handleObject.AddComponent<RectTransform>();
-            //handleRect.sizeDelta = new Vector2(20, 20);
             handleRect.anchorMin = new Vector2(0, 0.5f);
             handleRect.anchorMax = new Vector2(1, 0.5f);
-            handleRect.offsetMin = new Vector2(-10, 10); // Slightly higher than the track
-            handleRect.offsetMax = new Vector2(10, -10); // Slightly higher than the track
+            handleRect.offsetMin = new Vector2(-10, 10); 
+            handleRect.offsetMax = new Vector2(10, -10); 
 
             Image handleImage = handleObject.AddComponent<Image>();
             handleImage.color = Meta.SliderHandleColor;
@@ -243,12 +255,12 @@ namespace MoGUI
             if (Text != null)
             {
                 Text.UpdateText(text);
-                Text.Obj.transform.SetParent(Container.transform, false);
+                Text.Container.transform.SetParent(Container.transform, false);
             }
             else
             {
                 Text = new MoGuiTxt(Meta, Name + "_" + label, text);
-                Text.Obj.transform.SetParent(Container.transform, false);
+                Text.Container.transform.SetParent(Container.transform, false);
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
 
@@ -259,12 +271,12 @@ namespace MoGUI
             if (Text != null)
             {
                 Text.UpdateText(onUpdateAction);
-                Text.Obj.transform.SetParent(Container.transform, false);
+                Text.Container.transform.SetParent(Container.transform, false);
             }
             else
             {
                 Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
-                Text.Obj.transform.SetParent(Container.transform, false);
+                Text.Container.transform.SetParent(Container.transform, false);
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
 
@@ -307,16 +319,23 @@ namespace MoGUI
     public class MoCaSlider : MoGCArgs
     {
         public Vector2 Range;
-
+        public Func<float> BoundMin;
+        public Func<float> BoundMax;
         public MoCaSlider(Vector2 range,
             Action<object> onEditAction,
             Func<object> onUpdateAction,
             Func<object> text = null,
             string valType = "none",
+            Func<float> boundMin = null,
+            Func<float> boundMax = null,
             MoGuiMeta meta = null
         ) : base(typeof(MoGuiSlider), meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType)
         {
             Range = range;
+            if (boundMin != null) { BoundMin = boundMin; }
+            if (boundMax != null) { BoundMax = boundMax; }
+
+
         }
 
         public MoCaSlider(Vector2 range,
@@ -324,11 +343,16 @@ namespace MoGUI
             Func<object> onUpdateAction,
             object text = null,
             string valType = "none",
+            Func<float> boundMin = null,
+            Func<float> boundMax = null,
             MoGuiMeta meta = null
         ) : base(typeof(MoGuiSlider), meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType)
         {
             Range = range;
+            if (boundMin != null) { BoundMin = boundMin; }
+            if (boundMax != null) { BoundMax = boundMax; }
         }
+
 
     }
 }

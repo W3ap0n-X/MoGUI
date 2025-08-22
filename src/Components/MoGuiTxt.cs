@@ -11,9 +11,6 @@ namespace MoGUI
         public Text Text;
         string rawText = "<text>";
 
-
-
-
         public MoGuiTxt(MoGuiMeta meta, string name, Func<object> onUpdateAction) : base(meta, name)
         {
 
@@ -30,6 +27,7 @@ namespace MoGUI
         {
             var textObject = new GameObject(PluginName + "_" + Name + "_" + "Text");
             textObject.transform.SetParent(Container.transform, false);
+
             Text = textObject.AddComponent<Text>();
             Text.text = text != null ? text : rawText;
             Text.font = Meta.Font;
@@ -72,6 +70,8 @@ namespace MoGUI
     public class MoCaText : MoGCArgs
     {
         public new string Text;
+        
+
         public MoCaText(Func<object> text,
             MoGuiMeta meta = null
         ) : base(typeof(MoGuiTxt), meta )
