@@ -12,6 +12,7 @@ namespace MoGUI
         Text InputText;
         Text PlaceHolderText;
         InputField Input;
+        public object Value;
         string Type;
 
         
@@ -240,15 +241,25 @@ namespace MoGUI
                     OnEditAction(value);
                     break;
             }
+
         }
         public override void Update()
         {
             Text.Update();
-            if (!Input.isFocused && OnUpdateAction != null)
+            if (!Input.isFocused)
             {
-                Input.text = InputText.text = OnUpdateAction().ToString();
-            }
 
+                if (OnUpdateAction != null)
+                {
+                    Value = Input.text = InputText.text = OnUpdateAction().ToString();
+                }
+                
+            }
+            else
+            {
+                Value = InputText.text;
+            }
+                
         }
     }
 
@@ -257,7 +268,7 @@ namespace MoGUI
 
         public MoCaInput(Action<object> onEditAction,
             Func<object> onUpdateAction,
-            Func<object> text = null,
+            Func<object> text,
             string valType = "none",
             MoGuiMeta meta = null
         ) : base(typeof(MoGuiInput), meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType)

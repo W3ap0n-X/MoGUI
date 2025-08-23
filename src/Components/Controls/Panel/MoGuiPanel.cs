@@ -52,7 +52,12 @@ namespace MoGUI
                 Header = new MoGuiHeader(Meta, canvas, this, name, topLevel);
                 Header.Obj.transform.SetParent(Obj.transform, false);
                 Container.transform.SetParent(Obj.transform, false);
-                Content = CreateViewPort();
+                
+                MoGuiScrollArea scrollArea = new MoGuiScrollArea(Meta);
+                scrollArea.Obj.transform.SetParent(Container.transform, false);
+
+
+                Content = scrollArea.Content;
             }
             else
             {
@@ -82,7 +87,12 @@ namespace MoGUI
                 Header = new MoGuiHeader(Meta, Obj, this, name, topLevel);
                 Header.Obj.transform.SetParent(Obj.transform, false);
                 Container.transform.SetParent(Obj.transform, false);
-                Content = CreateViewPort();
+
+                MoGuiScrollArea scrollArea = new MoGuiScrollArea(Meta);
+                scrollArea.Obj.transform.SetParent(Container.transform, false);
+
+
+                Content = scrollArea.Content;
             }
             else 
             {
@@ -131,130 +141,6 @@ namespace MoGUI
             Content = Container;
             is_init = true;
         }
-
-        public GameObject CreateViewPort()
-        {
-            GameObject scrollViewObject = new GameObject(PluginName + "_" + Name + "_" + "ScrollView");
-            scrollViewObject.transform.SetParent(Container.transform, false);
-            
-            ScrollRect scrollRect = scrollViewObject.AddComponent<ScrollRect>();
-            
-            RectTransform scrollViewRect = scrollViewObject.GetComponent<RectTransform>();
-            scrollViewRect.anchorMin = Vector2.zero;
-            scrollViewRect.anchorMax = Vector2.one;
-            scrollViewRect.offsetMin = Vector2.zero;
-            scrollViewRect.offsetMax = Vector2.zero;
-
-            GameObject viewportObject = new GameObject(PluginName + "_" + Name + "_" + "ScrollViewViewport");
-            viewportObject.transform.SetParent(scrollViewObject.transform, false);
-
-            viewportObject.AddComponent<Mask>().showMaskGraphic = false;
-            viewportObject.AddComponent<Image>().color = new Color(0, 0, 0, 0.5f);
-
-            scrollRect.viewport = viewportObject.GetComponent<RectTransform>();
-            scrollRect.viewport.anchorMin = new Vector2(0, 0);
-            scrollRect.viewport.anchorMax = new Vector2(1, 1);
-            scrollRect.viewport.offsetMin = new Vector2(0, 20);
-            scrollRect.viewport.offsetMax = new Vector2(-20, 0);
-
-            GameObject contentObject = new GameObject(PluginName + "_" + Name + "_" + "ScrollViewContent");
-            contentObject.transform.SetParent(viewportObject.transform, false);
-
-            contentObject.AddComponent<VerticalLayoutGroup>();
-            ContentSizeFitter contentFitter = contentObject.AddComponent<ContentSizeFitter>();
-            contentFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-            contentFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
-
-            scrollRect.content = contentObject.GetComponent<RectTransform>();
-            scrollRect.content.anchorMin = new Vector2(0, 0);
-            scrollRect.content.anchorMax = new Vector2(1, 1);
-            scrollRect.content.offsetMin = new Vector2(0, 0);
-            scrollRect.content.offsetMax = new Vector2(0, 0);
-            scrollRect.scrollSensitivity = 30f;
-
-            GameObject verticalScrollbarObject = new GameObject(PluginName + "_" + Name + "_" + "ScrollViewVerticalScrollbar");
-            verticalScrollbarObject.transform.SetParent(scrollViewObject.transform, false);
-
-            scrollRect.verticalScrollbar = verticalBar(verticalScrollbarObject);
-            scrollRect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
-
-            GameObject horizontalScrollbarObject = new GameObject(PluginName + "_" + Name + "_" + "ScrollViewHorizontalScrollbar");
-            horizontalScrollbarObject.transform.SetParent(scrollViewObject.transform, false);
-            scrollRect.horizontalScrollbar = horizontalBar(horizontalScrollbarObject);
-            scrollRect.horizontalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
-            return contentObject;
-        }
-        Scrollbar verticalBar(GameObject parent)
-        {
-            
-
-            // Add the Scrollbar component
-            Scrollbar scrollbar = parent.AddComponent<Scrollbar>();
-            // Get the RectTransform of the scrollbar
-            RectTransform scrollbarRect = parent.GetComponent<RectTransform>();
-
-            // Anchor it to the right side of the ScrollView
-            scrollbarRect.anchorMin = new Vector2(1, 0);
-            scrollbarRect.anchorMax = new Vector2(1, 1);
-            scrollbarRect.pivot = new Vector2(1, 0.5f); // Pivot at the right edge
-            scrollbarRect.offsetMin = new Vector2(-10, 0); // Give it some padding from the bottom-left of the anchor point
-            scrollbarRect.offsetMax = new Vector2(0, 0);  // Make its right edge flush with the anchor point
-            scrollbarRect.sizeDelta = new Vector2(10, 0); // Set its width to 10 pixels
-                                                          // Create the scrollbar's handle GameObject
-            GameObject handleObject = new GameObject("Handle");
-            handleObject.transform.SetParent(parent.transform, false);
-
-            // Add an Image component for the handle's appearance
-            Image handleImage = handleObject.AddComponent<Image>();
-            handleImage.color = Meta.PanelColor; // A basic white handle
-
-            // Assign the handle to the scrollbar
-            scrollbar.handleRect = handleObject.GetComponent<RectTransform>();
-            scrollbar.handleRect.anchorMin = new Vector2(0, 0);
-            scrollbar.handleRect.anchorMax = new Vector2(1, 1);
-            scrollbar.handleRect.offsetMin = new Vector2(0, 0);
-            scrollbar.handleRect.offsetMax = new Vector2(0, 0);
-            // Set the scrollbar to be controlled by the ScrollRect
-            scrollbar.direction = Scrollbar.Direction.BottomToTop;
-            
-            return scrollbar;
-        }
-
-        Scrollbar horizontalBar(GameObject parent)
-        {
-
-
-            // Add the Scrollbar component
-            Scrollbar scrollbar = parent.AddComponent<Scrollbar>();
-            // Get the RectTransform of the scrollbar
-            RectTransform scrollbarRect = parent.GetComponent<RectTransform>();
-
-            // Anchor it to the right side of the ScrollView
-            scrollbarRect.anchorMin = new Vector2(0, 0);
-            scrollbarRect.anchorMax = new Vector2(1, 0);
-            scrollbarRect.pivot = new Vector2(1, 0.5f); // Pivot at the right edge
-            scrollbarRect.offsetMin = new Vector2(0, 10); // Give it some padding from the bottom-left of the anchor point
-            scrollbarRect.offsetMax = new Vector2(0, 0);  // Make its right edge flush with the anchor point
-            scrollbarRect.sizeDelta = new Vector2(0, 10); // Set its width to 10 pixels
-                                                          // Create the scrollbar's handle GameObject
-            GameObject handleObject = new GameObject("Handle");
-            handleObject.transform.SetParent(parent.transform, false);
-
-            // Add an Image component for the handle's appearance
-            Image handleImage = handleObject.AddComponent<Image>();
-            handleImage.color = Meta.PanelColor; // A basic white handle
-
-            // Assign the handle to the scrollbar
-            scrollbar.handleRect = handleObject.GetComponent<RectTransform>();
-            scrollbar.handleRect.anchorMin = new Vector2(0, 0);
-            scrollbar.handleRect.anchorMax = new Vector2(1, 1);
-            scrollbar.handleRect.offsetMin = new Vector2(0, 0);
-            scrollbar.handleRect.offsetMax = new Vector2(0, 0);
-            // Set the scrollbar to be controlled by the ScrollRect
-            //scrollbar.direction = Scrollbar.Direction.BottomToTop;
-            return scrollbar;
-        }
-
 
         public override GameObject CreateContainer()
         {
