@@ -76,10 +76,7 @@ namespace MoGUI
             _Init();
         }
 
-        public virtual void UpdateText()
-        {
-
-        }
+        public abstract void Update();
 
 
         public virtual void _Init()
