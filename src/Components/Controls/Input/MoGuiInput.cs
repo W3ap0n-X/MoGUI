@@ -183,7 +183,7 @@ namespace MoGUI
         {
             if (Text != null)
             {
-                Text.UpdateText(text);
+                Text.Update(text);
                 Text.Obj.transform.SetParent(Container.transform, false);
             }
             else
@@ -198,7 +198,7 @@ namespace MoGUI
         {
             if (Text != null)
             {
-                Text.UpdateText(onUpdateAction);
+                Text.Update(onUpdateAction);
                 Text.Obj.transform.SetParent(Container.transform, false);
             }
             else
@@ -241,9 +241,9 @@ namespace MoGUI
                     break;
             }
         }
-        public override void UpdateText()
+        public override void Update()
         {
-            Text.UpdateText();
+            Text.Update();
             if (!Input.isFocused && OnUpdateAction != null)
             {
                 Input.text = InputText.text = OnUpdateAction().ToString();

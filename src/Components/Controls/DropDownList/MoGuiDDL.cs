@@ -243,7 +243,7 @@ namespace MoGUI
             return new KeyValuePair<string, object>(optionKey, selectedVal);
         }
 
-        public override void UpdateText()
+        public override void Update()
         {
             Selected = GetSelected(_dropdown.value);
         }

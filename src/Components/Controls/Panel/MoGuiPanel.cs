@@ -176,11 +176,12 @@ namespace MoGUI
             verticalScrollbarObject.transform.SetParent(scrollViewObject.transform, false);
 
             scrollRect.verticalScrollbar = verticalBar(verticalScrollbarObject);
+            scrollRect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
 
             GameObject horizontalScrollbarObject = new GameObject(PluginName + "_" + Name + "_" + "ScrollViewHorizontalScrollbar");
             horizontalScrollbarObject.transform.SetParent(scrollViewObject.transform, false);
             scrollRect.horizontalScrollbar = horizontalBar(horizontalScrollbarObject);
-
+            scrollRect.horizontalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
             return contentObject;
         }
         Scrollbar verticalBar(GameObject parent)
@@ -215,6 +216,7 @@ namespace MoGUI
             scrollbar.handleRect.offsetMax = new Vector2(0, 0);
             // Set the scrollbar to be controlled by the ScrollRect
             scrollbar.direction = Scrollbar.Direction.BottomToTop;
+            
             return scrollbar;
         }
 
@@ -464,13 +466,13 @@ namespace MoGUI
             }
         }
 
-        public override void UpdateText()
+        public override void Update()
         {
             if (IsActive && !Minimized)
             {
                 foreach (var item in Components)
                 {
-                    item.Value.UpdateText();
+                    item.Value.Update();
                 }
             }
 
@@ -657,7 +659,7 @@ namespace MoGUI
             if (Components.ContainsKey(label))
             {
                 newTxt = (MoGuiTxt)Components[label];
-                newTxt.UpdateText(text);
+                newTxt.Update(text);
                 newTxt.Container.transform.SetParent(Container.transform, false);
             }
             else

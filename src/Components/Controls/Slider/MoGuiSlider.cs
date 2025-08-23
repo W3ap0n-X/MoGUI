@@ -254,7 +254,7 @@ namespace MoGUI
         {
             if (Text != null)
             {
-                Text.UpdateText(text);
+                Text.Update(text);
                 Text.Container.transform.SetParent(Container.transform, false);
             }
             else
@@ -270,7 +270,7 @@ namespace MoGUI
         {
             if (Text != null)
             {
-                Text.UpdateText(onUpdateAction);
+                Text.Update(onUpdateAction);
                 Text.Container.transform.SetParent(Container.transform, false);
             }
             else
@@ -282,9 +282,9 @@ namespace MoGUI
 
         }
 
-        public override void UpdateText()
+        public override void Update()
         {
-            Text.UpdateText();
+            Text.Update();
             if (OnUpdateAction != null)
             {
                 if (float.TryParse(OnUpdateAction().ToString(), out float updatedValue))

@@ -60,7 +60,7 @@ namespace MoGUI
         {
             if (Text != null)
             {
-                Text.UpdateText(text);
+                Text.Update(text);
                 Text.Container.transform.SetParent(Obj.transform, false);
             }
             else
@@ -78,7 +78,7 @@ namespace MoGUI
         {
             if (Text != null)
             {
-                Text.UpdateText(onUpdateAction());
+                Text.Update(onUpdateAction());
 
                 Text.Container.transform.SetParent(Obj.transform, false);
             }
@@ -94,7 +94,7 @@ namespace MoGUI
         }
 
 
-        public override void UpdateText() => Text.UpdateText();
+        public override void Update() => Text.Update();
     }
 
     public class MoCaButton : MoGCArgs

@@ -46,16 +46,16 @@ namespace MoGUI
             return textObject;
         }
 
-        public void UpdateText(object val)
+        public void Update(object val)
         {
             Text.text = val.ToString();
         }
 
-        public override void UpdateText()
+        public override void Update()
         {
             if (OnUpdateAction != null)
             {
-                UpdateText(OnUpdateAction());
+                Update(OnUpdateAction());
             }
 
         }
