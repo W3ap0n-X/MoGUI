@@ -45,6 +45,8 @@ namespace MoGUI
             OnEditAction = onEditAction;
 
             Type = type;
+
+            
             switch (Meta.InputLabelPlacement)
             {
                 case ControlLabelPlacement.before:
@@ -54,6 +56,48 @@ namespace MoGUI
                 case ControlLabelPlacement.after:
                     Obj = CreateInput();
                     AddText("InputTxt", text);
+                    break;
+                default:
+                    Obj = CreateInput();
+                    break;
+            }
+        }
+
+        public MoGuiInput(MoGuiMeta meta, string name, MoCaInput args) : base(meta, name)
+        {
+            
+
+            if (args.OnUpdateAction != null)
+            {
+                OnUpdateAction = args.OnUpdateAction;
+            }
+            if (args.OnEditAction != null)
+            {
+                OnEditAction = args.OnEditAction;
+            }
+
+            
+
+            Type = args.ValType;
+
+            if (args.Value != null)
+            {
+                Value = args.Value;
+            }  
+            if (args.OnUpdateAction != null)
+            {
+                Value = args.OnUpdateAction();
+            }
+
+            switch (Meta.InputLabelPlacement)
+            {
+                case ControlLabelPlacement.before:
+                    AddText("InputTxt", args.Text);
+                    Obj = CreateInput();
+                    break;
+                case ControlLabelPlacement.after:
+                    Obj = CreateInput();
+                    AddText("InputTxt", args.Text);
                     break;
                 default:
                     Obj = CreateInput();
@@ -153,7 +197,9 @@ namespace MoGUI
 
             PlaceHolderText = placeholderObject.AddComponent<Text>();
             PlaceHolderText.alignment = TextAnchor.MiddleLeft;
+
             PlaceHolderText.text = "Enter Value...";
+
             PlaceHolderText.color = Meta.InputPlaceholderFontColor;
             PlaceHolderText.fontStyle = FontStyle.Italic;
             PlaceHolderText.fontSize = Meta.InputFontSize;
@@ -172,7 +218,9 @@ namespace MoGUI
             textRect.offsetMax = new Vector2(-10, -5);
             InputText = textObject.AddComponent<Text>();
             InputText.alignment = TextAnchor.MiddleLeft;
-            InputText.text = OnUpdateAction().ToString() ?? null;
+
+            //InputText.text = Value.ToString() ?? null;
+
             InputText.color = Meta.InputFontColor;
             InputText.fontSize = Meta.InputFontSize;
             InputText.font = Meta.InputFont;
@@ -185,12 +233,12 @@ namespace MoGUI
             if (Text != null)
             {
                 Text.Update(text);
-                Text.Obj.transform.SetParent(Container.transform, false);
+                Text.Container.transform.SetParent(Container.transform, false);
             }
             else
             {
                 Text = new MoGuiTxt(Meta, Name + "_" + label, text);
-                Text.Obj.transform.SetParent(Container.transform, false);
+                Text.Container.transform.SetParent(Container.transform, false);
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
 
@@ -200,12 +248,12 @@ namespace MoGUI
             if (Text != null)
             {
                 Text.Update(onUpdateAction);
-                Text.Obj.transform.SetParent(Container.transform, false);
+                Text.Container.transform.SetParent(Container.transform, false);
             }
             else
             {
                 Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
-                Text.Obj.transform.SetParent(Container.transform, false);
+                Text.Container.transform.SetParent(Container.transform, false);
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
 
@@ -214,46 +262,47 @@ namespace MoGUI
 
         public void _OnEditAction(object value)
         {
-            switch (Type)
+            Value = value;
+            if (OnEditAction != null)
             {
-                case "int":
-                    if (int.TryParse(value.ToString(), out int intVal))
-                    {
-                        OnEditAction(intVal);
-                    }
-                    break;
+                switch (Type)
+                {
+                    case "int":
+                        if (int.TryParse(value.ToString(), out int intVal))
+                        {
+                            OnEditAction(intVal);
+                        }
+                        break;
 
-                case "float":
-                    if (float.TryParse(value.ToString(), out float floatVal))
-                    {
-                        OnEditAction(floatVal);
-                    }
-                    break;
+                    case "float":
+                        if (float.TryParse(value.ToString(), out float floatVal))
+                        {
+                            OnEditAction(floatVal);
+                        }
+                        break;
 
-                case "long":
-                    if (long.TryParse(value.ToString(), out long longVal))
-                    {
-                        OnEditAction(longVal);
-                    }
-                    break;
+                    case "long":
+                        if (long.TryParse(value.ToString(), out long longVal))
+                        {
+                            OnEditAction(longVal);
+                        }
+                        break;
 
-                default:
-                    OnEditAction(value);
-                    break;
+                    default:
+                        OnEditAction(value);
+                        break;
+                }
             }
-
         }
         public override void Update()
         {
             Text.Update();
             if (!Input.isFocused)
             {
-
                 if (OnUpdateAction != null)
                 {
                     Value = Input.text = InputText.text = OnUpdateAction().ToString();
                 }
-                
             }
             else
             {
@@ -265,7 +314,7 @@ namespace MoGUI
 
     public class MoCaInput : MoGCArgs
     {
-
+        public object Value { get; set; }
         public MoCaInput(Action<object> onEditAction,
             Func<object> onUpdateAction,
             Func<object> text,
@@ -284,6 +333,18 @@ namespace MoGUI
         ) : base(typeof(MoGuiInput), meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType)
         {
 
+        }
+
+        public MoCaInput(object value,
+            
+            string valType = "none",
+            object text = null,
+            Action<object> onEditAction = null,
+            Func<object> onUpdateAction = null,
+            MoGuiMeta meta = null
+        ) : base(typeof(MoGuiInput), meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType)
+        {
+            Value = value;
         }
 
     }

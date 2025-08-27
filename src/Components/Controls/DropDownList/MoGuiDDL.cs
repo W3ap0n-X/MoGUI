@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 namespace MoGUI
 {
@@ -25,7 +26,6 @@ namespace MoGUI
             {
                 _baseOptions.Add(option.Key);
             }
-            
             Obj = CreateDropdown();
         }
 
@@ -36,6 +36,38 @@ namespace MoGUI
             OnEditAction = onValueChanged;
             
             _baseOptions = options;
+
+            Obj = CreateDropdown();
+
+        }
+
+
+        public MoGuiDDL(MoGuiMeta meta, string name, MoCaDDL args)
+            : base(args.Meta ?? meta, name)
+        {
+            Type = args.ValType;
+            
+            if (args.OnEditAction != null) 
+            {
+                OnEditAction = args.OnEditAction;
+            }
+
+            if (args.DDLBoundOptions != null)
+            {
+                _valOptions = args.DDLBoundOptions;
+                _baseOptions = new List<string>();
+                foreach (var option in _valOptions)
+                {
+                    _baseOptions.Add(option.Key);
+                }
+            }
+            else 
+            {
+                _baseOptions = args.DDLOptions;
+            }
+
+
+                
 
             Obj = CreateDropdown();
 
@@ -201,28 +233,32 @@ namespace MoGUI
         public void _OnEditAction(object value)
         {
             Selected = GetSelected(int.Parse(value.ToString()));
-            
-            switch (Type)
+            if(OnEditAction != null)
             {
-                case "int":
-                    if (int.TryParse(Selected.Value.ToString(), out int intVal))
-                    {
-                        OnEditAction(intVal);
-                    }
-                    break;
+                switch (Type)
+                {
+                    case "int":
+                        if (int.TryParse(Selected.Value.ToString(), out int intVal))
+                        {
+                            OnEditAction(intVal);
+                        }
+                        break;
 
-                case "float":
-                    if (float.TryParse(Selected.Value.ToString(), out float floatVal))
-                    {
-                        OnEditAction(floatVal);
-                    }
-                    break;
+                    case "float":
+                        if (float.TryParse(Selected.Value.ToString(), out float floatVal))
+                        {
+                            OnEditAction(floatVal);
+                        }
+                        break;
 
-                default:
+                    default:
 
-                    OnEditAction(Selected.Key);
-                    break;
+                        OnEditAction(Selected.Key);
+                        break;
+                }
             }
+
+            
             
         }
 
@@ -255,50 +291,24 @@ namespace MoGUI
         public List<string> DDLOptions;
         public Dictionary<string, int> DDLBoundOptions = null;
         public MoCaDDL(List<string> dDLOptions,
-            Action<object> onEditAction,
-            Func<object> text = null,
+            Action<object> onEditAction = null,
             string valType = "none",
-            Dictionary<string, int> dDLBoundOptions = null,
             MoGuiMeta meta = null
-        ) : base(typeof(MoGuiDDL), meta, text: text, onEditAction: onEditAction, valType: valType)
+        ) : base(typeof(MoGuiDDL), meta, valType: valType)
         {
-            DDLOptions = dDLOptions;
-            DDLBoundOptions = dDLBoundOptions;
-        }
-
-        public MoCaDDL(List<string> dDLOptions,
-            Action<object> onEditAction,
-            object text = null,
-            string valType = "none",
-            Dictionary<string, int> dDLBoundOptions = null,
-            MoGuiMeta meta = null
-        ) : base(typeof(MoGuiDDL), meta, text: text, onEditAction: onEditAction, valType: valType)
-        {
-            DDLOptions = dDLOptions;
-            DDLBoundOptions = dDLBoundOptions;
-        }
-
-        public MoCaDDL(Dictionary<string, int> dDLBoundOptions,
-            Action<object> onEditAction,
-            Func<object> text = null,
-            string valType = "float",
-            List<string> dDLOptions = null,
-            MoGuiMeta meta = null
-        ) : base(typeof(MoGuiDDL), meta, text: text, onEditAction: onEditAction, valType: valType)
-        {
-            DDLBoundOptions = dDLBoundOptions;
+            if (onEditAction != null) { OnEditAction = onEditAction; }
             DDLOptions = dDLOptions;
         }
 
         public MoCaDDL(Dictionary<string, int> dDLBoundOptions,
-            Action<object> onEditAction,
-            string valType = "float",
-            List<string> dDLOptions = null,
+            Action<object> onEditAction = null,
+            string valType = "none",
             MoGuiMeta meta = null
-        ) : base(typeof(MoGuiDDL), meta, onEditAction: onEditAction, valType: valType)
+        ) : base(typeof(MoGuiDDL), meta, valType: valType)
         {
+            if (onEditAction != null) { OnEditAction = onEditAction; }
+
             DDLBoundOptions = dDLBoundOptions;
-            DDLOptions = dDLOptions;
         }
 
     }

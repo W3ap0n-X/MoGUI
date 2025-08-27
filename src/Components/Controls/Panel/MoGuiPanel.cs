@@ -12,6 +12,7 @@ namespace MoGUI
         MoGuiHeader Header;
         public MoGuiPanel Panel;
         public GameObject Content;
+        public string Title = null;
 
         public Dictionary<string, MoGuiControl> Components = new Dictionary<string, MoGuiControl>();
 
@@ -19,6 +20,7 @@ namespace MoGUI
 
         public MoGuiPanel(MoGuiMeta meta,  string name, GameObject canvas, Vector2 size, Vector2 pos) : base(meta, name,size, pos)
         {
+            Title = name;
             Init( canvas,  name,  size,  pos, true);
         }
 
@@ -31,6 +33,18 @@ namespace MoGUI
         {
             Panel = owner;
             Init(includeHeader);
+        }
+
+        public MoGuiPanel(MoGuiMeta meta, string name, MoGuiPanel owner, MoCaPanel args) : base(meta, name)
+        {
+
+            Panel = owner;
+            if (args.Title != null) 
+            {
+                Title = args.Title;
+            }
+
+            Init(args.IncludeHeader);
         }
 
         public virtual void Init(GameObject canvas, string name, Vector2 size, Vector2 pos, bool topLevel = false)
@@ -291,7 +305,7 @@ namespace MoGUI
             if (args.Type == typeof(MoGuiButton))
             {
                 MoCaButton _args = (MoCaButton)args;
-                return new MoGuiButton(_args.Meta ?? Meta, Name + "_" + name, _args.Text, _args.OnClickAction);
+                return new MoGuiButton(_args.Meta ?? Meta, Name + "_" + name, _args);
             }
             else if (args.Type == typeof(MoGuiToggle))
             {
@@ -308,7 +322,7 @@ namespace MoGUI
             else if (args.Type == typeof(MoGuiInput))
             {
                 MoCaInput _args = (MoCaInput)args;
-                return new MoGuiInput(_args.Meta ?? Meta, Name + "_" + name, _args.Text ,  _args.OnUpdateAction, _args.OnEditAction, _args.ValType);
+                return new MoGuiInput(_args.Meta ?? Meta, Name + "_" + name, _args);
             }
             else if (args.Type == typeof(MoGuiSlider))
             {
@@ -318,32 +332,25 @@ namespace MoGUI
             else if (args.Type == typeof(MoGuiDDL))
             {
                 MoCaDDL _args = (MoCaDDL)args;
-                if (_args.DDLBoundOptions != null)
-                {
-                    return new MoGuiDDL(_args.Meta ?? Meta, Name + "_" + name,  _args.DDLBoundOptions , _args.OnEditAction, _args.ValType);
-                }
-                else
-                {
-                    return new MoGuiDDL(_args.Meta ?? Meta, Name + "_" + name, _args.DDLOptions, _args.OnEditAction, _args.ValType);
-                }
-                
+                return new MoGuiDDL(_args.Meta ?? Meta, Name + "_" + name, _args);
+
+            }
+            else if (args.Type == typeof(MoGuiSelector))
+            {
+                MoCaSelector _args = (MoCaSelector)args;
+                return new MoGuiSelector(_args.Meta ?? Meta, Name + "_" + name, _args);
+
             }
             else if(args.Type == typeof(MoGuiTxt))
             {
                 MoCaText _args = (MoCaText)args;
-                if(_args.OnUpdateAction != null)
-                {
-                    return new MoGuiTxt(_args.Meta ?? Meta, Name + "_" + name, _args.OnUpdateAction);
-                } else
-                {
-                    return new MoGuiTxt(_args.Meta ?? Meta, Name + "_" + name, _args.Text);
-                }
+                return new MoGuiTxt(_args.Meta ?? Meta, Name + "_" + name, _args);
                 
             }
             else if (args.Type == typeof(MoGuiPanel))
             {
                 MoCaPanel _args = (MoCaPanel)args;
-                return new MoGuiPanel(_args.Meta ?? Meta, Name + "_" + name, this, _args.IncludeHeader);
+                return new MoGuiPanel(_args.Meta ?? Meta, Name + "_" + name, this, _args);
             }
             else
             {
@@ -446,14 +453,14 @@ namespace MoGUI
             {
                 DragHandle = Obj.AddComponent<DraggableHandle>();
                 DragHandle.BindParent(Panel.Obj);
-                AddTitleText("HeaderText", PluginName + " - " + Name);
+                AddTitleText("HeaderText", PluginName + " - " + Panel.Title ?? Name);
                 AddXButton("MinGui", "␣", () => MinGui());
                 Meta.ButtonColor = Meta.HeaderExitColor;
                 AddXButton("HideGui", "╳", () => ToggleGui(false));
                 AddResize();
             } else
             {
-                AddTitleText("HeaderText", Name);
+                AddTitleText("HeaderText", Panel.Title ?? Name);
                 AddXButton("MinGui", "␣", () => MinGui());
             }
                 is_init = true;
@@ -588,11 +595,17 @@ namespace MoGUI
     public class MoCaPanel : MoGCArgs
     {
         public bool IncludeHeader;
+        public string Title;
         public MoCaPanel(bool includeHeader = false,
+            string title = null,
             MoGuiMeta meta = null
         ) : base(typeof(MoGuiPanel), meta)
         {
             IncludeHeader = includeHeader;
+            if (title != null) 
+            { 
+                Title = title;
+            }
         }
     }
 

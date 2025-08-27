@@ -23,6 +23,20 @@ namespace MoGUI
             Obj = CreateText(text.ToString());
         }
 
+        public MoGuiTxt(MoGuiMeta meta, string name, MoCaText args) : base(meta, name)
+        {
+            if (args.OnUpdateAction != null)
+            {
+                OnUpdateAction = args.OnUpdateAction;
+                Obj = CreateText(OnUpdateAction().ToString());
+            }
+            else
+            {
+                Obj = CreateText(args.Text);
+            }
+
+        }
+
         public GameObject CreateText(string text = null)
         {
             var textObject = new GameObject(PluginName + "_" + Name + "_" + "Text");
@@ -72,11 +86,11 @@ namespace MoGUI
         public new string Text;
         
 
-        public MoCaText(Func<object> text,
+        public MoCaText(Func<object> onUpdateAction,
             MoGuiMeta meta = null
         ) : base(typeof(MoGuiTxt), meta )
         {
-            OnUpdateAction = text;
+            OnUpdateAction = onUpdateAction;
         }
 
         public MoCaText(string text,
