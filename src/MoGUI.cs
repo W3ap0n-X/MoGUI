@@ -11,32 +11,30 @@ namespace MoGUI
         GameObject Canvas;
         public MoGuiPanel RootPanel;
         public string PluginName;
-        public string Name;
         public MoGuiMeta Meta;
 
         public Dictionary<string, MoGuiPanel> Panels = new Dictionary<string, MoGuiPanel>();
-        public MoGui(string pluginName, string name, Vector2 size, Vector2 pos)
+        public MoGui(string pluginName, Vector2 size, Vector2 pos)
         {
-            Meta = new MoGuiMeta(pluginName, name);
-            PluginName = pluginName;
-            Name = name;
-            Canvas = CreateCanvas();
-            RootPanel = new MoGuiPanel(Meta,  Name, Canvas, size, pos);
-            RootPanel.Obj.transform.SetParent(Canvas.transform, false);
+            Meta = new MoGuiMeta(pluginName, pluginName);
+            Init(size, pos);
         }
 
-        public MoGui(MoGuiMeta meta, string name, Vector2 size, Vector2 pos)
+        public MoGui(MoGuiMeta meta, string pluginName, Vector2 size, Vector2 pos)
         {
-            
-            Meta = new MoGuiMeta(meta, name);
+            Meta = new MoGuiMeta(meta, pluginName);
+            Init(size, pos);
+        }
+
+        void Init(Vector2 size, Vector2 pos)
+        {
             PluginName = Meta.PluginName;
-            Name = name;
             Canvas = CreateCanvas();
-            RootPanel = new MoGuiPanel(Meta, Name, Canvas, size, pos);
+            RootPanel = new MoGuiPanel(Meta, "Main", Canvas, size, pos);
             RootPanel.Obj.transform.SetParent(Canvas.transform, false);
         }
 
-        public void ToggleGui(bool show)
+        public void ShowGui(bool show)
         {
             Canvas.SetActive(show);
         }
@@ -48,7 +46,7 @@ namespace MoGUI
 
         public GameObject CreateCanvas()
         {
-            var canvasObject = new GameObject( PluginName + "_" + Name + "_" + "Canvas");
+            var canvasObject = new GameObject( PluginName + "_" + "Canvas");
             Canvas canvas = canvasObject.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = 999;
@@ -58,24 +56,12 @@ namespace MoGUI
         }
 
         
-        public MoGuiPanel AddPanel(string label, Vector2 size, Vector2 pos, bool topLevel = false)
+        public MoGuiPanel AddPanel(string label, Vector2 size, Vector2 pos)
         {
-            MoGuiPanel newPanel;
-            if (Panels.ContainsKey(label))
-            {
-                newPanel = Panels[label];
-                newPanel.Obj.transform.SetParent(Canvas.transform, false);
-            }
-            else
-            {
-                newPanel = new MoGuiPanel(Meta, label, size, pos, topLevel);
-                newPanel.Obj.transform.SetParent(Canvas.transform, false);
-                Panels.Add(label, newPanel);
-            }
-            return newPanel;
+            return AddPanel(Meta, label, size, pos);
         }
 
-        public MoGuiPanel AddPanel(MoGuiMeta meta, string label, Vector2 size, Vector2 pos, bool topLevel = false)
+        public MoGuiPanel AddPanel(MoGuiMeta meta, string label, Vector2 size, Vector2 pos)
         {
             MoGuiPanel newPanel;
             if (Panels.ContainsKey(label))
@@ -85,7 +71,7 @@ namespace MoGUI
             }
             else
             {
-                newPanel = new MoGuiPanel(meta, label, size, pos, topLevel);
+                newPanel = new MoGuiPanel(meta, label, size, pos, true);
                 newPanel.Obj.transform.SetParent(Canvas.transform, false);
                 Panels.Add(label, newPanel);
             }

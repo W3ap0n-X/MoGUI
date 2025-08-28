@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Xml.Linq;
+using UnityEditor.PackageManager;
 
 namespace MoGUI
 {
@@ -18,18 +19,21 @@ namespace MoGUI
 
         public Dictionary<string, MiniUIRow> Rows = new Dictionary<string, MiniUIRow>();
 
+        // Create RootPanel from Main Gui
         public MoGuiPanel(MoGuiMeta meta,  string name, GameObject canvas, Vector2 size, Vector2 pos) : base(meta, name,size, pos)
         {
             Title = name;
-            Init( canvas,  name,  size,  pos, true);
+            Init( canvas,  name,  size,  pos);
         }
 
+        // Create new toplevel Panel
         public MoGuiPanel(MoGuiMeta meta, string name, Vector2 size, Vector2 pos, bool topLevel = false) : base(meta, name, size, pos)
         {
-            Init( name, size, pos, topLevel);
+            Title = name;
+            Init( name, size, pos);
         }
 
-        public MoGuiPanel(MoGuiMeta meta, string name, MoGuiPanel owner, bool includeHeader = false) : base(meta, name)
+        protected MoGuiPanel(MoGuiMeta meta, string name, MoGuiPanel owner, bool includeHeader = false) : base(meta, name)
         {
             Panel = owner;
             Init(includeHeader);
@@ -47,82 +51,31 @@ namespace MoGUI
             Init(args.IncludeHeader);
         }
 
-        public virtual void Init(GameObject canvas, string name, Vector2 size, Vector2 pos, bool topLevel = false)
+        public virtual void Init(GameObject canvas, string name, Vector2 size, Vector2 pos)
         {
             Obj = CreatePanel();
-            
-            
-            if (topLevel)
-            {
+            RectTransform layoutRect = Container.GetComponent<RectTransform>();
 
-                RectTransform layoutRect = Container.GetComponent<RectTransform>();
-
-                layoutRect.anchorMin = new Vector2(0, 0);
-                layoutRect.anchorMax = new Vector2(1, 1);
-                layoutRect.offsetMin = new Vector2(0, 0);
-                layoutRect.offsetMax = new Vector2(0, -Meta.HeaderSize);
-
-
-                Header = new MoGuiHeader(Meta, canvas, this, name, topLevel);
-                Header.Obj.transform.SetParent(Obj.transform, false);
-                Container.transform.SetParent(Obj.transform, false);
-                
-                MoGuiScrollArea scrollArea = new MoGuiScrollArea(Meta);
-                scrollArea.Obj.transform.SetParent(Container.transform, false);
-
-
-                Content = scrollArea.Content;
-            }
-            else
-            {
-                Container.transform.SetParent(Obj.transform, false);
-                Content = Container;
-            }
-            
-            is_init = true;
-        }
-
-        public virtual void Init( string name, Vector2 size, Vector2 pos, bool topLevel = false)
-        {
-            Obj = CreatePanel();
-
-
-            if (topLevel)
-            {
-
-                RectTransform layoutRect = Container.GetComponent<RectTransform>();
-
-                layoutRect.anchorMin = new Vector2(0, 0);
-                layoutRect.anchorMax = new Vector2(1, 1);
-                layoutRect.offsetMin = new Vector2(0, 0);
-                layoutRect.offsetMax = new Vector2(0, -Meta.HeaderSize);
-
-
-                Header = new MoGuiHeader(Meta, Obj, this, name, topLevel);
-                Header.Obj.transform.SetParent(Obj.transform, false);
-                Container.transform.SetParent(Obj.transform, false);
-
-                MoGuiScrollArea scrollArea = new MoGuiScrollArea(Meta);
-                scrollArea.Obj.transform.SetParent(Container.transform, false);
-
-
-                Content = scrollArea.Content;
-            }
-            else 
-            {
-                Container.transform.SetParent(Obj.transform, false);
-                Content = Container;
-            }
-                
-            is_init = true;
-        }
-
-        public virtual void Init()
-        {
-            Obj = CreatePanel();
+            layoutRect.anchorMin = new Vector2(0, 0);
+            layoutRect.anchorMax = new Vector2(1, 1);
+            layoutRect.offsetMin = new Vector2(0, 0);
+            layoutRect.offsetMax = new Vector2(0, -Meta.HeaderSize);
+            Header = new MoGuiHeader(Meta, canvas, this, name, true);
+            Header.Obj.transform.SetParent(Obj.transform, false);
             Container.transform.SetParent(Obj.transform, false);
-            Content = Container;
+
+            MoGuiScrollArea scrollArea = new MoGuiScrollArea(Meta);
+            scrollArea.Obj.transform.SetParent(Container.transform, false);
+
+
+            Content = scrollArea.Content;
+            
             is_init = true;
+        }
+
+        public virtual void Init( string name, Vector2 size, Vector2 pos)
+        {
+            Init(Obj, name, size, pos);
         }
         public virtual void Init(bool includeHeader)
         {
@@ -158,11 +111,6 @@ namespace MoGUI
 
         public override GameObject CreateContainer()
         {
-
-            
-
-
-
             GameObject layoutObject = new GameObject(PluginName + "_" + Name + "_" + "DrawContainer");
             VerticalLayoutGroup layoutGroup = layoutObject.AddComponent<VerticalLayoutGroup>();
 
@@ -191,7 +139,7 @@ namespace MoGUI
             get => Container.activeSelf ? false : true;
         }
 
-        public void ToggleGui(bool show)
+        public void ShowGui(bool show)
         {
             Obj.SetActive(show);
         }
@@ -275,7 +223,6 @@ namespace MoGUI
 
         public MoGuiControl AddControl( string row, string col,  string name, MoGCArgs args)
         {
-
             GameObject column = GetCol(row, col);
 
             MoGuiControl newComponent;
@@ -310,14 +257,14 @@ namespace MoGUI
             else if (args.Type == typeof(MoGuiToggle))
             {
                 MoCaToggle _args = (MoCaToggle)args;
-                if(_args.boundValue != null)
-                {
-                    return new MoGuiToggle(_args.Meta ?? Meta, Name + "_" + name, _args.boundValue, _args.Text, _args.OnClickAction);
-                } else
-                {
-                    return new MoGuiToggle(_args.Meta ?? Meta, Name + "_" + name, _args._value, _args.Text, _args.OnClickAction);
-                }
-                
+                return new MoGuiToggle(_args.Meta ?? Meta, Name + "_" + name, _args);
+
+            }
+            else if (args.Type == typeof(MoGuiToggleBt))
+            {
+                MoCaToggleBT _args = (MoCaToggleBT)args;
+                return new MoGuiToggleBt(_args.Meta ?? Meta, Name + "_" + name, _args);
+
             }
             else if (args.Type == typeof(MoGuiInput))
             {
@@ -456,7 +403,7 @@ namespace MoGUI
                 AddTitleText("HeaderText", PluginName + " - " + Panel.Title ?? Name);
                 AddXButton("MinGui", "␣", () => MinGui());
                 Meta.ButtonColor = Meta.HeaderExitColor;
-                AddXButton("HideGui", "╳", () => ToggleGui(false));
+                AddXButton("HideGui", "╳", () => ShowGui(false));
                 AddResize();
             } else
             {
@@ -508,7 +455,7 @@ namespace MoGUI
 
         }
 
-        new public void ToggleGui(bool show)
+        new public void ShowGui(bool show)
         {
             Canvas.SetActive(show);
         }
@@ -602,8 +549,8 @@ namespace MoGUI
         ) : base(typeof(MoGuiPanel), meta)
         {
             IncludeHeader = includeHeader;
-            if (title != null) 
-            { 
+            if (title != null)
+            {
                 Title = title;
             }
         }

@@ -48,6 +48,7 @@ namespace MoGUI
         public float HeaderSize;
         public Color HeaderColor;
         public Color HeaderExitColor;
+        public Color HeaderFontColor;
         // Text
         public int TxtMargin;
         public int FontSize;
@@ -109,6 +110,7 @@ namespace MoGUI
             , float? headerSize = null
             , Color? fontColor = null
             , Color? headerColor = null
+            , Color? headerFontColor = null
             , Color? headerExitColor = null
             , Color? panelColor = null
             , Color? inputColor = null
@@ -161,7 +163,8 @@ namespace MoGUI
             HeaderSize = headerSize ?? DefaultHeaderSize;
             HeaderColor = headerColor ?? DefaultHeaderColor;
             HeaderExitColor = headerExitColor ?? DefaultHeaderExitColor;
-            
+            HeaderFontColor = headerFontColor ?? DefaultFontColor;
+
             ButtonFontSize = buttonFontSize ?? DefaultFontSize;
             ButtonFont = buttonFont ?? DefaultFont;
             ButtonColor = buttonColor ?? DefaultButtonColor;
@@ -215,6 +218,7 @@ namespace MoGUI
             , Color? fontColor = null
             , Color? headerColor = null
             , Color? headerExitColor = null
+            , Color? headerFontColor = null
             , Color? panelColor = null
             , Color? inputColor = null
             , Color? inputFontColor = null
@@ -266,6 +270,7 @@ namespace MoGUI
             HeaderSize = headerSize ?? meta.HeaderSize;
             HeaderColor = headerColor ?? meta.HeaderColor;
             HeaderExitColor = headerExitColor ?? meta.HeaderExitColor;
+            HeaderFontColor = headerFontColor ?? meta.HeaderFontColor;
 
             ButtonFont = buttonFont ?? meta.ButtonFont;
             ButtonSize = buttonSize ?? meta.ButtonSize;
@@ -281,7 +286,7 @@ namespace MoGUI
             SliderSize = sliderSize ?? meta.SliderSize;
             SliderHandleColor = sliderHandleColor ?? meta.SliderHandleColor;
             SliderTrackColor = sliderTrackColor ?? meta.SliderTrackColor;
-            SliderFillColor = sliderFillColor ?? DefaultInputColor;
+            SliderFillColor = sliderFillColor ?? meta.SliderFillColor;
             SliderOrientation = sliderOrientation ?? meta.SliderOrientation;
             SliderLabelPlacement = sliderLabelPlacement ?? meta.SliderLabelPlacement;
 
