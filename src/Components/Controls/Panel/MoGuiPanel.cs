@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Xml.Linq;
+using UnityEditor.PackageManager;
 
 namespace MoGUI
 {
@@ -12,93 +13,73 @@ namespace MoGUI
         MoGuiHeader Header;
         public MoGuiPanel Panel;
         public GameObject Content;
+        public string Title = null;
 
         public Dictionary<string, MoGuiControl> Components = new Dictionary<string, MoGuiControl>();
 
         public Dictionary<string, MiniUIRow> Rows = new Dictionary<string, MiniUIRow>();
 
+        // Create RootPanel from Main Gui
         public MoGuiPanel(MoGuiMeta meta,  string name, GameObject canvas, Vector2 size, Vector2 pos) : base(meta, name,size, pos)
         {
-            Init( canvas,  name,  size,  pos, true);
+            Title = name;
+            Init( canvas,  name,  size,  pos);
         }
 
+        // Create new toplevel Panel
         public MoGuiPanel(MoGuiMeta meta, string name, Vector2 size, Vector2 pos, bool topLevel = false) : base(meta, name, size, pos)
         {
-            Init( name, size, pos, topLevel);
+            Title = name;
+            Init( name, size, pos);
         }
 
-        public MoGuiPanel(MoGuiMeta meta, string name, MoGuiPanel owner, bool includeHeader = false) : base(meta, name)
+        protected MoGuiPanel(MoGuiMeta meta, string name, MoGuiPanel owner, bool includeHeader = false) : base(meta, name)
         {
             Panel = owner;
             Init(includeHeader);
         }
 
-        public virtual void Init(GameObject canvas, string name, Vector2 size, Vector2 pos, bool topLevel = false)
+        public MoGuiPanel(MoGuiMeta meta, string name, MoGuiPanel owner, MoCaPanel args) : base(meta, name)
         {
-            Obj = CreatePanel();
-            
-            
-            if (topLevel)
+
+            Panel = owner;
+            if (args.Title != null) 
             {
-
-                RectTransform layoutRect = Container.GetComponent<RectTransform>();
-
-                layoutRect.anchorMin = new Vector2(0, 0);
-                layoutRect.anchorMax = new Vector2(1, 1);
-                layoutRect.offsetMin = new Vector2(0, 0);
-                layoutRect.offsetMax = new Vector2(0, -Meta.HeaderSize);
-
-
-                Header = new MoGuiHeader(Meta, canvas, this, name, topLevel);
-                Header.Obj.transform.SetParent(Obj.transform, false);
-                Container.transform.SetParent(Obj.transform, false);
-                Content = CreateViewPort();
+                Title = args.Title;
             }
-            else
-            {
-                Container.transform.SetParent(Obj.transform, false);
-                Content = Container;
-            }
-            
-            is_init = true;
+
+            Init(args.IncludeHeader);
         }
 
-        public virtual void Init( string name, Vector2 size, Vector2 pos, bool topLevel = false)
+        public virtual void Init(GameObject canvas, string name, Vector2 size, Vector2 pos)
         {
-            Obj = CreatePanel();
-
-
-            if (topLevel)
+            if(Obj == null)
             {
-
-                RectTransform layoutRect = Container.GetComponent<RectTransform>();
-
-                layoutRect.anchorMin = new Vector2(0, 0);
-                layoutRect.anchorMax = new Vector2(1, 1);
-                layoutRect.offsetMin = new Vector2(0, 0);
-                layoutRect.offsetMax = new Vector2(0, -Meta.HeaderSize);
-
-
-                Header = new MoGuiHeader(Meta, Obj, this, name, topLevel);
-                Header.Obj.transform.SetParent(Obj.transform, false);
-                Container.transform.SetParent(Obj.transform, false);
-                Content = CreateViewPort();
+                Obj = CreatePanel();
             }
-            else 
-            {
-                Container.transform.SetParent(Obj.transform, false);
-                Content = Container;
-            }
-                
-            is_init = true;
-        }
+            RectTransform layoutRect = Container.GetComponent<RectTransform>();
 
-        public virtual void Init()
-        {
-            Obj = CreatePanel();
+            layoutRect.anchorMin = new Vector2(0, 0);
+            layoutRect.anchorMax = new Vector2(1, 1);
+            layoutRect.offsetMin = new Vector2(0, 0);
+            layoutRect.offsetMax = new Vector2(0, -Meta.HeaderSize);
+            Header = new MoGuiHeader(Meta, canvas, this, name, true);
+            Header.Obj.transform.SetParent(Obj.transform, false);
             Container.transform.SetParent(Obj.transform, false);
-            Content = Container;
+
+            MoGuiScrollArea scrollArea = new MoGuiScrollArea(Meta);
+            scrollArea.Obj.transform.SetParent(Container.transform, false);
+
+
+            Content = scrollArea.Content;
+            
             is_init = true;
+        }
+
+        public virtual void Init( string name, Vector2 size, Vector2 pos)
+        {
+            Obj = CreatePanel();
+            Init(Obj, name, size, pos);
         }
         public virtual void Init(bool includeHeader)
         {
@@ -132,137 +113,8 @@ namespace MoGUI
             is_init = true;
         }
 
-        public GameObject CreateViewPort()
-        {
-            GameObject scrollViewObject = new GameObject(PluginName + "_" + Name + "_" + "ScrollView");
-            scrollViewObject.transform.SetParent(Container.transform, false);
-            
-            ScrollRect scrollRect = scrollViewObject.AddComponent<ScrollRect>();
-            
-            RectTransform scrollViewRect = scrollViewObject.GetComponent<RectTransform>();
-            scrollViewRect.anchorMin = Vector2.zero;
-            scrollViewRect.anchorMax = Vector2.one;
-            scrollViewRect.offsetMin = Vector2.zero;
-            scrollViewRect.offsetMax = Vector2.zero;
-
-            GameObject viewportObject = new GameObject(PluginName + "_" + Name + "_" + "ScrollViewViewport");
-            viewportObject.transform.SetParent(scrollViewObject.transform, false);
-
-            viewportObject.AddComponent<Mask>().showMaskGraphic = false;
-            viewportObject.AddComponent<Image>().color = new Color(0, 0, 0, 0.5f);
-
-            scrollRect.viewport = viewportObject.GetComponent<RectTransform>();
-            scrollRect.viewport.anchorMin = new Vector2(0, 0);
-            scrollRect.viewport.anchorMax = new Vector2(1, 1);
-            scrollRect.viewport.offsetMin = new Vector2(0, 20);
-            scrollRect.viewport.offsetMax = new Vector2(-20, 0);
-
-            GameObject contentObject = new GameObject(PluginName + "_" + Name + "_" + "ScrollViewContent");
-            contentObject.transform.SetParent(viewportObject.transform, false);
-
-            contentObject.AddComponent<VerticalLayoutGroup>();
-            ContentSizeFitter contentFitter = contentObject.AddComponent<ContentSizeFitter>();
-            contentFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-            contentFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
-
-            scrollRect.content = contentObject.GetComponent<RectTransform>();
-            scrollRect.content.anchorMin = new Vector2(0, 0);
-            scrollRect.content.anchorMax = new Vector2(1, 1);
-            scrollRect.content.offsetMin = new Vector2(0, 0);
-            scrollRect.content.offsetMax = new Vector2(0, 0);
-            scrollRect.scrollSensitivity = 30f;
-
-            GameObject verticalScrollbarObject = new GameObject(PluginName + "_" + Name + "_" + "ScrollViewVerticalScrollbar");
-            verticalScrollbarObject.transform.SetParent(scrollViewObject.transform, false);
-
-            scrollRect.verticalScrollbar = verticalBar(verticalScrollbarObject);
-            scrollRect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
-
-            GameObject horizontalScrollbarObject = new GameObject(PluginName + "_" + Name + "_" + "ScrollViewHorizontalScrollbar");
-            horizontalScrollbarObject.transform.SetParent(scrollViewObject.transform, false);
-            scrollRect.horizontalScrollbar = horizontalBar(horizontalScrollbarObject);
-            scrollRect.horizontalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
-            return contentObject;
-        }
-        Scrollbar verticalBar(GameObject parent)
-        {
-            
-
-            // Add the Scrollbar component
-            Scrollbar scrollbar = parent.AddComponent<Scrollbar>();
-            // Get the RectTransform of the scrollbar
-            RectTransform scrollbarRect = parent.GetComponent<RectTransform>();
-
-            // Anchor it to the right side of the ScrollView
-            scrollbarRect.anchorMin = new Vector2(1, 0);
-            scrollbarRect.anchorMax = new Vector2(1, 1);
-            scrollbarRect.pivot = new Vector2(1, 0.5f); // Pivot at the right edge
-            scrollbarRect.offsetMin = new Vector2(-10, 0); // Give it some padding from the bottom-left of the anchor point
-            scrollbarRect.offsetMax = new Vector2(0, 0);  // Make its right edge flush with the anchor point
-            scrollbarRect.sizeDelta = new Vector2(10, 0); // Set its width to 10 pixels
-                                                          // Create the scrollbar's handle GameObject
-            GameObject handleObject = new GameObject("Handle");
-            handleObject.transform.SetParent(parent.transform, false);
-
-            // Add an Image component for the handle's appearance
-            Image handleImage = handleObject.AddComponent<Image>();
-            handleImage.color = Meta.PanelColor; // A basic white handle
-
-            // Assign the handle to the scrollbar
-            scrollbar.handleRect = handleObject.GetComponent<RectTransform>();
-            scrollbar.handleRect.anchorMin = new Vector2(0, 0);
-            scrollbar.handleRect.anchorMax = new Vector2(1, 1);
-            scrollbar.handleRect.offsetMin = new Vector2(0, 0);
-            scrollbar.handleRect.offsetMax = new Vector2(0, 0);
-            // Set the scrollbar to be controlled by the ScrollRect
-            scrollbar.direction = Scrollbar.Direction.BottomToTop;
-            
-            return scrollbar;
-        }
-
-        Scrollbar horizontalBar(GameObject parent)
-        {
-
-
-            // Add the Scrollbar component
-            Scrollbar scrollbar = parent.AddComponent<Scrollbar>();
-            // Get the RectTransform of the scrollbar
-            RectTransform scrollbarRect = parent.GetComponent<RectTransform>();
-
-            // Anchor it to the right side of the ScrollView
-            scrollbarRect.anchorMin = new Vector2(0, 0);
-            scrollbarRect.anchorMax = new Vector2(1, 0);
-            scrollbarRect.pivot = new Vector2(1, 0.5f); // Pivot at the right edge
-            scrollbarRect.offsetMin = new Vector2(0, 10); // Give it some padding from the bottom-left of the anchor point
-            scrollbarRect.offsetMax = new Vector2(0, 0);  // Make its right edge flush with the anchor point
-            scrollbarRect.sizeDelta = new Vector2(0, 10); // Set its width to 10 pixels
-                                                          // Create the scrollbar's handle GameObject
-            GameObject handleObject = new GameObject("Handle");
-            handleObject.transform.SetParent(parent.transform, false);
-
-            // Add an Image component for the handle's appearance
-            Image handleImage = handleObject.AddComponent<Image>();
-            handleImage.color = Meta.PanelColor; // A basic white handle
-
-            // Assign the handle to the scrollbar
-            scrollbar.handleRect = handleObject.GetComponent<RectTransform>();
-            scrollbar.handleRect.anchorMin = new Vector2(0, 0);
-            scrollbar.handleRect.anchorMax = new Vector2(1, 1);
-            scrollbar.handleRect.offsetMin = new Vector2(0, 0);
-            scrollbar.handleRect.offsetMax = new Vector2(0, 0);
-            // Set the scrollbar to be controlled by the ScrollRect
-            //scrollbar.direction = Scrollbar.Direction.BottomToTop;
-            return scrollbar;
-        }
-
-
         public override GameObject CreateContainer()
         {
-
-            
-
-
-
             GameObject layoutObject = new GameObject(PluginName + "_" + Name + "_" + "DrawContainer");
             VerticalLayoutGroup layoutGroup = layoutObject.AddComponent<VerticalLayoutGroup>();
 
@@ -291,7 +143,7 @@ namespace MoGUI
             get => Container.activeSelf ? false : true;
         }
 
-        public void ToggleGui(bool show)
+        public void ShowGui(bool show)
         {
             Obj.SetActive(show);
         }
@@ -375,7 +227,6 @@ namespace MoGUI
 
         public MoGuiControl AddControl( string row, string col,  string name, MoGCArgs args)
         {
-
             GameObject column = GetCol(row, col);
 
             MoGuiControl newComponent;
@@ -405,24 +256,24 @@ namespace MoGUI
             if (args.Type == typeof(MoGuiButton))
             {
                 MoCaButton _args = (MoCaButton)args;
-                return new MoGuiButton(_args.Meta ?? Meta, Name + "_" + name, _args.Text, _args.OnClickAction);
+                return new MoGuiButton(_args.Meta ?? Meta, Name + "_" + name, _args);
             }
             else if (args.Type == typeof(MoGuiToggle))
             {
                 MoCaToggle _args = (MoCaToggle)args;
-                if(_args.boundValue != null)
-                {
-                    return new MoGuiToggle(_args.Meta ?? Meta, Name + "_" + name, _args.boundValue, _args.Text, _args.OnClickAction);
-                } else
-                {
-                    return new MoGuiToggle(_args.Meta ?? Meta, Name + "_" + name, _args._value, _args.Text, _args.OnClickAction);
-                }
-                
+                return new MoGuiToggle(_args.Meta ?? Meta, Name + "_" + name, _args);
+
+            }
+            else if (args.Type == typeof(MoGuiToggleBt))
+            {
+                MoCaToggleBT _args = (MoCaToggleBT)args;
+                return new MoGuiToggleBt(_args.Meta ?? Meta, Name + "_" + name, _args);
+
             }
             else if (args.Type == typeof(MoGuiInput))
             {
                 MoCaInput _args = (MoCaInput)args;
-                return new MoGuiInput(_args.Meta ?? Meta, Name + "_" + name, _args.Text ,  _args.OnUpdateAction, _args.OnEditAction, _args.ValType);
+                return new MoGuiInput(_args.Meta ?? Meta, Name + "_" + name, _args);
             }
             else if (args.Type == typeof(MoGuiSlider))
             {
@@ -432,32 +283,25 @@ namespace MoGUI
             else if (args.Type == typeof(MoGuiDDL))
             {
                 MoCaDDL _args = (MoCaDDL)args;
-                if (_args.DDLBoundOptions != null)
-                {
-                    return new MoGuiDDL(_args.Meta ?? Meta, Name + "_" + name,  _args.DDLBoundOptions , _args.OnEditAction, _args.ValType);
-                }
-                else
-                {
-                    return new MoGuiDDL(_args.Meta ?? Meta, Name + "_" + name, _args.DDLOptions, _args.OnEditAction, _args.ValType);
-                }
-                
+                return new MoGuiDDL(_args.Meta ?? Meta, Name + "_" + name, _args);
+
+            }
+            else if (args.Type == typeof(MoGuiSelector))
+            {
+                MoCaSelector _args = (MoCaSelector)args;
+                return new MoGuiSelector(_args.Meta ?? Meta, Name + "_" + name, _args);
+
             }
             else if(args.Type == typeof(MoGuiTxt))
             {
                 MoCaText _args = (MoCaText)args;
-                if(_args.OnUpdateAction != null)
-                {
-                    return new MoGuiTxt(_args.Meta ?? Meta, Name + "_" + name, _args.OnUpdateAction);
-                } else
-                {
-                    return new MoGuiTxt(_args.Meta ?? Meta, Name + "_" + name, _args.Text);
-                }
+                return new MoGuiTxt(_args.Meta ?? Meta, Name + "_" + name, _args);
                 
             }
             else if (args.Type == typeof(MoGuiPanel))
             {
                 MoCaPanel _args = (MoCaPanel)args;
-                return new MoGuiPanel(_args.Meta ?? Meta, Name + "_" + name, this, _args.IncludeHeader);
+                return new MoGuiPanel(_args.Meta ?? Meta, Name + "_" + name, this, _args);
             }
             else
             {
@@ -560,14 +404,14 @@ namespace MoGUI
             {
                 DragHandle = Obj.AddComponent<DraggableHandle>();
                 DragHandle.BindParent(Panel.Obj);
-                AddTitleText("HeaderText", PluginName + " - " + Name);
+                AddTitleText("HeaderText", PluginName + " - " + Panel.Title ?? Name);
                 AddXButton("MinGui", "␣", () => MinGui());
                 Meta.ButtonColor = Meta.HeaderExitColor;
-                AddXButton("HideGui", "╳", () => ToggleGui(false));
+                AddXButton("HideGui", "╳", () => ShowGui(false));
                 AddResize();
             } else
             {
-                AddTitleText("HeaderText", Name);
+                AddTitleText("HeaderText", Panel.Title ?? Name);
                 AddXButton("MinGui", "␣", () => MinGui());
             }
                 is_init = true;
@@ -615,7 +459,7 @@ namespace MoGUI
 
         }
 
-        new public void ToggleGui(bool show)
+        new public void ShowGui(bool show)
         {
             Canvas.SetActive(show);
         }
@@ -702,11 +546,17 @@ namespace MoGUI
     public class MoCaPanel : MoGCArgs
     {
         public bool IncludeHeader;
+        public string Title;
         public MoCaPanel(bool includeHeader = false,
+            string title = null,
             MoGuiMeta meta = null
         ) : base(typeof(MoGuiPanel), meta)
         {
             IncludeHeader = includeHeader;
+            if (title != null)
+            {
+                Title = title;
+            }
         }
     }
 

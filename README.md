@@ -126,6 +126,8 @@ Inputs can be set up to display boud variables within their inputbox
 ### DropDownList
 A Button that allows you to select a value from a list. Can be supplied a `List<string>` for simple setup or a `Dictionary<string,int>` to be used for dynamic selection.
 
+### Selector
+A Unity Toggle Group that ensures only one option from a list is selected
 
 ## Usage
 Coming soon!

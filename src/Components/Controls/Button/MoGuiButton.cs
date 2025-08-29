@@ -26,6 +26,21 @@ namespace MoGUI
             AddText("ButtonText", text);
         }
 
+        public MoGuiButton(MoGuiMeta meta, string name, MoCaButton args) : base(meta, name)
+        {
+            Meta.FontSize = Meta.ButtonFontSize;
+            Obj = CreateButton(args.OnClickAction);
+
+            if (args.Text != null)
+            {
+                AddText("ButtonText", args.Text);
+            }
+            else
+            {
+                AddText("ButtonText", Name);
+            }
+        }
+
         public GameObject CreateButton(Action onClickAction)
         {
             GameObject buttonObject = new GameObject(PluginName + "_" + Name + "_" + "Button");

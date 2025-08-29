@@ -55,6 +55,12 @@ namespace MoGUI
         underline
     }
 
+    //public enum ToggleType
+    //{
+    //    checkbox,
+    //    button
+    //}
+
     public enum ThemeKey
     {
         none,

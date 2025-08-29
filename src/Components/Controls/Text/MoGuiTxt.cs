@@ -9,7 +9,8 @@ namespace MoGUI
     public class MoGuiTxt : MoGuiControl
     {
         public Text Text;
-        string rawText = "<text>";
+        public string Value => Text.text;
+        TextElement Element = TextElement.text;
 
         public MoGuiTxt(MoGuiMeta meta, string name, Func<object> onUpdateAction) : base(meta, name)
         {
@@ -23,26 +24,54 @@ namespace MoGUI
             Obj = CreateText(text.ToString());
         }
 
+        public MoGuiTxt(MoGuiMeta meta, string name, MoCaText args) : base(meta, name)
+        {
+            Element = args.Element;
+            
+            if (args.OnUpdateAction != null)
+            {
+                OnUpdateAction = args.OnUpdateAction;
+                Obj = CreateText(OnUpdateAction().ToString());
+            }
+            else
+            {
+                Obj = CreateText(args.Text);
+            }
+
+        }
+
         public GameObject CreateText(string text = null)
         {
             var textObject = new GameObject(PluginName + "_" + Name + "_" + "Text");
             textObject.transform.SetParent(Container.transform, false);
 
             Text = textObject.AddComponent<Text>();
-            Text.text = text != null ? text : rawText;
-            Text.font = Meta.Font;
-            Text.fontSize = Meta.FontSize;
-            Text.color = Meta.FontColor;
-            return textObject;
-        }
-
-        public GameObject CreateText(object text, Vector2 size, Vector2 pos)
-        {
-            rawText = text.ToString();
-            var textObject = CreateText();
-            RectTransform textRect = textObject.GetComponent<RectTransform>();
-            textRect.sizeDelta = size;
-            textRect.anchoredPosition = pos;
+            Text.text = text != null ? text : "";
+            switch (Element)
+            {
+                //case TextElement.title:
+                //    break;
+                //case TextElement.h1:
+                //    break;
+                //case TextElement.h2:
+                //    break;
+                //case TextElement.h3:
+                //    break;
+                //case TextElement.h4:
+                //    break;
+                //case TextElement.h5:
+                //    break;
+                //case TextElement.label:
+                //    break;
+                //case TextElement.small:
+                //    break;
+                //case TextElement.text:
+                default:
+                    Text.font = Meta.Font;
+                    Text.fontSize = Meta.FontSize;
+                    Text.color = Meta.FontColor;
+                    break;
+            }
             return textObject;
         }
 
@@ -70,16 +99,18 @@ namespace MoGUI
     public class MoCaText : MoGCArgs
     {
         public new string Text;
-        
+        public TextElement Element;
 
-        public MoCaText(Func<object> text,
+        public MoCaText(Func<object> onUpdateAction,
+            TextElement element = TextElement.text,
             MoGuiMeta meta = null
         ) : base(typeof(MoGuiTxt), meta )
         {
-            OnUpdateAction = text;
+            OnUpdateAction = onUpdateAction;
         }
 
         public MoCaText(string text,
+            TextElement element = TextElement.text,
             MoGuiMeta meta = null
         ) : base(typeof(MoGuiTxt), meta)
         {
