@@ -150,7 +150,11 @@ namespace MoGUI
 
         public void _OnClickAction(bool state)
         {
-            OnClickAction(state);
+            if(OnClickAction != null)
+            {
+                OnClickAction(state);
+            }
+            
         }
 
         public void AddText(string label, object text)

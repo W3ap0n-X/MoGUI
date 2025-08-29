@@ -53,7 +53,10 @@ namespace MoGUI
 
         public virtual void Init(GameObject canvas, string name, Vector2 size, Vector2 pos)
         {
-            Obj = CreatePanel();
+            if(Obj == null)
+            {
+                Obj = CreatePanel();
+            }
             RectTransform layoutRect = Container.GetComponent<RectTransform>();
 
             layoutRect.anchorMin = new Vector2(0, 0);
@@ -75,6 +78,7 @@ namespace MoGUI
 
         public virtual void Init( string name, Vector2 size, Vector2 pos)
         {
+            Obj = CreatePanel();
             Init(Obj, name, size, pos);
         }
         public virtual void Init(bool includeHeader)
