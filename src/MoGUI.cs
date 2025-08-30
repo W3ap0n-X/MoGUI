@@ -9,7 +9,7 @@ namespace MoGUI
     public class MoGui 
     {
         GameObject Canvas;
-        public MoGuiPanel RootPanel;
+        public MoGuiPanel Main;
         public string PluginName;
         public MoGuiMeta Meta;
 
@@ -30,32 +30,21 @@ namespace MoGUI
         {
             PluginName = Meta.PluginName;
             Canvas = CreateCanvas();
-            RootPanel = new MoGuiPanel(Meta, "Main", Canvas, size, pos);
-            RootPanel.Obj.transform.SetParent(Canvas.transform, false);
-        }
-
-        public void ShowGui(bool show)
-        {
-            Canvas.SetActive(show);
-        }
-
-        public bool IsActive
-        {
-            get => Canvas.activeSelf;
+            Main = new MoGuiPanel(Meta, "Main", Canvas, size, pos);
+            Main.Obj.transform.SetParent(Canvas.transform, false);
+            Panels.Add("Main", Main);
         }
 
         public GameObject CreateCanvas()
         {
-            var canvasObject = new GameObject( PluginName + "_" + "Canvas");
+            var canvasObject = new GameObject(PluginName + "_" + "Canvas");
             Canvas canvas = canvasObject.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = 999;
             canvasObject.AddComponent<CanvasScaler>();
             canvasObject.AddComponent<GraphicRaycaster>();
             return canvasObject;
-        }
-
-        
+        } 
         public MoGuiPanel AddPanel(string label, Vector2 size, Vector2 pos)
         {
             return AddPanel(Meta, label, size, pos);
@@ -71,7 +60,7 @@ namespace MoGUI
             }
             else
             {
-                newPanel = new MoGuiPanel(meta, label, size, pos, true);
+                newPanel = new MoGuiPanel(meta, label, size, pos);
                 newPanel.Obj.transform.SetParent(Canvas.transform, false);
                 Panels.Add(label, newPanel);
             }
@@ -82,14 +71,23 @@ namespace MoGUI
         {
             if (IsActive)
             {
-                RootPanel.Update();
                 foreach (var item in Panels)
                 {
                     item.Value.Update();
                 }
             }
         }
-        
+
+        public void ShowGui(bool show)
+        {
+            Canvas.SetActive(show);
+        }
+
+        public bool IsActive
+        {
+            get => Canvas.activeSelf;
+        }
+
     }
 
 }

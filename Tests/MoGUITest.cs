@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MoGUI;
-using UnityEngine.UIElements;
 using UnityEngine.EventSystems;
 using System;
 
@@ -51,7 +50,7 @@ public class MoGUITest : MonoBehaviour
         if (!ui_init)
         {
             // Setup content on RootPanel
-            BuildUI(GUI.RootPanel);
+            BuildUI(GUI.Main);
             // Setup content on secondary window
             BuildUI(GUI.Panels["Window 2"]);
         } else
@@ -67,9 +66,9 @@ public class MoGUITest : MonoBehaviour
                 GUI.ShowGui(true);
             }
             // since both panels contain an instance of this control, we weill grab the one from the root panel and use this to ensure that a control dependent variable is tied specifically to the correct control
-            if (((MoGuiPanel)GUI.RootPanel.Components["TestPanel0"]).Components.ContainsKey("TestToggle5"))
+            if (((MoGuiPanel)GUI.Main.Components["TestPanel0"]).Components.ContainsKey("TestToggle5"))
             {
-                bool5Toggle = (MoGuiToggle)((MoGuiPanel)GUI.RootPanel.Components["TestPanel0"]).Components["TestToggle5"];
+                bool5Toggle = (MoGuiToggle)((MoGuiPanel)GUI.Main.Components["TestPanel0"]).Components["TestToggle5"];
             }
         }
         
@@ -249,6 +248,12 @@ public class MoGUITest : MonoBehaviour
                 () => ((MoGuiSlider)Panel.Components["TestSlider5"]).Value,
                 () => ((MoGuiSlider)Panel.Components["TestSlider6"]).Value
             ));
+
+        // create vertical slider
+        Panel.AddControl("row4", "col0", "TestSlider7", new MoCaSlider(testRange, (value) => float0 = (float)value, () => float0, () => "float0=" + float0, "float", meta: new MoGuiMeta(meta: Panel.Meta, name:"TestSlider7", sliderDirection: SliderDirection.vertical)));
+        Panel.AddControl("row4", "col1", "TestSlider8", new MoCaSlider(testRange0, (value) => float1 = (float)value, () => float1, () => "float1=" + float1, "float", meta: new MoGuiMeta(meta: Panel.Meta, name: "TestSlider7", sliderDirection: SliderDirection.vertical)));
+        Panel.AddControl("row4", "col3", "TestSlider9", new MoCaSlider(testRange, (value) => float0 = (float)value, () => float0, () => "float0=" + float0, "float", meta: new MoGuiMeta(meta: Panel.Meta, name: "TestSlider7", sliderDirection: SliderDirection.vertical)));
+        Panel.AddControl("row4", "col4", "TestSlider10", new MoCaSlider(testRange0, (value) => float1 = (float)value, () => float1, () => "float1=" + float1, "float", meta: new MoGuiMeta(meta: Panel.Meta, name: "TestSlider7", sliderDirection: SliderDirection.vertical)));
     }
 
     // used for input tests
@@ -277,7 +282,7 @@ public class MoGUITest : MonoBehaviour
 
         Panel.AddControl("row1", "col0", "TestInputText1", new MoCaText("Bound variable Inputs"));
         // test input with bound int variable
-        var TestInput0 = (MoGuiInput)Panel.AddControl("row1", "col0", "TestInput0", new MoCaInput((val) => input0 = (int)val, () => input0, () => "Input: int " + input0, "int" ));
+        var TestInput0 = (MoGuiInput)Panel.AddControl("row2", "col0", "TestInput0", new MoCaInput((val) => input0 = (int)val, () => input0, () => "Input: int " + input0, "int" ));
         // test input with bound float variable
         Panel.AddControl("row2", "col0", "TestInput1", new MoCaInput((val) => input1 = (float)val, () => input1, () => "Input: float " + input1, "float"));
         // test input with bound string variable
@@ -367,6 +372,8 @@ public class MoGUITest : MonoBehaviour
     {
         Panel.AddControl("row0", "col0", "TestSelectGroupsText0", new MoCaText("Selectors"));
         var TestSelectGroup0 = (MoGuiSelector)Panel.AddControl("row1", "col0", "TestSelectGroup0", new MoCaSelector(testOptions0, "TestSelectGroup0"));
+        var TestSelectGroup1 = (MoGuiSelector)Panel.AddControl("row2", "col0", "TestSelectGroup1", new MoCaSelector(testOptions0, "TestSelectGroup1", meta: new MoGuiMeta(TestSelectGroup0.Meta, "TestSelectGroup1", selectorOrientation: ControlOrientation.horizontal)));
         Panel.AddControl("row1", "col1", "TestSelectGroup0Text", new MoCaText(() => "TestSelectGroup0.Value: " + TestSelectGroup0.Value));
+        Panel.AddControl("row1", "col1", "TestSelectGroup1Text", new MoCaText(() => "TestSelectGroup1.Value: " + TestSelectGroup1.Value));
     }
 }

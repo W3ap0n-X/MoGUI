@@ -81,7 +81,7 @@ namespace MoGUI
 
         public virtual void _Init()
         {
-            Container = CreateContainer();
+            
         }
 
         public virtual GameObject CreateContainer(ControlOrientation orientation)

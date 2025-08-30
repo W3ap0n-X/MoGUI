@@ -233,12 +233,12 @@ namespace MoGUI
             if (Text != null)
             {
                 Text.Update(text);
-                Text.Container.transform.SetParent(Container.transform, false);
+                Text.Obj.transform.SetParent(Container.transform, false);
             }
             else
             {
                 Text = new MoGuiTxt(Meta, Name + "_" + label, text);
-                Text.Container.transform.SetParent(Container.transform, false);
+                Text.Obj.transform.SetParent(Container.transform, false);
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
 
@@ -248,12 +248,12 @@ namespace MoGUI
             if (Text != null)
             {
                 Text.Update(onUpdateAction);
-                Text.Container.transform.SetParent(Container.transform, false);
+                Text.Obj.transform.SetParent(Container.transform, false);
             }
             else
             {
                 Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
-                Text.Container.transform.SetParent(Container.transform, false);
+                Text.Obj.transform.SetParent(Container.transform, false);
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
 

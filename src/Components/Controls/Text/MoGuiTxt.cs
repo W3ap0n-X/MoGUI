@@ -43,7 +43,7 @@ namespace MoGUI
         public GameObject CreateText(string text = null)
         {
             var textObject = new GameObject(PluginName + "_" + Name + "_" + "Text");
-            textObject.transform.SetParent(Container.transform, false);
+            //textObject.transform.SetParent(Container.transform, false);
 
             Text = textObject.AddComponent<Text>();
             Text.text = text != null ? text : "";
@@ -72,6 +72,14 @@ namespace MoGUI
                     Text.color = Meta.FontColor;
                     break;
             }
+            RectTransform labelRect = textObject.GetComponent<RectTransform>();
+            labelRect.anchoredPosition = new Vector2(0, 0);
+            labelRect.anchorMin = new Vector2(0, 0);
+            labelRect.anchorMax = new Vector2(1, 1);
+            labelRect.offsetMin = new Vector2(5, 0);
+
+            labelRect.offsetMax = new Vector2(-5, 0);
+            
             return textObject;
         }
 

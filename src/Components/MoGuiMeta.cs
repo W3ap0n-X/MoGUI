@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
 
 namespace MoGUI
 {
@@ -35,6 +36,7 @@ namespace MoGUI
         public static Vector4 DefaultToggleSize = new Vector4(15, 15, 20, 20);
         public static Vector4 DefaultButtonSize = new Vector4(60, 30, 100, 40);
         public static Vector4 DefaultInputSize = new Vector4(20, 20, 80, 30);
+        public static SliderDirection DefaultSliderDirection = SliderDirection.horizontal;
 
 
         // Info
@@ -75,6 +77,7 @@ namespace MoGUI
         public ControlOrientation SliderOrientation;
         public ControlLabelPlacement SliderLabelPlacement;
         public Vector4 SliderSize;
+        public SliderDirection SliderDirection;
         // Input
         public int InputFontSize;
         public Font InputFont;
@@ -97,6 +100,8 @@ namespace MoGUI
         // Other
         public ControlOrientation Orientation;
         public ControlLabelPlacement LabelPlacement;
+
+        public ControlOrientation SelectorOrientation;
 
         public MoGuiMeta(string pluginName, string name
             , int? txtMargin = null
@@ -136,6 +141,7 @@ namespace MoGUI
             , ControlOrientation? sliderOrientation = null
             , ControlOrientation? inputOrientation = null
             , ControlOrientation? toggleOrientation = null
+            , ControlOrientation? selectorOrientation = null
             , ControlLabelPlacement? labelPlacement = null
             , ControlLabelPlacement? sliderLabelPlacement = null
             , ControlLabelPlacement? inputLabelPlacement = null
@@ -145,6 +151,7 @@ namespace MoGUI
             , Vector4? sliderSize = null
             , Vector4? inputSize = null
             , Vector4? dDLSize = null
+            , SliderDirection? sliderDirection = null
         )
         {
             PluginName = pluginName;
@@ -183,6 +190,7 @@ namespace MoGUI
             SliderOrientation = sliderOrientation ?? DefaultSliderOrientation;
             SliderLabelPlacement = sliderLabelPlacement ?? DefaultSliderLabelPlacement;
             SliderSize = sliderSize ?? DefaultSliderSize;
+            SliderDirection = sliderDirection ?? DefaultSliderDirection;
 
             InputFont = inputFont ?? DefaultFont;
             InputFontSize = inputFontSize ?? DefaultFontSize;
@@ -202,6 +210,8 @@ namespace MoGUI
             DDLListColor = dDLListColor ?? DefaultInputColor;
             DDLListItemFontColor = dDLListItemFontColor ?? DefaultFontColor;
             DDLSize = dDLSize ?? DefaultButtonSize;
+
+            SelectorOrientation = selectorOrientation ?? DefaultSliderOrientation;
 
         }
 
@@ -244,6 +254,7 @@ namespace MoGUI
             , ControlOrientation? sliderOrientation = null
             , ControlOrientation? inputOrientation = null
             , ControlOrientation? toggleOrientation = null
+            , ControlOrientation? selectorOrientation = null
             , ControlLabelPlacement? sliderLabelPlacement = null
             , ControlLabelPlacement? inputLabelPlacement = null
             , ControlLabelPlacement? toggleLabelPlacement = null
@@ -252,6 +263,7 @@ namespace MoGUI
             , Vector4? sliderSize = null
             , Vector4? inputSize = null
             , Vector4? dDLSize = null
+            , SliderDirection? sliderDirection = null
         )
         {
             PluginName = meta.PluginName;
@@ -289,6 +301,7 @@ namespace MoGUI
             SliderFillColor = sliderFillColor ?? meta.SliderFillColor;
             SliderOrientation = sliderOrientation ?? meta.SliderOrientation;
             SliderLabelPlacement = sliderLabelPlacement ?? meta.SliderLabelPlacement;
+            SliderDirection = sliderDirection ?? meta.SliderDirection;
 
             InputColor = inputColor ?? meta.InputColor;
             InputFontColor = inputFontColor ?? meta.FontColor;
@@ -309,6 +322,8 @@ namespace MoGUI
             DDLListColor = dDLListColor ?? meta.DDLListColor;
             DDLListItemFontColor = dDLListItemFontColor ?? meta.DDLListItemFontColor;
             DDLSize = dDLSize ?? meta.DDLSize;
+
+            SelectorOrientation = selectorOrientation ?? meta.SelectorOrientation;
         }
     }
 

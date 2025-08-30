@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Xml.Linq;
 using UnityEditor.PackageManager;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 namespace MoGUI
 {
@@ -27,28 +28,31 @@ namespace MoGUI
         }
 
         // Create new toplevel Panel
-        public MoGuiPanel(MoGuiMeta meta, string name, Vector2 size, Vector2 pos, bool topLevel = false) : base(meta, name, size, pos)
+        public MoGuiPanel(MoGuiMeta meta, string name, Vector2 size, Vector2 pos) : base(meta, name, size, pos)
         {
             Title = name;
             Init( name, size, pos);
         }
 
-        protected MoGuiPanel(MoGuiMeta meta, string name, MoGuiPanel owner, bool includeHeader = false) : base(meta, name)
+        // is only used by the header subclass 
+        protected MoGuiPanel(MoGuiMeta meta, string name, MoGuiPanel owner, bool topLevel = false) : base(meta, name)
         {
             Panel = owner;
-            Init(includeHeader);
+            Init(topLevel);
         }
 
         public MoGuiPanel(MoGuiMeta meta, string name, MoGuiPanel owner, MoCaPanel args) : base(meta, name)
         {
-
             Panel = owner;
             if (args.Title != null) 
             {
                 Title = args.Title;
             }
-
             Init(args.IncludeHeader);
+        }
+        public override void _Init()
+        {
+            Container = CreateContainer();
         }
 
         public virtual void Init(GameObject canvas, string name, Vector2 size, Vector2 pos)
@@ -70,7 +74,6 @@ namespace MoGUI
             MoGuiScrollArea scrollArea = new MoGuiScrollArea(Meta);
             scrollArea.Obj.transform.SetParent(Container.transform, false);
 
-
             Content = scrollArea.Content;
             
             is_init = true;
@@ -84,12 +87,8 @@ namespace MoGUI
         public virtual void Init(bool includeHeader)
         {
             Obj = CreatePanel();
-            
-
             if (includeHeader)
             {
-                
-
                 RectTransform layoutRect = Container.GetComponent<RectTransform>();
 
                 layoutRect.anchorMin = new Vector2(0, 0);
@@ -133,25 +132,7 @@ namespace MoGUI
             return layoutObject;
         }
 
-        public bool IsActive
-        {
-            get => Obj.activeSelf;
-        }
-
-        public bool Minimized
-        {
-            get => Container.activeSelf ? false : true;
-        }
-
-        public void ShowGui(bool show)
-        {
-            Obj.SetActive(show);
-        }
-
-        public void ToggleMinGui(bool show)
-        {
-            Obj.SetActive(show);
-        }
+        
 
         public virtual GameObject CreatePanel()
         {
@@ -193,47 +174,29 @@ namespace MoGUI
             return layoutObject;
         }
 
-        public MiniUIRow GetRow(string rowName)
-        {
-            MiniUIRow row;
-            if (Rows.ContainsKey(rowName))
-            {
-                row = Rows[rowName];
-            }
-            else
-            {
-                AddRow(rowName);
-                row = Rows[rowName];
-            }
-            return row;
-        }
-
-        public GameObject GetCol(string rowName, string columnName)
-        {
-            MiniUIRow row = GetRow(rowName);
-            GameObject column;
-            if (row.Columns.ContainsKey(columnName))
-            {
-                column = row.Columns[columnName];
-            }
-            else
-            {
-                row.AddColumn(columnName);
-                column = row.Columns[columnName];
-            }
-            return column;
-        }
-
+        
 
         public MoGuiControl AddControl( string row, string col,  string name, MoGCArgs args)
         {
+            
             GameObject column = GetCol(row, col);
 
             MoGuiControl newComponent;
             if (Components.ContainsKey(name))
             {
                 newComponent = Components[name];
-                newComponent.Container.transform.SetParent(column.transform, false);
+                if (args.Type == typeof(MoGuiPanel))
+                {
+                    newComponent.Obj.transform.SetParent(column.transform, false);
+                }
+                else if (newComponent.Container != null)
+                {
+                    newComponent.Container.transform.SetParent(column.transform, false);
+                }
+                else
+                {
+                    newComponent.Obj.transform.SetParent(column.transform, false);
+                }
             }
             else
             {
@@ -241,15 +204,20 @@ namespace MoGUI
                 if (args.Type == typeof(MoGuiPanel))
                 {
                     newComponent.Obj.transform.SetParent(column.transform, false);
-                } else
+                } else if (newComponent.Container != null)
                 {
                     newComponent.Container.transform.SetParent(column.transform, false);
+                } else
+                {
+                    newComponent.Obj.transform.SetParent(column.transform, false);
                 }
-                    
-                Components.Add(name, newComponent);
+
+                    Components.Add(name, newComponent);
             }
             return newComponent;
         }
+
+        
 
         private MoGuiControl CreateComponent(string name, MoGCArgs args)
         {
@@ -278,7 +246,7 @@ namespace MoGUI
             else if (args.Type == typeof(MoGuiSlider))
             {
                 MoCaSlider _args = (MoCaSlider)args;
-                return new MoGuiSlider(_args.Meta ?? Meta, Name + "_" + name, _args.Text, _args.Range, _args.OnUpdateAction, _args.OnEditAction, _args.ValType, _args.BoundMin, _args.BoundMax);
+                return new MoGuiSlider(_args.Meta ?? Meta, Name + "_" + name, _args);
             }
             else if (args.Type == typeof(MoGuiDDL))
             {
@@ -288,7 +256,9 @@ namespace MoGUI
             }
             else if (args.Type == typeof(MoGuiSelector))
             {
+
                 MoCaSelector _args = (MoCaSelector)args;
+                
                 return new MoGuiSelector(_args.Meta ?? Meta, Name + "_" + name, _args);
 
             }
@@ -320,6 +290,117 @@ namespace MoGUI
                 }
             }
 
+        }
+
+        public MoGuiTxt AddText(string row, string col, string name, MoGCArgs args)
+        {
+            return AddControl(row, col, name, args) as MoGuiTxt;
+        }
+
+        public MoGuiSlider AddSlider(string row, string col, string name, MoGCArgs args)
+        {
+            return AddControl(row, col, name, args) as MoGuiSlider;
+        }
+        public MoGuiInput AddInput(string row, string col, string name, MoGCArgs args)
+        {
+            return AddControl(row, col, name, args) as MoGuiInput;
+        }
+        public MoGuiToggle AddToggle(string row, string col, string name, MoGCArgs args)
+        {
+            return AddControl(row, col, name, args) as MoGuiToggle;
+        }
+        public MoGuiButton AddButton(string row, string col, string name, MoGCArgs args)
+        {
+            return AddControl(row, col, name, args) as MoGuiButton;
+        }
+        public MoGuiDDL AddDDL(string row, string col, string name, MoGCArgs args)
+        {
+            return AddControl(row, col, name, args) as MoGuiDDL;
+        }
+
+        public MoGuiTxt GetText(string name)
+        {
+            return GetControl(name) as MoGuiTxt;
+        }
+
+        public MoGuiSlider GetSlider(string name)
+        {
+            return GetControl(name) as MoGuiSlider;
+        }
+        public MoGuiInput GetInput(string name)
+        {
+            return GetControl(name) as MoGuiInput;
+        }
+        public MoGuiToggle GetToggle(string name)
+        {
+            return GetControl(name) as MoGuiToggle;
+        }
+        public MoGuiButton GetButton(string name)
+        {
+            return GetControl(name) as MoGuiButton;
+        }
+        public MoGuiDDL GetDDL(string name)
+        {
+            return GetControl(name) as MoGuiDDL;
+        }
+        public MoGuiControl GetControl(string name)
+        {
+            if (Components.ContainsKey(name))
+            {
+                return Components[name];
+            }
+            else { return null; }
+        }
+
+        public MiniUIRow GetRow(string rowName)
+        {
+            MiniUIRow row;
+            if (Rows.ContainsKey(rowName))
+            {
+                row = Rows[rowName];
+            }
+            else
+            {
+                AddRow(rowName);
+                row = Rows[rowName];
+            }
+            return row;
+        }
+
+        public GameObject GetCol(string rowName, string columnName)
+        {
+            MiniUIRow row = GetRow(rowName);
+            GameObject column;
+            if (row.Columns.ContainsKey(columnName))
+            {
+                column = row.Columns[columnName];
+            }
+            else
+            {
+                row.AddColumn(columnName);
+                column = row.Columns[columnName];
+            }
+            return column;
+        }
+
+        public bool IsActive
+        {
+            get => Obj.activeSelf;
+        }
+
+        public bool Minimized
+        {
+            get => Container.activeSelf ? false : true;
+        }
+
+        public void ShowGui(bool show)
+        {
+            Obj.SetActive(show);
+        }
+
+        public void ToggleMinGui(bool show)
+        {
+            Obj.SetActive(show);
         }
 
 
@@ -391,6 +472,10 @@ namespace MoGUI
             
         }
 
+        public override void _Init()
+        {
+            Container = CreateContainer();
+        }
 
         public override void Init(bool topLevel)
         {
@@ -448,7 +533,8 @@ namespace MoGUI
             headerLayoutGroup.childControlHeight = true;
             headerLayoutGroup.childForceExpandHeight = true;
             headerLayoutGroup.childForceExpandWidth = false;
-
+            headerLayoutGroup.padding = new RectOffset(Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin);
+            headerLayoutGroup.spacing = Meta.TxtMargin;
 
             RectTransform layoutRect = layoutObject.GetComponent<RectTransform>();
             layoutRect.anchorMin = Vector2.zero;
@@ -476,21 +562,17 @@ namespace MoGUI
             {
                 newTxt = (MoGuiButton)Components[label];
 
-                newTxt.Container.transform.SetParent(Container.transform, false);
+                newTxt.Obj.transform.SetParent(Container.transform, false);
             }
             else
             {
                 newTxt = new MoGuiButton(Meta, Name + "_" + label, text, onUpdateAction);
-                newTxt.Container.transform.SetParent(Container.transform, false);
+                newTxt.Obj.transform.SetParent(Container.transform, false);
 
-                LayoutElement buttonContainerLayoutElement = newTxt.Container.AddComponent<LayoutElement>();
-                buttonContainerLayoutElement.minWidth = Meta.HeaderSize;
-                buttonContainerLayoutElement.minHeight = Meta.HeaderSize;
+                LayoutElement buttonContainerLayoutElement = newTxt.Obj.AddComponent<LayoutElement>();
+                buttonContainerLayoutElement.minWidth = Meta.HeaderSize - 2 * Meta.TxtMargin;
+                buttonContainerLayoutElement.minHeight = Meta.HeaderSize - 2 * Meta.TxtMargin;
                 buttonContainerLayoutElement.flexibleWidth = 0.1f;
-                LayoutElement buttonLayoutElement = newTxt.Container.GetComponent<LayoutElement>();
-                buttonLayoutElement.minWidth = Meta.HeaderSize - Meta.TxtMargin;
-                buttonLayoutElement.minHeight = Meta.HeaderSize - Meta.TxtMargin;
-                buttonLayoutElement.flexibleWidth = 0.1f;
                 Components.Add(label, newTxt);
 
             }
@@ -504,14 +586,14 @@ namespace MoGUI
             {
                 newTxt = (MoGuiTxt)Components[label];
                 newTxt.Update(text);
-                newTxt.Container.transform.SetParent(Container.transform, false);
+                newTxt.Obj.transform.SetParent(Container.transform, false);
             }
             else
             {
                 newTxt = new MoGuiTxt(Meta, Name + "_" + label, text);
-                newTxt.Container.transform.SetParent(Container.transform, false);
+                newTxt.Obj.transform.SetParent(Container.transform, false);
                 newTxt.Text.alignment = TextAnchor.MiddleLeft;
-                LayoutElement titleLayoutElement = newTxt.Container.AddComponent<LayoutElement>();
+                LayoutElement titleLayoutElement = newTxt.Obj.AddComponent<LayoutElement>();
                 titleLayoutElement.flexibleWidth = 1;
                 Components.Add(label, newTxt);
             }
@@ -527,8 +609,8 @@ namespace MoGUI
 
             LayoutElement resizeLayoutElement = resizeIconObject.AddComponent<LayoutElement>();
             
-            resizeLayoutElement.minWidth = Meta.HeaderSize;
-            resizeLayoutElement.minHeight = Meta.HeaderSize;
+            resizeLayoutElement.minWidth = Meta.HeaderSize - 2 * Meta.TxtMargin;
+            resizeLayoutElement.minHeight = Meta.HeaderSize - 2 * Meta.TxtMargin;
 
             Text dragSymbol = resizeIconObject.AddComponent<Text>();
             dragSymbol.text = "❏";

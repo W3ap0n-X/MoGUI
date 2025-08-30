@@ -43,7 +43,7 @@ namespace MoGUI
             }
             foreach (var item in _options)
             {
-                MoGuiToggle newToggle = new MoGuiToggle(Meta, Name + "_Option_" + item.Key, () => item.Value, () => item.Key, (val) => _options[item.Key] = val);
+                MoGuiToggleBt newToggle = new MoGuiToggleBt(Meta, Name + "_Option_" + item.Key, () => item.Value, () => item.Key, (val) => _options[item.Key] = val);
                 newToggle.Obj.GetComponent<Toggle>().group = ToggleGroup;
                 newToggle.Container.transform.SetParent(Obj.transform, false);
                 moGuiToggles.Add(newToggle);
@@ -66,10 +66,19 @@ namespace MoGUI
 
 
             ToggleGroup = selectorObject.AddComponent<ToggleGroup>();
+            if (Meta.SelectorOrientation == ControlOrientation.vertical)
+            {
+                VerticalLayoutGroup layoutGroup = selectorObject.AddComponent<VerticalLayoutGroup>();
+                layoutGroup.childForceExpandWidth = false;
+                layoutGroup.childForceExpandHeight = false;
+            }
+            else
+            {
+                HorizontalLayoutGroup layoutGroup = selectorObject.AddComponent<HorizontalLayoutGroup>();
+                layoutGroup.childForceExpandWidth = false;
+                layoutGroup.childForceExpandHeight = false;
+            }
 
-            var layoutGroup = selectorObject.AddComponent<VerticalLayoutGroup>();
-            layoutGroup.childForceExpandWidth = false;
-            layoutGroup.childForceExpandHeight = false;
 
             LayoutElement layoutElement = selectorObject.AddComponent<LayoutElement>();
 
@@ -84,12 +93,12 @@ namespace MoGUI
             if (Text != null)
             {
                 Text.Update(text);
-                Text.Container.transform.SetParent(Container.transform, false);
+                Text.Obj.transform.SetParent(Container.transform, false);
             }
             else
             {
                 Text = new MoGuiTxt(Meta, Name + "_" + label, text);
-                Text.Container.transform.SetParent(Container.transform, false);
+                Text.Obj.transform.SetParent(Container.transform, false);
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
 
@@ -100,12 +109,12 @@ namespace MoGUI
             if (Text != null)
             {
                 Text.Update(onUpdateAction);
-                Text.Container.transform.SetParent(Container.transform, false);
+                Text.Obj.transform.SetParent(Obj.transform, false);
             }
             else
             {
                 Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
-                Text.Container.transform.SetParent(Container.transform, false);
+                Text.Obj.transform.SetParent(Container.transform, false);
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
 
@@ -148,7 +157,7 @@ namespace MoGUI
         public MoCaSelector(Dictionary<string, object> options,
             string text,
             MoGuiMeta meta = null
-        ) : base(typeof(MoGuiSelector), meta, text: text)
+        ) : base(typeof(MoGuiSelector), meta:meta, text: text)
         {
             Options = options;
         }

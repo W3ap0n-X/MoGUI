@@ -42,6 +42,7 @@ namespace MoGUI
         }
 
 
+
         public MoGuiDDL(MoGuiMeta meta, string name, MoCaDDL args)
             : base(args.Meta ?? meta, name)
         {
@@ -73,6 +74,10 @@ namespace MoGUI
 
         }
 
+        public override void _Init()
+        {
+            Container = CreateContainer();
+        }
 
         private GameObject CreateDropdown()
         {
