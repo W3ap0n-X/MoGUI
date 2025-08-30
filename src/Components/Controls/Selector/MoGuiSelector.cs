@@ -134,7 +134,10 @@ namespace MoGUI
 
         public override void Update()
         {
-            Text.Update();
+            if (Text != null)
+            {
+                Text.Update();
+            }
             if (OnUpdateAction != null)
             {
                 

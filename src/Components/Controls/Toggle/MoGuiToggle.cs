@@ -189,7 +189,10 @@ namespace MoGUI
         }
         public override void Update()
         {
-            Label.Update();
+            if (Label != null)
+            {
+                Label.Update();
+            }
             if (boundValue != null) {
                 Obj.GetComponent<Toggle>().isOn = Value;
             } else

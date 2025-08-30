@@ -310,8 +310,8 @@ namespace MoGUI
             InputLabelPlacement = inputLabelPlacement ?? meta.InputLabelPlacement;
             ToggleLabelPlacement = toggleLabelPlacement ?? meta.ToggleLabelPlacement;
             InputOrientation = inputOrientation ?? meta.InputOrientation;
-            InputFont = inputFont ?? meta.Font;
-            InputFontSize = inputFontSize ?? meta.FontSize;
+            InputFont = inputFont ?? meta.InputFont;
+            InputFontSize = inputFontSize ?? meta.InputFontSize;
 
             DDLFont = dDLFont ?? meta.DDLFont;
             DDLListFont = dDLListFont ?? meta.DDLListFont;

@@ -12,7 +12,23 @@ namespace MoGUI
         MoGuiTxt Text;
         Slider Slider;
         public float Value => Slider.value;
+        Image Fill;
+        public Func<Color> BoundFillColor;
 
+        public Color FillColor
+        {
+            get
+            {
+                if(BoundFillColor != null)
+                {
+                    return BoundFillColor();
+                }
+                else
+                {
+                    return Meta.SliderFillColor;
+                }
+            }
+        }
 
         public Vector2 Range
         {
@@ -220,10 +236,10 @@ namespace MoGUI
             GameObject fillObject = new GameObject(PluginName + "_" + Name + "_" + "SliderFill");
             fillObject.transform.SetParent(fillAreaObject.transform, false);
             RectTransform fillRect = fillObject.AddComponent<RectTransform>();
-            
-            Image fillImage = fillObject.AddComponent<Image>();
-            fillImage.color = Meta.SliderFillColor;
-            Slider.fillRect = fillImage.rectTransform;
+
+            Fill = fillObject.AddComponent<Image>();
+            Fill.color = FillColor;
+            Slider.fillRect = Fill.rectTransform;
 
             GameObject handleObject = new GameObject(PluginName + "_" + Name + "_" + "SliderHandle");
             handleObject.transform.SetParent(sliderObject.transform, false);
@@ -249,6 +265,7 @@ namespace MoGUI
                 layoutElement.minHeight = Meta.SliderSize.x;
                 layoutElement.preferredWidth = Meta.SliderSize.w;
                 layoutElement.preferredHeight = Meta.SliderSize.z;
+                layoutElement.flexibleHeight = 1;
 
                 fillAreaRect.anchorMin = Vector2.zero;
                 fillAreaRect.anchorMax = Vector2.one;
@@ -279,6 +296,7 @@ namespace MoGUI
                 layoutElement.minHeight = Meta.SliderSize.y;
                 layoutElement.preferredWidth = Meta.SliderSize.z;
                 layoutElement.preferredHeight = Meta.SliderSize.w;
+                layoutElement.flexibleWidth = 1;
 
                 fillAreaRect.anchorMin = Vector2.zero;
                 fillAreaRect.anchorMax = Vector2.one;
@@ -370,7 +388,11 @@ namespace MoGUI
 
         public override void Update()
         {
-            Text.Update();
+            if(Text != null)
+            {
+                Text.Update();
+            }
+            
             if (OnUpdateAction != null)
             {
                 if (float.TryParse(OnUpdateAction().ToString(), out float updatedValue))
@@ -378,6 +400,8 @@ namespace MoGUI
                     Slider.value = updatedValue;
                 }
             }
+            Fill.color = FillColor;
+
             Slider.minValue = MinValue;
             Slider.maxValue = MaxValue;
 

@@ -8,7 +8,7 @@ namespace MoGUI
 {
     public class MoGui 
     {
-        GameObject Canvas;
+        public GameObject Canvas;
         public MoGuiPanel Main;
         public string PluginName;
         public MoGuiMeta Meta;

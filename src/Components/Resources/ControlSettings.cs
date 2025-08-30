@@ -6,7 +6,36 @@ using UnityEngine.EventSystems;
 
 namespace MoGUI
 {
+    public class ColorWrapper
+    {
+        public Color Color;
 
+        public ColorWrapper(Color color)
+        {
+            this.Color = color;
+        }
+
+        public float R 
+        {
+            get => Color.r;  
+            set { Color.r = value; }
+        }
+        public float G
+        {
+            get => Color.g;
+            set { Color.g = value; }
+        }
+        public float B
+        {
+            get => Color.b;
+            set { Color.b = value; }
+        }
+        public float A
+        {
+            get => Color.a;
+            set { Color.a = value; }
+        }
+    }
 
     public enum ControlOrientation
     {

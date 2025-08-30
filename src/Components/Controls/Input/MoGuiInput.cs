@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 namespace MoGUI
 {
@@ -65,7 +66,6 @@ namespace MoGUI
 
         public MoGuiInput(MoGuiMeta meta, string name, MoCaInput args) : base(meta, name)
         {
-            
 
             if (args.OnUpdateAction != null)
             {
@@ -296,7 +296,10 @@ namespace MoGUI
         }
         public override void Update()
         {
-            Text.Update();
+            if (Text != null)
+            {
+                Text.Update();
+            }
             if (!Input.isFocused)
             {
                 if (OnUpdateAction != null)
@@ -320,7 +323,7 @@ namespace MoGUI
             Func<object> text,
             string valType = "none",
             MoGuiMeta meta = null
-        ) : base(typeof(MoGuiInput), meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType)
+        ) : base(typeof(MoGuiInput), meta:meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType)
         {
 
         }
@@ -330,7 +333,7 @@ namespace MoGUI
             object text = null,
             string valType = "none",
             MoGuiMeta meta = null
-        ) : base(typeof(MoGuiInput), meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType)
+        ) : base(typeof(MoGuiInput), meta:meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType)
         {
 
         }
@@ -342,7 +345,7 @@ namespace MoGUI
             Action<object> onEditAction = null,
             Func<object> onUpdateAction = null,
             MoGuiMeta meta = null
-        ) : base(typeof(MoGuiInput), meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType)
+        ) : base(typeof(MoGuiInput), meta:meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType)
         {
             Value = value;
         }

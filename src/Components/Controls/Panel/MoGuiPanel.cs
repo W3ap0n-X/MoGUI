@@ -67,6 +67,7 @@ namespace MoGUI
             layoutRect.anchorMax = new Vector2(1, 1);
             layoutRect.offsetMin = new Vector2(0, 0);
             layoutRect.offsetMax = new Vector2(0, -Meta.HeaderSize);
+            
             Header = new MoGuiHeader(Meta, canvas, this, name, true);
             Header.Obj.transform.SetParent(Obj.transform, false);
             Container.transform.SetParent(Obj.transform, false);
@@ -75,7 +76,8 @@ namespace MoGUI
             scrollArea.Obj.transform.SetParent(Container.transform, false);
 
             Content = scrollArea.Content;
-            
+
+            Obj.GetComponent<RectTransform>().pivot = new Vector2(0, 0);
             is_init = true;
         }
 
@@ -117,6 +119,12 @@ namespace MoGUI
             GameObject layoutObject = new GameObject(PluginName + "_" + Name + "_" + "DrawContainer");
             VerticalLayoutGroup layoutGroup = layoutObject.AddComponent<VerticalLayoutGroup>();
 
+            LayoutElement layoutElement = layoutObject.AddComponent<LayoutElement>();
+            layoutElement.minWidth = 100;
+            layoutElement.minHeight = 100;
+            layoutElement.flexibleWidth = 1;
+            layoutElement.flexibleHeight = 1;
+
             Image panelImage = layoutObject.AddComponent<Image>();
             panelImage.color = Meta.PanelColor;
 
@@ -137,10 +145,10 @@ namespace MoGUI
         public virtual GameObject CreatePanel()
         {
             var panelObject = new GameObject(PluginName + "_" + Name + "_" + "Panel");
-
+            
             RectTransform panelRect = panelObject.AddComponent<RectTransform>();
             panelRect.sizeDelta = Size;
-            panelRect.anchoredPosition = Pos;
+            panelRect.anchoredPosition = new Vector2(Pos.x - (Size.x/2), Pos.y - (Size.y / 2));
             return panelObject;
         }
 
@@ -268,6 +276,12 @@ namespace MoGUI
                 return new MoGuiTxt(_args.Meta ?? Meta, Name + "_" + name, _args);
                 
             }
+            else if (args.Type == typeof(MoGuiColorBrick))
+            {
+                MoCaColor _args = (MoCaColor)args;
+                return new MoGuiColorBrick(_args.Meta ?? Meta, Name + "_" + name, _args);
+
+            }
             else if (args.Type == typeof(MoGuiPanel))
             {
                 MoCaPanel _args = (MoCaPanel)args;
@@ -316,6 +330,11 @@ namespace MoGUI
         public MoGuiDDL AddDDL(string row, string col, string name, MoGCArgs args)
         {
             return AddControl(row, col, name, args) as MoGuiDDL;
+        }
+
+        public MoGuiPanel AddPanel(string row, string col, string name, MoGCArgs args)
+        {
+            return AddControl(row, col, name, args) as MoGuiPanel;
         }
 
         public MoGuiTxt GetText(string name)
@@ -409,7 +428,7 @@ namespace MoGUI
     public class MiniUIRow
     {
         public Dictionary<string, GameObject> Columns;
-        public GameObject RowContainer;
+        public GameObject Obj;
         private MoGuiPanel _parent;
         public string Name { get; private set; }
         public MiniUIRow(MoGuiPanel parent, string name)
@@ -417,7 +436,7 @@ namespace MoGUI
             _parent = parent;
             Name = name;
             Columns = new Dictionary<string, GameObject>();
-            RowContainer = CreateRow();
+            Obj = CreateRow();
         }
 
         private GameObject CreateRow()
@@ -430,7 +449,7 @@ namespace MoGUI
         private GameObject CreateColumn(string name)
         {
             GameObject newCol = _parent.CreateColumn(Name,name);
-            newCol.transform.SetParent(RowContainer.transform);
+            newCol.transform.SetParent(Obj.transform);
             return newCol;
         }
 
@@ -569,7 +588,7 @@ namespace MoGUI
                 newTxt = new MoGuiButton(Meta, Name + "_" + label, text, onUpdateAction);
                 newTxt.Obj.transform.SetParent(Container.transform, false);
 
-                LayoutElement buttonContainerLayoutElement = newTxt.Obj.AddComponent<LayoutElement>();
+                LayoutElement buttonContainerLayoutElement = newTxt.Obj.GetComponent<LayoutElement>();
                 buttonContainerLayoutElement.minWidth = Meta.HeaderSize - 2 * Meta.TxtMargin;
                 buttonContainerLayoutElement.minHeight = Meta.HeaderSize - 2 * Meta.TxtMargin;
                 buttonContainerLayoutElement.flexibleWidth = 0.1f;

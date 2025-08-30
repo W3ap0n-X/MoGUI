@@ -37,7 +37,6 @@ namespace MoGUI
 
         public MoGuiControl(MoGuiMeta meta, string name)
         {
-
             Name = name;
             Meta = new MoGuiMeta(meta, name);
             PluginName = Meta.PluginName;

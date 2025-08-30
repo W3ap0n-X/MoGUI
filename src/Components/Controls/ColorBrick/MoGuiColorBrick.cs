@@ -6,39 +6,40 @@ using UnityEngine.EventSystems;
 
 namespace MoGUI
 {
-    public class MoGuiButton : MoGuiControl
+    public class MoGuiColorBrick : MoGuiControl
     {
         public MoGuiTxt Text;
+        Image Brick;
 
-
-        public MoGuiButton(MoGuiMeta meta, string name, Func<object> onUpdateAction, Action onClickAction) : base(meta, name)
+        public Func<Color> BoundValue;
+        public Color _value;
+        public Color Value
         {
+            get
+            {
+                if (BoundValue != null)
+                {
+                    return BoundValue();
+                }
+                else
+                {
+                    return _value;
+                }
+            }
+            set
+            {
+
+                _value = value;
+
+            }
+        }
+
+        public MoGuiColorBrick(MoGuiMeta meta, string name, MoCaColor args) : base(meta, name)
+        {
+            BoundValue = args.Value;
             Meta.FontSize = Meta.ButtonFontSize;
+            Obj = CreateBrick();
             
-            Obj = CreateButton(onClickAction);
-            AddText("ButtonText", onUpdateAction);
-        }
-
-        public MoGuiButton(MoGuiMeta meta, string name, string text, Action onClickAction) : base(meta, name)
-        {
-            Meta.FontSize = Meta.ButtonFontSize;
-            Obj = CreateButton(onClickAction);
-            AddText("ButtonText", text);
-        }
-
-        public MoGuiButton(MoGuiMeta meta, string name, MoCaButton args) : base(meta, name)
-        {
-            Meta.FontSize = Meta.ButtonFontSize;
-            Obj = CreateButton(args.OnClickAction);
-
-            if (args.Text != null)
-            {
-                AddText("ButtonText", args.Text);
-            }
-            else
-            {
-                AddText("ButtonText", Name);
-            }
         }
 
 
@@ -46,12 +47,12 @@ namespace MoGUI
         //{
         //    Container = CreateContainer();
         //}
-        public GameObject CreateButton(Action onClickAction)
+        public GameObject CreateBrick()
         {
             GameObject buttonObject = new GameObject(PluginName + "_" + Name + "_" + "Button");
 
-            Image buttonImage = buttonObject.AddComponent<Image>();
-            buttonImage.color = Meta.ButtonColor;
+            Brick = buttonObject.AddComponent<Image>();
+            Brick.color = Value;
 
             LayoutElement layoutElement = buttonObject.AddComponent<LayoutElement>();
             layoutElement.minWidth = Meta.ButtonSize.x;
@@ -59,21 +60,10 @@ namespace MoGUI
             layoutElement.preferredWidth = Meta.ButtonSize.z;
             layoutElement.preferredHeight = Meta.ButtonSize.w;
             layoutElement.flexibleWidth = 1;
+            layoutElement.flexibleHeight = 1;
 
-            Button buttonComponent = buttonObject.AddComponent<Button>();
-            buttonComponent.onClick.AddListener(() => onClickAction?.Invoke());
 
             //buttonObject.transform.SetParent(Container.transform, false);
-            return buttonObject;
-        }
-
-        public GameObject CreateButton(Action onClickAction, Vector2 size, Vector2 pos)
-        {
-            GameObject buttonObject = CreateButton(onClickAction);
-            RectTransform buttonRect = buttonObject.GetComponent<RectTransform>();
-            buttonRect.sizeDelta = size;
-            buttonRect.anchoredPosition = pos;
-
             return buttonObject;
         }
 
@@ -115,26 +105,32 @@ namespace MoGUI
         }
 
 
-        public override void Update() => Text.Update();
+        public override void Update() 
+        {
+            Brick.color = Value;
+        }
     }
 
-    public class MoCaButton : MoGCArgs
+    public class MoCaColor : MoGCArgs
     {
-
-        public MoCaButton(Func<object> text,
-            Action onClickAction,
+        public Func<Color> Value;
+        public MoCaColor(Color value,
+            //Func<object> text,
+            //Action onClickAction,
             MoGuiMeta meta = null
-        ) : base(typeof(MoGuiButton), meta, text: text)
+        ) : base(typeof(MoGuiColorBrick), meta)
         {
-            OnClickAction = onClickAction;
+            Value = () => value;
         }
 
-        public MoCaButton(object text,
-            Action onClickAction,
+        public MoCaColor(Func<Color> value,
+            //Func<object> text,
+            //Action onClickAction,
             MoGuiMeta meta = null
-        ) : base(typeof(MoGuiButton), meta, text: text)
+        ) : base(typeof(MoGuiColorBrick), meta)
         {
-            OnClickAction = onClickAction;
+            Value = value;
         }
+
     }
 }
