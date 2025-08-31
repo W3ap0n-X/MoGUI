@@ -198,6 +198,11 @@ namespace MoGUI
             Container = CreateContainer(Meta.SliderOrientation);
         }
 
+        public override void SetLayout()
+        {
+
+        }
+
         public GameObject CreateSlider()
         {
             GameObject sliderObject = new GameObject(PluginName + "_" + Name + "_" + "Slider");

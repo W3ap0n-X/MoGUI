@@ -31,6 +31,20 @@ namespace MoGUI
             scrollViewRect.offsetMin = Vector2.zero;
             scrollViewRect.offsetMax = Vector2.zero;
 
+            LayoutElement ObjlayoutElement = Obj.AddComponent<LayoutElement>();
+            ObjlayoutElement.minWidth = 100;
+            ObjlayoutElement.minHeight = 100;
+            //layoutElement.preferredWidth = 100;
+            ObjlayoutElement.flexibleWidth = 1;
+            ObjlayoutElement.flexibleHeight = 1;
+
+            if (MoGUIManager._LayoutDebug)
+            {
+                Image SAbg = Obj.AddComponent<Image>();
+                SAbg.color = MoGUIManager._LayoutDebugScrollColor;
+            }
+
+
             GameObject viewportObject = new GameObject(Meta.PluginName + "_" + Meta.Name + "_" + "ScrollViewViewport");
             viewportObject.transform.SetParent(Obj.transform, false);
 
@@ -46,17 +60,33 @@ namespace MoGUI
             GameObject contentObject = new GameObject(Meta.PluginName + "_" + Meta.Name + "_" + "ScrollViewContent");
             contentObject.transform.SetParent(viewportObject.transform, false);
 
-            contentObject.AddComponent<VerticalLayoutGroup>();
+            var CoLayout = contentObject.AddComponent<VerticalLayoutGroup>();
+            CoLayout.childForceExpandHeight = false;
+            CoLayout.childForceExpandWidth = false;
             ContentSizeFitter contentFitter = contentObject.AddComponent<ContentSizeFitter>();
             contentFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
             contentFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
 
             scrollRect.content = contentObject.GetComponent<RectTransform>();
+            scrollRect.content.pivot = new Vector2(0, 1);
             scrollRect.content.anchorMin = new Vector2(0, 0);
             scrollRect.content.anchorMax = new Vector2(1, 1);
             scrollRect.content.offsetMin = new Vector2(0, 0);
             scrollRect.content.offsetMax = new Vector2(0, 0);
             scrollRect.scrollSensitivity = 30f;
+
+
+            if (MoGUIManager._LayoutDebug)
+            {
+                Image CObg = contentObject.AddComponent<Image>();
+                CObg.color = MoGUIManager._LayoutDebugScrollContentColor;
+            }
+            LayoutElement layoutElement = contentObject.AddComponent<LayoutElement>();
+            layoutElement.minWidth = 100;
+            layoutElement.minHeight = 100;
+            //layoutElement.preferredWidth = 100;
+            layoutElement.flexibleWidth = 1;
+            layoutElement.flexibleHeight = 1;
 
             GameObject verticalScrollbarObject = new GameObject(Meta.PluginName + "_" + Meta.Name + "_" + "ScrollViewVerticalScrollbar");
             verticalScrollbarObject.transform.SetParent(Obj.transform, false);

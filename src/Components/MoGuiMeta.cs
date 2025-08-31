@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 
+
 namespace MoGUI
 {
     public class MoGuiMeta
@@ -37,6 +38,7 @@ namespace MoGUI
         public static Vector4 DefaultButtonSize = new Vector4(60, 30, 100, 40);
         public static Vector4 DefaultInputSize = new Vector4(20, 20, 80, 30);
         public static SliderDirection DefaultSliderDirection = SliderDirection.horizontal;
+        public static TextAnchor DefaultTxtAnchor = TextAnchor.MiddleLeft;
 
 
         // Info
@@ -53,6 +55,7 @@ namespace MoGUI
         public Color HeaderFontColor;
         // Text
         public int TxtMargin;
+        public TextAnchor TxtAnchor;
         public int FontSize;
         public Font Font;
         public Color FontColor;
@@ -105,6 +108,7 @@ namespace MoGUI
 
         public MoGuiMeta(string pluginName, string name
             , int? txtMargin = null
+            , TextAnchor? txtAnchor = null
             , int? fontSize = null
             , int? inputFontSize = null
             , int? headerFontSize = null
@@ -159,6 +163,7 @@ namespace MoGUI
 
             TxtMargin = txtMargin ?? DefaultTxtMargin;
             FontSize = fontSize ?? DefaultFontSize;
+            TxtAnchor = txtAnchor ?? DefaultTxtAnchor;
             Font = font ?? DefaultFont;
             FontColor = fontColor ?? DefaultFontColor;
             Orientation = orientation ?? DefaultOrientation;
@@ -217,6 +222,7 @@ namespace MoGUI
 
         public MoGuiMeta(MoGuiMeta meta, string name
             , int? txtMargin = null
+            , TextAnchor? txtAnchor = null
             , int? fontSize = null
             , int? inputFontSize = null
             , int? buttonFontSize = null
@@ -270,6 +276,7 @@ namespace MoGUI
             Name = name;
 
             TxtMargin = txtMargin ?? meta.TxtMargin;
+            TxtAnchor = txtAnchor ?? meta.TxtAnchor;
             FontSize = fontSize ?? meta.FontSize;
             FontColor = fontColor ?? meta.FontColor;
             Font = font ?? meta.Font;
@@ -341,7 +348,7 @@ namespace MoGUI
         // resize handle
     }
 
-    public class MoGuiTypography
+    public class MoGuiFont
     {
         public int FontSize { get; set; }
         public Font Font { get; set; }
@@ -358,5 +365,104 @@ namespace MoGUI
         public Color Background { get; set; }
         public Color Accent { get; set; }
         // ...
+    }
+
+    public class MoGuiColor
+    {
+
+        Color _base;
+        public Func<Color> BoundBase;
+        public Color Base 
+        { 
+            get 
+            {
+                if (BoundBase != null) 
+                {
+                    return BoundBase();
+                
+                } else
+                {
+                    return _base;
+                }
+            }
+            set { _base = value; }
+        }
+        public Color Shade
+        {
+            get
+            {
+                return MutateColor(Base, DarkFactor);
+            }
+        }
+        public Color Tint
+        {
+            get
+            {
+                return MutateColor(Base, Factor);
+            }
+        }
+
+
+
+        public float Factor;
+        float? darkFactor = null;
+
+
+        public float DarkFactor
+        {
+            get 
+            { 
+                if (darkFactor != null && float.TryParse(darkFactor.ToString(), out float dfactor)) 
+                { return dfactor; }
+                else { return Factor * -1; }
+            }
+            set { darkFactor = value; }
+        }
+
+        
+
+
+        public MoGuiColor(Color color, float factor = 0.5f, float? darkfactor = null)
+        {
+            BoundBase = () => color;
+            darkFactor = darkfactor;
+            Factor = factor;
+        }
+
+        public MoGuiColor(ColorWrapper color, float factor = 0.5f, float? darkfactor = null)
+        {
+            BoundBase = () => color.Color;
+            darkFactor = darkfactor;
+            Factor = factor;
+        }
+
+        public MoGuiColor(Func<Color> color, float factor = 0.5f, float? darkfactor = null)
+        {
+            BoundBase = color;
+            darkFactor = darkfactor;
+            Factor = factor;
+        }
+
+
+        public Color MutateColor( Color color, float factor)
+        {
+            float r = MutateColorPart(color.r , factor);
+            float g = MutateColorPart(color.g, factor);
+            float b = MutateColorPart(color.b, factor);
+            return new Color(r,g,b,color.a);
+        }
+
+        public float MutateColorPart(float value, float factor)
+        {
+            if(factor >= 0)
+            {
+                return value + (1 - value) * factor;
+            } else
+            {
+                return value * (1 + factor);
+
+            }
+        }
+
     }
 }

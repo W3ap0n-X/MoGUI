@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using System.Xml.Linq;
-using UnityEditor.PackageManager;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
+
 
 namespace MoGUI
 {
@@ -15,10 +13,12 @@ namespace MoGUI
         public MoGuiPanel Panel;
         public GameObject Content;
         public string Title = null;
+        SizeWrapper ContainerSize;
+        SizeWrapper PanelSize;
 
         public Dictionary<string, MoGuiControl> Components = new Dictionary<string, MoGuiControl>();
 
-        public Dictionary<string, MiniUIRow> Rows = new Dictionary<string, MiniUIRow>();
+        public Dictionary<string, MoGuiRow> Rows = new Dictionary<string, MoGuiRow>();
 
         // Create RootPanel from Main Gui
         public MoGuiPanel(MoGuiMeta meta,  string name, GameObject canvas, Vector2 size, Vector2 pos) : base(meta, name,size, pos)
@@ -61,13 +61,12 @@ namespace MoGUI
             {
                 Obj = CreatePanel();
             }
-            RectTransform layoutRect = Container.GetComponent<RectTransform>();
 
-            layoutRect.anchorMin = new Vector2(0, 0);
-            layoutRect.anchorMax = new Vector2(1, 1);
-            layoutRect.offsetMin = new Vector2(0, 0);
-            layoutRect.offsetMax = new Vector2(0, -Meta.HeaderSize);
-            
+            ContainerSize.anchorMin = new Vector2(0, 0);
+            ContainerSize.anchorMax = new Vector2(1, 1);
+            ContainerSize.offsetMin = new Vector2(0, 0);
+            ContainerSize.offsetMax = new Vector2(0, -Meta.HeaderSize);
+
             Header = new MoGuiHeader(Meta, canvas, this, name, true);
             Header.Obj.transform.SetParent(Obj.transform, false);
             Container.transform.SetParent(Obj.transform, false);
@@ -77,7 +76,7 @@ namespace MoGUI
 
             Content = scrollArea.Content;
 
-            Obj.GetComponent<RectTransform>().pivot = new Vector2(0, 0);
+            PanelSize.pivot = new Vector2(0, 0);
             is_init = true;
         }
 
@@ -91,24 +90,23 @@ namespace MoGUI
             Obj = CreatePanel();
             if (includeHeader)
             {
-                RectTransform layoutRect = Container.GetComponent<RectTransform>();
 
-                layoutRect.anchorMin = new Vector2(0, 0);
-                layoutRect.anchorMax = new Vector2(1, 1);
-                layoutRect.offsetMin = new Vector2(0, 0);
-                layoutRect.offsetMax = new Vector2(0, -Meta.HeaderSize);
+                ContainerSize.anchorMin = new Vector2(0, 0);
+                ContainerSize.anchorMax = new Vector2(1, 1);
+                ContainerSize.offsetMin = new Vector2(0, 0);
+                ContainerSize.offsetMax = new Vector2(0, -Meta.HeaderSize);
 
-                RectTransform panelRect = Obj.GetComponent<RectTransform>();
-                panelRect.anchorMin = new Vector2(0, 0);
-                panelRect.anchorMax = new Vector2(1, 1);
-                panelRect.offsetMin = new Vector2(0, 0);
-                panelRect.offsetMax = new Vector2(0, 0);
+                PanelSize.anchorMin = new Vector2(0, 0);
+                PanelSize.anchorMax = new Vector2(1, 1);
+                PanelSize.offsetMin = new Vector2(0, 0);
+                PanelSize.offsetMax = new Vector2(0, 0);
 
                 Header = new MoGuiHeader(Meta, Obj, this, Name, false);
                 Header.Obj.transform.SetParent(Obj.transform, false);
             }
             VerticalLayoutGroup layoutGroup = Obj.AddComponent<VerticalLayoutGroup>();
             layoutGroup.childForceExpandHeight = false;
+            layoutGroup.childForceExpandWidth = false;
             Container.transform.SetParent(Obj.transform, false);
             Content = Container;
             is_init = true;
@@ -119,75 +117,81 @@ namespace MoGUI
             GameObject layoutObject = new GameObject(PluginName + "_" + Name + "_" + "DrawContainer");
             VerticalLayoutGroup layoutGroup = layoutObject.AddComponent<VerticalLayoutGroup>();
 
-            LayoutElement layoutElement = layoutObject.AddComponent<LayoutElement>();
-            layoutElement.minWidth = 100;
-            layoutElement.minHeight = 100;
-            layoutElement.flexibleWidth = 1;
-            layoutElement.flexibleHeight = 1;
+
+            AddLayoutElement(layoutObject);
+            SetLayout();
+            
 
             Image panelImage = layoutObject.AddComponent<Image>();
             panelImage.color = Meta.PanelColor;
 
-            RectTransform layoutRect = layoutObject.GetComponent<RectTransform>();
 
-            layoutRect.anchorMin = new Vector2(0, 0);
-            layoutRect.anchorMax = new Vector2(1, 1);
-            layoutRect.offsetMin = new Vector2(0, 0);
-            layoutRect.offsetMax = new Vector2(0, 0);
+
+            ContainerSize = new SizeWrapper(layoutObject.GetComponent<RectTransform>());
+
+            ContainerSize.anchorMin = new Vector2(0, 0);
+            ContainerSize.anchorMax = new Vector2(1, 1);
+            ContainerSize.offsetMin = new Vector2(0, 0);
+            ContainerSize.offsetMax = new Vector2(0, 0);
+
             layoutGroup.spacing = Meta.TxtMargin;
-            layoutGroup.childForceExpandWidth = true;
-            layoutGroup.childForceExpandHeight = true;
+            layoutGroup.childForceExpandWidth = false;
+            layoutGroup.childForceExpandHeight = false;
             return layoutObject;
         }
 
-        
+        public void AddScrollArea()
+        {
+            MoGuiScrollArea scrollArea = new MoGuiScrollArea(Meta);
+            scrollArea.Obj.transform.SetParent(Container.transform, false);
+
+            Content = scrollArea.Content;
+        }
 
         public virtual GameObject CreatePanel()
         {
             var panelObject = new GameObject(PluginName + "_" + Name + "_" + "Panel");
-            
-            RectTransform panelRect = panelObject.AddComponent<RectTransform>();
-            panelRect.sizeDelta = Size;
-            panelRect.anchoredPosition = new Vector2(Pos.x - (Size.x/2), Pos.y - (Size.y / 2));
+
+            PanelSize = new SizeWrapper(panelObject.AddComponent<RectTransform>());
+            PanelSize.sizeDelta = Size;
+            PanelSize.anchoredPosition = new Vector2(Pos.x - (Size.x/2), Pos.y - (Size.y / 2));
             return panelObject;
         }
 
-        
-
-        public GameObject CreateRow(string name)
+        public override void SetLayout()
         {
-            GameObject layoutObject = new GameObject(PluginName + "_" + Name + "_" + "Row_" + name);
-            HorizontalLayoutGroup layoutGroup = layoutObject.AddComponent<HorizontalLayoutGroup>();
-            layoutGroup.padding = new RectOffset(Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin);
-
-            layoutGroup.spacing = Meta.TxtMargin;
-            layoutGroup.childForceExpandWidth = false;
-            layoutGroup.childForceExpandHeight = false;
-            return layoutObject;
+            minWidth = 100;
+            minHeight = 100;
+            //preferredWidth = 100;
+            flexibleWidth = 1;
+            flexibleHeight = 1;
         }
 
-        public void AddRow(string name)
+
+        public MoGuiRow AddRow(string name)
         {
-            Rows.Add(name, new MiniUIRow(this, name));
+            MoGuiRow row = new MoGuiRow(this, name);
+            row.Obj.transform.SetParent(Content.transform);
+            Rows.Add(name, row);
+            return row;
         }
 
-        public GameObject CreateColumn( string row, string name)
+        public MoGuiCol AddCol(string row, string name)
         {
-            GameObject layoutObject = new GameObject(PluginName + "_" + Name + "_" + row + "_" + "Column_" + name);
-            VerticalLayoutGroup layoutGroup = layoutObject.AddComponent<VerticalLayoutGroup>();
-            layoutGroup.padding = new RectOffset(Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin);
-            layoutGroup.childForceExpandWidth = false;
-            layoutGroup.childForceExpandHeight = false;
-            layoutGroup.spacing = Meta.TxtMargin;
-            return layoutObject;
+            var _row = GetRow(row);
+            return _row.AddColumn(name);
         }
 
-        
+        public MoGuiCol AddCol(MoGuiRow row, string name)
+        {
+            return row.AddColumn(name);
+        }
+
 
         public MoGuiControl AddControl( string row, string col,  string name, MoGCArgs args)
         {
-            
-            GameObject column = GetCol(row, col);
+
+            MoGuiCol column = GetCol(row, col);
 
             MoGuiControl newComponent;
             if (Components.ContainsKey(name))
@@ -195,15 +199,15 @@ namespace MoGUI
                 newComponent = Components[name];
                 if (args.Type == typeof(MoGuiPanel))
                 {
-                    newComponent.Obj.transform.SetParent(column.transform, false);
+                    newComponent.Obj.transform.SetParent(column.Obj.transform, false);
                 }
                 else if (newComponent.Container != null)
                 {
-                    newComponent.Container.transform.SetParent(column.transform, false);
+                    newComponent.Container.transform.SetParent(column.Obj.transform, false);
                 }
                 else
                 {
-                    newComponent.Obj.transform.SetParent(column.transform, false);
+                    newComponent.Obj.transform.SetParent(column.Obj.transform, false);
                 }
             }
             else
@@ -211,13 +215,13 @@ namespace MoGUI
                 newComponent = CreateComponent( name, args);
                 if (args.Type == typeof(MoGuiPanel))
                 {
-                    newComponent.Obj.transform.SetParent(column.transform, false);
+                    newComponent.Obj.transform.SetParent(column.Obj.transform, false);
                 } else if (newComponent.Container != null)
                 {
-                    newComponent.Container.transform.SetParent(column.transform, false);
+                    newComponent.Container.transform.SetParent(column.Obj.transform, false);
                 } else
                 {
-                    newComponent.Obj.transform.SetParent(column.transform, false);
+                    newComponent.Obj.transform.SetParent(column.Obj.transform, false);
                 }
 
                     Components.Add(name, newComponent);
@@ -371,25 +375,24 @@ namespace MoGUI
             else { return null; }
         }
 
-        public MiniUIRow GetRow(string rowName)
+        public MoGuiRow GetRow(string rowName)
         {
-            MiniUIRow row;
+            MoGuiRow row;
             if (Rows.ContainsKey(rowName))
             {
                 row = Rows[rowName];
             }
             else
             {
-                AddRow(rowName);
-                row = Rows[rowName];
+                row = AddRow(rowName);
             }
             return row;
         }
 
-        public GameObject GetCol(string rowName, string columnName)
+        public MoGuiCol GetCol(string rowName, string columnName)
         {
-            MiniUIRow row = GetRow(rowName);
-            GameObject column;
+            MoGuiRow row = GetRow(rowName);
+            MoGuiCol column;
             if (row.Columns.ContainsKey(columnName))
             {
                 column = row.Columns[columnName];
@@ -425,57 +428,7 @@ namespace MoGUI
 
     }
 
-    public class MiniUIRow
-    {
-        public Dictionary<string, GameObject> Columns;
-        public GameObject Obj;
-        private MoGuiPanel _parent;
-        public string Name { get; private set; }
-        public MiniUIRow(MoGuiPanel parent, string name)
-        {
-            _parent = parent;
-            Name = name;
-            Columns = new Dictionary<string, GameObject>();
-            Obj = CreateRow();
-        }
-
-        private GameObject CreateRow()
-        {
-            GameObject rowObj = _parent.CreateRow(Name);
-            rowObj.transform.SetParent(_parent.Content.transform);
-            return rowObj;
-        }
-
-        private GameObject CreateColumn(string name)
-        {
-            GameObject newCol = _parent.CreateColumn(Name,name);
-            newCol.transform.SetParent(Obj.transform);
-            return newCol;
-        }
-
-
-        public void AddColumn( string name)
-        {
-            
-            Columns.Add(name, CreateColumn(name));
-        }
-
-        public GameObject GetCol( string columnName)
-        {
-            GameObject column;
-            if (Columns.ContainsKey(columnName))
-            {
-                column = Columns[columnName];
-            }
-            else
-            {
-                AddColumn(columnName);
-                column = Columns[columnName];
-            }
-            return column;
-        }
-
-    }
+    
 
 
     public class MoGuiHeader : MoGuiPanel
@@ -534,10 +487,10 @@ namespace MoGUI
             panelRect.offsetMin = new Vector2(0, -Meta.HeaderSize);
             panelRect.offsetMax = new Vector2(0, 0);
 
-            LayoutElement panelSizer = panelObject.AddComponent<LayoutElement>();
-            panelSizer.minHeight = Meta.HeaderSize;
-            panelSizer.minWidth = 100;
-            panelSizer.preferredWidth = 250;
+
+            AddLayoutElement(panelObject);
+            SetLayout();
+            
 
             return panelObject;
         }
@@ -550,11 +503,12 @@ namespace MoGUI
             HorizontalLayoutGroup headerLayoutGroup = layoutObject.AddComponent<HorizontalLayoutGroup>();
             headerLayoutGroup.childControlWidth = true;
             headerLayoutGroup.childControlHeight = true;
-            headerLayoutGroup.childForceExpandHeight = true;
+            headerLayoutGroup.childForceExpandHeight = false;
             headerLayoutGroup.childForceExpandWidth = false;
             headerLayoutGroup.padding = new RectOffset(Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin);
             headerLayoutGroup.spacing = Meta.TxtMargin;
 
+            
             RectTransform layoutRect = layoutObject.GetComponent<RectTransform>();
             layoutRect.anchorMin = Vector2.zero;
             layoutRect.anchorMax = Vector2.one;
@@ -562,6 +516,14 @@ namespace MoGUI
             layoutRect.offsetMax = new Vector2(0, 0);
             return layoutObject;
 
+        }
+
+        public override void SetLayout()
+        {
+            minHeight = Meta.HeaderSize;
+            minWidth = 100;
+            //preferredWidth = 250;
+            flexibleWidth = 1;
         }
 
         new public void ShowGui(bool show)
@@ -588,10 +550,11 @@ namespace MoGUI
                 newTxt = new MoGuiButton(Meta, Name + "_" + label, text, onUpdateAction);
                 newTxt.Obj.transform.SetParent(Container.transform, false);
 
-                LayoutElement buttonContainerLayoutElement = newTxt.Obj.GetComponent<LayoutElement>();
-                buttonContainerLayoutElement.minWidth = Meta.HeaderSize - 2 * Meta.TxtMargin;
-                buttonContainerLayoutElement.minHeight = Meta.HeaderSize - 2 * Meta.TxtMargin;
-                buttonContainerLayoutElement.flexibleWidth = 0.1f;
+                newTxt.minWidth = Meta.HeaderSize - 2 * Meta.TxtMargin;
+                newTxt.minHeight = Meta.HeaderSize - 2 * Meta.TxtMargin;
+                newTxt.preferredHeight = newTxt.minHeight;
+                newTxt.preferredWidth = newTxt.minWidth;
+                newTxt.flexibleWidth = 0.1f;
                 Components.Add(label, newTxt);
 
             }

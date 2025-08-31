@@ -110,12 +110,36 @@ namespace MoGUI.Tests
 
             // Create a non collapsing panel with several text controls to see how the layout reacts
             var TestPanel1 = (MoGuiPanel)rootPanel.AddControl("row0", "col1", "TestPanel1", new MoCaPanel(false));
+            TestPanel1.AddScrollArea();
+            var oneCol0 = TestPanel1.GetCol("row0", "col0");
+            oneCol0.preferredWidth = 100;
             TestPanel1.AddControl("row0", "col0", "TestText", new MoCaText("testing"));
             TestPanel1.AddControl("row0", "col0", "TestText0", new MoCaText("testing"));
             TestPanel1.AddControl("row0", "col0", "TestText1", new MoCaText("testing"));
             TestPanel1.AddControl("row0", "col0", "TestText2", new MoCaText("testing"));
             TestPanel1.AddControl("row0", "col0", "TestText3", new MoCaText("testing"));
             TestPanel1.AddControl("row0", "col0", "TestText4", new MoCaText("testing"));
+            TestPanel1.AddControl("row0", "col1", "1TestText", new MoCaText("testing"));
+            TestPanel1.AddControl("row0", "col1", "1TestText0", new MoCaText("testing"));
+            TestPanel1.AddControl("row0", "col1", "1TestText1", new MoCaText("testing"));
+            TestPanel1.AddControl("row0", "col1", "1TestText2", new MoCaText("testing"));
+            TestPanel1.AddControl("row0", "col1", "1TestText3", new MoCaText("testing"));
+            TestPanel1.AddControl("row0", "col1", "1TestText4", new MoCaText("testing"));
+
+            var TestPanel6 = (MoGuiPanel)rootPanel.AddControl("row0", "col1", "TestPanel6", new MoCaPanel(false));
+
+            TestPanel6.AddControl("row0", "col0", "6TestText", new MoCaText("testing"));
+            TestPanel6.AddControl("row0", "col0", "6TestText0", new MoCaText("testing"));
+            TestPanel6.AddControl("row0", "col0", "6TestText1", new MoCaText("testing"));
+            TestPanel6.AddControl("row0", "col0", "6TestText2", new MoCaText("testing"));
+            TestPanel6.AddControl("row0", "col0", "6TestText3", new MoCaText("testing"));
+            TestPanel6.AddControl("row0", "col0", "6TestText4", new MoCaText("testing"));
+            TestPanel6.AddControl("row0", "col1", "61TestText", new MoCaText("testing"));
+            TestPanel6.AddControl("row0", "col1", "61TestText0", new MoCaText("testing"));
+            TestPanel6.AddControl("row0", "col1", "61TestText1", new MoCaText("testing"));
+            TestPanel6.AddControl("row0", "col1", "61TestText2", new MoCaText("testing"));
+            TestPanel6.AddControl("row0", "col1", "61TestText3", new MoCaText("testing"));
+            TestPanel6.AddControl("row0", "col1", "61TestText4", new MoCaText("testing"));
 
             // Create Text for button testing, this is intended to prove that the button is working and that it's text is updating successfully
             rootPanel.AddControl("row0", "col1", "TestText0", new MoCaText(() => "bool0=" + bool0));

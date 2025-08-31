@@ -79,6 +79,16 @@ namespace MoGUI
             Container = CreateContainer();
         }
 
+        public override void SetLayout()
+        {
+            minWidth = Meta.DDLSize.x;
+            minHeight = Meta.DDLSize.y;
+            //preferredWidth = Meta.DDLSize.z;
+            //preferredHeight = Meta.DDLSize.w;
+            flexibleHeight = 1;
+            flexibleWidth = 1;
+        }
+
         private GameObject CreateDropdown()
         {
             GameObject dropdownObject = new GameObject(PluginName + "_" + Name + "_Dropdown");
@@ -88,11 +98,9 @@ namespace MoGUI
             Image image = dropdownObject.AddComponent<Image>();
             image.color = Meta.DDLButtonColor;
 
-            LayoutElement layoutElement = dropdownObject.AddComponent<LayoutElement>();
-            layoutElement.minWidth = Meta.DDLSize.x;
-            layoutElement.minHeight = Meta.DDLSize.y;
-            layoutElement.preferredWidth = Meta.DDLSize.z;
-            layoutElement.preferredHeight = Meta.DDLSize.w;
+            AddLayoutElement(dropdownObject);
+            SetLayout();
+            
 
             GameObject captionTextObject = new GameObject(PluginName + "_" + Name + "_DropdownLabel");
             captionTextObject.transform.SetParent(dropdownObject.transform, false);

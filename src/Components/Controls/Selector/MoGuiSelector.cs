@@ -55,6 +55,10 @@ namespace MoGUI
         {
             Container = CreateContainer(Meta.SliderOrientation);
         }
+        public override void SetLayout()
+        {
+
+        }
 
         public GameObject CreateSelector()
         {

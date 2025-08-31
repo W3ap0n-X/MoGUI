@@ -104,7 +104,10 @@ namespace MoGUI
 
         }
 
+        public override void SetLayout()
+        {
 
+        }
         public override void Update() 
         {
             Brick.color = Value;

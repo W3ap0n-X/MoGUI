@@ -59,6 +59,8 @@ namespace MoGUI
 
         }
 
+        
+
         public MoGuiToggle(MoGuiMeta meta, string name, MoCaToggle args) : base(meta, name)
         {
             if (args.boundValue != null)
@@ -98,6 +100,14 @@ namespace MoGUI
             Container = CreateContainer(Meta.ToggleOrientation);
         }
 
+        public override void SetLayout()
+        {
+            minWidth = Meta.ToggleSize.x;
+            minHeight = Meta.ToggleSize.y;
+            preferredWidth = Meta.ToggleSize.z;
+            preferredHeight = Meta.ToggleSize.w;
+            flexibleWidth = 0;
+        }
         public GameObject CreateToggle(Action<bool> onClickAction)
         {
 
@@ -105,11 +115,10 @@ namespace MoGUI
             toggleObject.transform.SetParent(Container.transform, false);
 
             LayoutElement layoutElement = toggleObject.AddComponent<LayoutElement>();
-            layoutElement.minWidth = Meta.ToggleSize.x;
-            layoutElement.minHeight = Meta.ToggleSize.y;
-            layoutElement.preferredWidth = Meta.ToggleSize.z;
-            layoutElement.preferredHeight = Meta.ToggleSize.w;
-            layoutElement.flexibleWidth = 0;
+            
+
+            AddLayoutElement(toggleObject);
+            SetLayout();
 
             Toggle toggleComponent = toggleObject.AddComponent<Toggle>();
 
@@ -234,17 +243,23 @@ namespace MoGUI
             AddText("ToggleTxt", text);
         }
 
+        public override void SetLayout()
+        {
+            minWidth = Meta.ButtonSize.x;
+            minHeight = Meta.ButtonSize.y;
+            //preferredWidth = Meta.ButtonSize.z;
+            //preferredHeight = Meta.ButtonSize.w;
+            flexibleWidth = 1;
+        }
+
         public new GameObject CreateToggle(Action<bool> onClickAction)
         {
 
             GameObject toggleObject = new GameObject(PluginName + "_" + Name + "_" + "ToggleBT");
             toggleObject.transform.SetParent(Container.transform, false);
 
-            LayoutElement layoutElement = toggleObject.AddComponent<LayoutElement>();
-            layoutElement.minWidth = Meta.ButtonSize.x;
-            layoutElement.minHeight = Meta.ButtonSize.y;
-            layoutElement.preferredWidth = Meta.ButtonSize.z;
-            layoutElement.preferredHeight = Meta.ButtonSize.w;
+            AddLayoutElement(toggleObject);
+            SetLayout();
 
             Toggle toggleComponent = toggleObject.AddComponent<Toggle>();
 

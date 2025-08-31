@@ -12,7 +12,7 @@ namespace MoGUI
 
         public GameObject Obj;
         public GameObject Container;
-
+        public LayoutWrapper LoElement;
         public string PluginName;
         public string Name;
         public bool is_init;
@@ -92,7 +92,7 @@ namespace MoGUI
                 layoutGroup.padding = new RectOffset(Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin);
 
                 layoutGroup.spacing = Meta.TxtMargin;
-                layoutGroup.childForceExpandWidth = true;
+                layoutGroup.childForceExpandWidth = false;
                 layoutGroup.childForceExpandHeight = false;
             }
             else
@@ -101,7 +101,7 @@ namespace MoGUI
                 layoutGroup.padding = new RectOffset(Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin);
 
                 layoutGroup.spacing = Meta.TxtMargin;
-                layoutGroup.childForceExpandWidth = true;
+                layoutGroup.childForceExpandWidth = false;
                 layoutGroup.childForceExpandHeight = false;
             }
 
@@ -113,6 +113,20 @@ namespace MoGUI
             GameObject layoutObject = this.CreateContainer(Meta.Orientation);
             return layoutObject;
         }
+
+        protected void AddLayoutElement(GameObject obj)
+        {
+            LoElement = new LayoutWrapper(obj.AddComponent<LayoutElement>());
+        }
+
+        public abstract void SetLayout();
+
+        public float minHeight { get => LoElement.minHeight; set { LoElement.minHeight = value; } }
+        public float minWidth { get => LoElement.minWidth; set { LoElement.minWidth = value; } }
+        public float flexibleWidth { get => LoElement.flexibleWidth; set { LoElement.flexibleWidth = value; } }
+        public float flexibleHeight { get => LoElement.flexibleHeight; set { LoElement.flexibleHeight = value; } }
+        public float preferredWidth { get => LoElement.preferredWidth; set { LoElement.preferredWidth = value; } }
+        public float preferredHeight { get => LoElement.preferredHeight; set { LoElement.preferredHeight = value; } }
     }
 
     public abstract class MoGCArgs

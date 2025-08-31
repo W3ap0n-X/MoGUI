@@ -64,6 +64,16 @@ namespace MoGUI
             }
         }
 
+        public override void SetLayout()
+        {
+            minWidth = Meta.InputSize.x;
+            minHeight = Meta.InputSize.y;
+            //preferredWidth = Meta.InputSize.z;
+            //preferredHeight = Meta.InputSize.w;
+            flexibleHeight = 1;
+            flexibleWidth = 1;
+        }
+
         public MoGuiInput(MoGuiMeta meta, string name, MoCaInput args) : base(meta, name)
         {
 
@@ -159,11 +169,10 @@ namespace MoGUI
             GameObject inputObject = new GameObject(PluginName + "_" + Name + "_" + "InputField");
             inputObject.transform.SetParent(Container.transform, false);
 
-            LayoutElement layoutElement = inputObject.AddComponent<LayoutElement>();
-            layoutElement.minWidth = Meta.InputSize.x;
-            layoutElement.minHeight = Meta.InputSize.y;
-            layoutElement.preferredWidth = Meta.InputSize.z;
-            layoutElement.preferredHeight = Meta.InputSize.w;
+            AddLayoutElement(inputObject);
+            SetLayout();
+
+            
 
 
             RectTransform inputRect = inputObject.GetComponent<RectTransform>();
@@ -196,7 +205,7 @@ namespace MoGUI
             placeholderRect.offsetMax = new Vector2(-10, -5);
 
             PlaceHolderText = placeholderObject.AddComponent<Text>();
-            PlaceHolderText.alignment = TextAnchor.MiddleLeft;
+            PlaceHolderText.alignment = Meta.TxtAnchor;
 
             PlaceHolderText.text = "Enter Value...";
 
@@ -214,10 +223,10 @@ namespace MoGUI
             RectTransform textRect = textObject.AddComponent<RectTransform>();
             textRect.anchorMin = Vector2.zero;
             textRect.anchorMax = Vector2.one;
-            textRect.offsetMin = new Vector2(10, 5);
-            textRect.offsetMax = new Vector2(-10, -5);
+            textRect.offsetMin = new Vector2(Meta.TxtMargin *2, Meta.TxtMargin);
+            textRect.offsetMax = new Vector2(Meta.TxtMargin * -2, Meta.TxtMargin * -1);
             InputText = textObject.AddComponent<Text>();
-            InputText.alignment = TextAnchor.MiddleLeft;
+            InputText.alignment = Meta.TxtAnchor;
 
             //InputText.text = Value.ToString() ?? null;
 
@@ -239,7 +248,7 @@ namespace MoGUI
             {
                 Text = new MoGuiTxt(Meta, Name + "_" + label, text);
                 Text.Obj.transform.SetParent(Container.transform, false);
-                Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
+                Text.Obj.GetComponent<Text>().alignment = Meta.TxtAnchor;
             }
 
         }
@@ -254,7 +263,7 @@ namespace MoGUI
             {
                 Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
                 Text.Obj.transform.SetParent(Container.transform, false);
-                Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
+                Text.Obj.GetComponent<Text>().alignment = Meta.TxtAnchor;
             }
 
         }
