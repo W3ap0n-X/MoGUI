@@ -62,13 +62,15 @@ namespace MoGUI.Tests
         {
             var row0 = Panel.AddRow("row0");
             var row1 = Panel.AddRow("row1");
-            Panel.AddRow("row2");
+            var row2 = Panel.AddRow("row2");
             var row3 = Panel.AddRow("row3");
             var row4 = Panel.AddRow("row4");
             var row5 = Panel.AddRow("row5");
 
-            Panel.AddCol("row2", "0");
+            row2.SetPreferredHeightPercentage(100);
 
+            var row2col0 = Panel.AddCol("row2", "0");
+            row2col0.SetPreferredHeightPercentage(100);
 
             var col0 = row1.AddColumn("0");
             row1.AddColumn("1");
@@ -92,9 +94,10 @@ namespace MoGUI.Tests
             col0.preferredHeight = 100;
             row5.Columns["2"].preferredWidth = 300;
             row5.Columns["3"].preferredHeight = 100;
-            row5.Columns["4"].preferredWidth = 300;
-
-            row3.preferredHeight = 500;
+            row4.SetPreferredWidthPercentage(100);
+            row4.SetPreferredHeightPercentage(10);
+            row4.Columns["2"].SetPreferredWidthPercentage(15);
+            row3.preferredHeight = 100;
             //// Create Panel for Toggles
             //var TestPanel0 = (MoGuiPanel)rootPanel.AddControl("row0", "col0", "TestPanel0", new MoCaPanel(true, "Toggles"));
             //BuildToggles(TestPanel0);

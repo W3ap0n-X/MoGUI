@@ -123,7 +123,7 @@ namespace MoGUI
             
 
             Image panelImage = layoutObject.AddComponent<Image>();
-            panelImage.color = Meta.PanelColor;
+            panelImage.color = Meta.PanelColor.Base;
 
 
 
@@ -306,6 +306,10 @@ namespace MoGUI
                 {
                     item.Value.Update();
                 }
+                foreach (var row in Rows)
+                {
+                    row.Value.Update();
+                }
             }
 
         }
@@ -451,7 +455,7 @@ namespace MoGUI
 
         public override void Init(bool topLevel)
         {
-            Meta.PanelColor = Meta.HeaderColor;
+            Meta.PanelColor.Base = Meta.HeaderColor;
 
             Meta.FontSize = Meta.HeaderFontSize;
             Meta.ButtonFontSize = Meta.HeaderExitFontSize;

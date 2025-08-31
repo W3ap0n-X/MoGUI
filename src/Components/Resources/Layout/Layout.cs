@@ -11,14 +11,22 @@ namespace MoGUI
     {
         public Dictionary<string, MoGuiCol> Columns;
         private MoGuiPanel _parent;
-        public MoGuiMeta Meta => _parent.Meta;
         public MoGuiRow(MoGuiPanel parent, string name, MoGuiMeta meta = null) : base(name)
         {
             _parent = parent;
+            if (meta == null)
+            {
+                Meta = _parent.Meta;
+            } else
+            {
+                Meta = meta;
+            }
+
             Columns = new Dictionary<string, MoGuiCol>();
             Obj = Create(name);
             AddLayoutElement(Obj);
             SetLayout();
+            SetParentRect(_parent.Container.GetComponent<RectTransform>());
         }
         protected override GameObject Create(string name)
         {
@@ -68,19 +76,36 @@ namespace MoGUI
             flexibleHeight = 1;
             flexibleWidth = 1;
         }
+
+        public override void Update()
+        {
+            UpdateLayout();
+            foreach (var item in Columns)
+            {
+                item.Value.Update();
+            }
+        }
     }
 
     public class MoGuiCol : MoGuiLayoutBrick
     {
         private MoGuiRow _parent;
-        public MoGuiMeta Meta => _parent.Meta;
         
-        public MoGuiCol(MoGuiRow parent, string name) : base(name)
+        public MoGuiCol(MoGuiRow parent, string name, MoGuiMeta meta = null) : base(name)
         {
             _parent = parent;
+            if (meta == null)
+            {
+                Meta = _parent.Meta;
+            }
+            else
+            {
+                Meta = meta;
+            }
             Obj = Create(name);
             AddLayoutElement(Obj);
             SetLayout();
+            SetParentRect(_parent.Obj.GetComponent<RectTransform>());
         }
 
         protected override GameObject Create(string name)
@@ -104,7 +129,6 @@ namespace MoGUI
         {
             minHeight = 10;
             minWidth = 10;
-            //layoutElement.preferredWidth = 100;
             flexibleWidth = 1;
             flexibleHeight = 1;
         }
@@ -114,6 +138,7 @@ namespace MoGUI
     {
         public GameObject Obj;
         public LayoutWrapper LoElement;
+        public MoGuiMeta Meta;
         public string Name { get; private set; }
         public MoGuiLayoutBrick(string name)
         {
@@ -135,6 +160,40 @@ namespace MoGUI
         public float flexibleHeight { get => LoElement.flexibleHeight; set { LoElement.flexibleHeight = value; } }
         public float preferredWidth { get => LoElement.preferredWidth; set { LoElement.preferredWidth = value; } }
         public float preferredHeight { get => LoElement.preferredHeight; set { LoElement.preferredHeight = value; } }
+
+        public float preferredWidthPercentage;
+        public float preferredHeightPercentage;
+        private RectTransform parentRect;
+        protected void SetParentRect(RectTransform parent)
+        {
+            parentRect = parent;
+        }
+
+        public void SetPreferredWidthPercentage(float percentage)
+        {
+            preferredWidthPercentage = percentage;
+        }
+        public void SetPreferredHeightPercentage(float percentage)
+        {
+            preferredHeightPercentage = percentage;
+        }
+
+        public void UpdateLayout()
+        {
+            if (preferredWidthPercentage > 0 && parentRect != null)
+            {
+                preferredWidth = (parentRect.rect.width - (Meta.TxtMargin*2)) * (preferredWidthPercentage / 100f);
+            }
+            if (preferredHeightPercentage > 0 && parentRect != null)
+            {
+                preferredHeight = (parentRect.rect.height - (Meta.TxtMargin * 2)) * (preferredHeightPercentage / 100f);
+            }
+        }
+
+        public virtual void Update()
+        {
+            UpdateLayout();
+        }
     }
 
     public class LayoutWrapper

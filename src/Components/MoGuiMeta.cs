@@ -45,7 +45,7 @@ namespace MoGUI
         public string PluginName;
         public string Name;
         // Panel
-        public Color PanelColor;
+        public MoGuiColor PanelColor;
         // Header
         public int HeaderFontSize;
         public int HeaderExitFontSize;
@@ -169,7 +169,7 @@ namespace MoGUI
             Orientation = orientation ?? DefaultOrientation;
             LabelPlacement = labelPlacement ?? DefaultLabelPlacement;
 
-            PanelColor = panelColor ?? DefaultPanelColor;
+            PanelColor = new MoGuiColor( panelColor ?? DefaultPanelColor);
             HeaderFontSize = headerFontSize ?? DefaultHeaderFontSize;
             HeaderExitFontSize = headerexitFontSize ?? DefaultHeaderExitFontSize;
             HeaderSize = headerSize ?? DefaultHeaderSize;
@@ -283,7 +283,7 @@ namespace MoGUI
             LabelPlacement = labelPlacement ?? meta.LabelPlacement;
             Orientation = orientation ?? meta.Orientation;
 
-            PanelColor = panelColor ?? meta.PanelColor;
+            PanelColor = panelColor != null ? new MoGuiColor((Color)panelColor) : meta.PanelColor;
             HeaderFontSize = headerFontSize ?? meta.HeaderFontSize;
             HeaderExitFontSize = headerexitFontSize ?? meta.HeaderExitFontSize;
             HeaderSize = headerSize ?? meta.HeaderSize;

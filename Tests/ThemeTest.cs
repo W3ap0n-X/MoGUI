@@ -26,12 +26,12 @@ namespace MoGUI.Tests
         void Start()
         {
             SetupVariables(Meta);
-            Meta.PanelColor = new Color(0.00f, 0.00f, 0.00f, 0.00f);
+            Meta.PanelColor.Base = new Color(0.00f, 0.00f, 0.00f, 0.00f);
             
             // Create the base Gui
             GUI = new MoGui(Meta, "ThemeTest", new Vector2(420, 520), Vector2.zero);
             GUI.Canvas.transform.SetParent(gameObject.transform, false);
-            Meta.PanelColor = MoGuiMeta.DefaultPanelColor;
+            Meta.PanelColor.Base = MoGuiMeta.DefaultPanelColor;
 
 
         }
@@ -156,12 +156,12 @@ namespace MoGUI.Tests
 
         public void SetupVariables(MoGuiMeta meta)
         {
-            PanelColor = new ColorWrapper(meta.PanelColor);
+            PanelColor = new ColorWrapper(meta.PanelColor.Base);
             HeaderColor = new ColorWrapper(meta.HeaderColor);
             FontSize = meta.FontSize;
             HeaderFontSize = meta.HeaderFontSize;
             HeaderSize = meta.HeaderSize;
-            PanelColor.Color = meta.PanelColor;
+            PanelColor.Color = meta.PanelColor.Base;
             HeaderColor.Color = meta.HeaderColor;
         }
         int WindowCount;
