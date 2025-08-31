@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
+
 
 namespace MoGUI
 {
@@ -35,13 +37,15 @@ namespace MoGUI
         public static Vector4 DefaultToggleSize = new Vector4(15, 15, 20, 20);
         public static Vector4 DefaultButtonSize = new Vector4(60, 30, 100, 40);
         public static Vector4 DefaultInputSize = new Vector4(20, 20, 80, 30);
+        public static SliderDirection DefaultSliderDirection = SliderDirection.horizontal;
+        public static TextAnchor DefaultTxtAnchor = TextAnchor.MiddleLeft;
 
 
         // Info
         public string PluginName;
         public string Name;
         // Panel
-        public Color PanelColor;
+        public MoGuiColor PanelColor;
         // Header
         public int HeaderFontSize;
         public int HeaderExitFontSize;
@@ -51,6 +55,7 @@ namespace MoGUI
         public Color HeaderFontColor;
         // Text
         public int TxtMargin;
+        public TextAnchor TxtAnchor;
         public int FontSize;
         public Font Font;
         public Color FontColor;
@@ -75,6 +80,7 @@ namespace MoGUI
         public ControlOrientation SliderOrientation;
         public ControlLabelPlacement SliderLabelPlacement;
         public Vector4 SliderSize;
+        public SliderDirection SliderDirection;
         // Input
         public int InputFontSize;
         public Font InputFont;
@@ -98,8 +104,11 @@ namespace MoGUI
         public ControlOrientation Orientation;
         public ControlLabelPlacement LabelPlacement;
 
+        public ControlOrientation SelectorOrientation;
+
         public MoGuiMeta(string pluginName, string name
             , int? txtMargin = null
+            , TextAnchor? txtAnchor = null
             , int? fontSize = null
             , int? inputFontSize = null
             , int? headerFontSize = null
@@ -136,6 +145,7 @@ namespace MoGUI
             , ControlOrientation? sliderOrientation = null
             , ControlOrientation? inputOrientation = null
             , ControlOrientation? toggleOrientation = null
+            , ControlOrientation? selectorOrientation = null
             , ControlLabelPlacement? labelPlacement = null
             , ControlLabelPlacement? sliderLabelPlacement = null
             , ControlLabelPlacement? inputLabelPlacement = null
@@ -145,6 +155,7 @@ namespace MoGUI
             , Vector4? sliderSize = null
             , Vector4? inputSize = null
             , Vector4? dDLSize = null
+            , SliderDirection? sliderDirection = null
         )
         {
             PluginName = pluginName;
@@ -152,12 +163,13 @@ namespace MoGUI
 
             TxtMargin = txtMargin ?? DefaultTxtMargin;
             FontSize = fontSize ?? DefaultFontSize;
+            TxtAnchor = txtAnchor ?? DefaultTxtAnchor;
             Font = font ?? DefaultFont;
             FontColor = fontColor ?? DefaultFontColor;
             Orientation = orientation ?? DefaultOrientation;
             LabelPlacement = labelPlacement ?? DefaultLabelPlacement;
 
-            PanelColor = panelColor ?? DefaultPanelColor;
+            PanelColor = new MoGuiColor( panelColor ?? DefaultPanelColor);
             HeaderFontSize = headerFontSize ?? DefaultHeaderFontSize;
             HeaderExitFontSize = headerexitFontSize ?? DefaultHeaderExitFontSize;
             HeaderSize = headerSize ?? DefaultHeaderSize;
@@ -183,6 +195,7 @@ namespace MoGUI
             SliderOrientation = sliderOrientation ?? DefaultSliderOrientation;
             SliderLabelPlacement = sliderLabelPlacement ?? DefaultSliderLabelPlacement;
             SliderSize = sliderSize ?? DefaultSliderSize;
+            SliderDirection = sliderDirection ?? DefaultSliderDirection;
 
             InputFont = inputFont ?? DefaultFont;
             InputFontSize = inputFontSize ?? DefaultFontSize;
@@ -203,10 +216,13 @@ namespace MoGUI
             DDLListItemFontColor = dDLListItemFontColor ?? DefaultFontColor;
             DDLSize = dDLSize ?? DefaultButtonSize;
 
+            SelectorOrientation = selectorOrientation ?? DefaultSliderOrientation;
+
         }
 
         public MoGuiMeta(MoGuiMeta meta, string name
             , int? txtMargin = null
+            , TextAnchor? txtAnchor = null
             , int? fontSize = null
             , int? inputFontSize = null
             , int? buttonFontSize = null
@@ -244,6 +260,7 @@ namespace MoGUI
             , ControlOrientation? sliderOrientation = null
             , ControlOrientation? inputOrientation = null
             , ControlOrientation? toggleOrientation = null
+            , ControlOrientation? selectorOrientation = null
             , ControlLabelPlacement? sliderLabelPlacement = null
             , ControlLabelPlacement? inputLabelPlacement = null
             , ControlLabelPlacement? toggleLabelPlacement = null
@@ -252,19 +269,21 @@ namespace MoGUI
             , Vector4? sliderSize = null
             , Vector4? inputSize = null
             , Vector4? dDLSize = null
+            , SliderDirection? sliderDirection = null
         )
         {
             PluginName = meta.PluginName;
             Name = name;
 
             TxtMargin = txtMargin ?? meta.TxtMargin;
+            TxtAnchor = txtAnchor ?? meta.TxtAnchor;
             FontSize = fontSize ?? meta.FontSize;
             FontColor = fontColor ?? meta.FontColor;
             Font = font ?? meta.Font;
             LabelPlacement = labelPlacement ?? meta.LabelPlacement;
             Orientation = orientation ?? meta.Orientation;
 
-            PanelColor = panelColor ?? meta.PanelColor;
+            PanelColor = panelColor != null ? new MoGuiColor((Color)panelColor) : meta.PanelColor;
             HeaderFontSize = headerFontSize ?? meta.HeaderFontSize;
             HeaderExitFontSize = headerexitFontSize ?? meta.HeaderExitFontSize;
             HeaderSize = headerSize ?? meta.HeaderSize;
@@ -289,6 +308,7 @@ namespace MoGUI
             SliderFillColor = sliderFillColor ?? meta.SliderFillColor;
             SliderOrientation = sliderOrientation ?? meta.SliderOrientation;
             SliderLabelPlacement = sliderLabelPlacement ?? meta.SliderLabelPlacement;
+            SliderDirection = sliderDirection ?? meta.SliderDirection;
 
             InputColor = inputColor ?? meta.InputColor;
             InputFontColor = inputFontColor ?? meta.FontColor;
@@ -297,8 +317,8 @@ namespace MoGUI
             InputLabelPlacement = inputLabelPlacement ?? meta.InputLabelPlacement;
             ToggleLabelPlacement = toggleLabelPlacement ?? meta.ToggleLabelPlacement;
             InputOrientation = inputOrientation ?? meta.InputOrientation;
-            InputFont = inputFont ?? meta.Font;
-            InputFontSize = inputFontSize ?? meta.FontSize;
+            InputFont = inputFont ?? meta.InputFont;
+            InputFontSize = inputFontSize ?? meta.InputFontSize;
 
             DDLFont = dDLFont ?? meta.DDLFont;
             DDLListFont = dDLListFont ?? meta.DDLListFont;
@@ -309,6 +329,8 @@ namespace MoGUI
             DDLListColor = dDLListColor ?? meta.DDLListColor;
             DDLListItemFontColor = dDLListItemFontColor ?? meta.DDLListItemFontColor;
             DDLSize = dDLSize ?? meta.DDLSize;
+
+            SelectorOrientation = selectorOrientation ?? meta.SelectorOrientation;
         }
     }
 
@@ -326,7 +348,7 @@ namespace MoGUI
         // resize handle
     }
 
-    public class MoGuiTypography
+    public class MoGuiFont
     {
         public int FontSize { get; set; }
         public Font Font { get; set; }
@@ -343,5 +365,104 @@ namespace MoGUI
         public Color Background { get; set; }
         public Color Accent { get; set; }
         // ...
+    }
+
+    public class MoGuiColor
+    {
+
+        Color _base;
+        public Func<Color> BoundBase;
+        public Color Base 
+        { 
+            get 
+            {
+                if (BoundBase != null) 
+                {
+                    return BoundBase();
+                
+                } else
+                {
+                    return _base;
+                }
+            }
+            set { _base = value; }
+        }
+        public Color Shade
+        {
+            get
+            {
+                return MutateColor(Base, DarkFactor);
+            }
+        }
+        public Color Tint
+        {
+            get
+            {
+                return MutateColor(Base, Factor);
+            }
+        }
+
+
+
+        public float Factor;
+        float? darkFactor = null;
+
+
+        public float DarkFactor
+        {
+            get 
+            { 
+                if (darkFactor != null && float.TryParse(darkFactor.ToString(), out float dfactor)) 
+                { return dfactor; }
+                else { return Factor * -1; }
+            }
+            set { darkFactor = value; }
+        }
+
+        
+
+
+        public MoGuiColor(Color color, float factor = 0.5f, float? darkfactor = null)
+        {
+            BoundBase = () => color;
+            darkFactor = darkfactor;
+            Factor = factor;
+        }
+
+        public MoGuiColor(ColorWrapper color, float factor = 0.5f, float? darkfactor = null)
+        {
+            BoundBase = () => color.Color;
+            darkFactor = darkfactor;
+            Factor = factor;
+        }
+
+        public MoGuiColor(Func<Color> color, float factor = 0.5f, float? darkfactor = null)
+        {
+            BoundBase = color;
+            darkFactor = darkfactor;
+            Factor = factor;
+        }
+
+
+        public Color MutateColor( Color color, float factor)
+        {
+            float r = MutateColorPart(color.r , factor);
+            float g = MutateColorPart(color.g, factor);
+            float b = MutateColorPart(color.b, factor);
+            return new Color(r,g,b,color.a);
+        }
+
+        public float MutateColorPart(float value, float factor)
+        {
+            if(factor >= 0)
+            {
+                return value + (1 - value) * factor;
+            } else
+            {
+                return value * (1 + factor);
+
+            }
+        }
+
     }
 }

@@ -40,13 +40,19 @@ namespace MoGUI
 
         }
 
+        public override void SetLayout()
+        {
+            minWidth = 20;
+        }
+
         public GameObject CreateText(string text = null)
         {
             var textObject = new GameObject(PluginName + "_" + Name + "_" + "Text");
-            textObject.transform.SetParent(Container.transform, false);
+            //textObject.transform.SetParent(Container.transform, false);
 
             Text = textObject.AddComponent<Text>();
             Text.text = text != null ? text : "";
+            //Text.horizontalOverflow = HorizontalWrapMode.Overflow;
             switch (Element)
             {
                 //case TextElement.title:
@@ -72,6 +78,18 @@ namespace MoGUI
                     Text.color = Meta.FontColor;
                     break;
             }
+            RectTransform labelRect = textObject.GetComponent<RectTransform>();
+            labelRect.anchoredPosition = new Vector2(0, 0);
+            labelRect.anchorMin = new Vector2(0, 0);
+            labelRect.anchorMax = new Vector2(1, 1);
+            labelRect.offsetMin = new Vector2(Meta.TxtMargin, 0);
+
+            labelRect.offsetMax = new Vector2(-Meta.TxtMargin, 0);
+
+            AddLayoutElement(textObject);
+            SetLayout();
+            //layoutElement.preferredHeight = 380;
+
             return textObject;
         }
 

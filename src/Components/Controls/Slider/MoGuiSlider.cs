@@ -6,12 +6,29 @@ using UnityEngine.EventSystems;
 
 namespace MoGUI
 {
-    class MoGuiSlider : MoGuiControl
+    public class MoGuiSlider : MoGuiControl
     {
         string Type;
         MoGuiTxt Text;
         Slider Slider;
         public float Value => Slider.value;
+        Image Fill;
+        public Func<Color> BoundFillColor;
+
+        public Color FillColor
+        {
+            get
+            {
+                if(BoundFillColor != null)
+                {
+                    return BoundFillColor();
+                }
+                else
+                {
+                    return Meta.SliderFillColor;
+                }
+            }
+        }
 
         public Vector2 Range
         {
@@ -141,9 +158,49 @@ namespace MoGUI
 
         }
 
+        public MoGuiSlider(MoGuiMeta meta, string name, MoCaSlider args) : base(meta, name)
+        {
+            MinValue = args.Range.x;
+            MaxValue = args.Range.y;
+
+            OnUpdateAction = args.OnUpdateAction;
+            Type = args.ValType;
+            OnEditAction = args.OnEditAction;
+            switch (Meta.SliderLabelPlacement)
+            {
+                case ControlLabelPlacement.before:
+                    AddText("SliderTxt", args.Text);
+                    Obj = CreateSlider();
+                    break;
+                case ControlLabelPlacement.after:
+                    Obj = CreateSlider();
+                    AddText("SliderTxt", args.Text);
+                    break;
+                default:
+                    Obj = CreateSlider();
+                    break;
+            }
+
+            if (args.BoundMin != null)
+            {
+                bindMin(args.BoundMin);
+            }
+            if (args.BoundMax != null)
+            {
+                bindMax(args.BoundMax);
+            }
+
+
+        }
+
         public override void _Init()
         {
             Container = CreateContainer(Meta.SliderOrientation);
+        }
+
+        public override void SetLayout()
+        {
+
         }
 
         public GameObject CreateSlider()
@@ -155,11 +212,11 @@ namespace MoGUI
             sliderRect.anchorMax = new Vector2(1, 1);
             
 
+
             LayoutElement layoutElement = sliderObject.AddComponent<LayoutElement>();
-            layoutElement.minWidth = Meta.SliderSize.x;
-            layoutElement.minHeight = Meta.SliderSize.y;
-            layoutElement.preferredWidth = Meta.SliderSize.z;
-            layoutElement.preferredHeight = Meta.SliderSize.w;
+
+            
+                
 
             Slider = sliderObject.AddComponent<Slider>();
             Slider.minValue = MinValue;
@@ -171,11 +228,7 @@ namespace MoGUI
             backgroundObject.transform.SetParent(sliderObject.transform, false);
             RectTransform backgroundRect = backgroundObject.AddComponent<RectTransform>();
 
-            backgroundRect.anchorMin = Vector2.zero;
-            backgroundRect.anchorMax = Vector2.one;
-
-            backgroundRect.offsetMin = new Vector2(0, 10);
-            backgroundRect.offsetMax = new Vector2(0, -10);
+            
 
             Image backgroundImage = backgroundObject.AddComponent<Image>();
             backgroundImage.color = Meta.SliderTrackColor;
@@ -183,33 +236,89 @@ namespace MoGUI
             GameObject fillAreaObject = new GameObject(PluginName + "_" + Name + "_" + "SliderFillArea");
             fillAreaObject.transform.SetParent(sliderObject.transform, false);
             RectTransform fillAreaRect = fillAreaObject.AddComponent<RectTransform>();
-            fillAreaRect.anchorMin = Vector2.zero;
-            fillAreaRect.anchorMax = Vector2.one;
-            fillAreaRect.offsetMin = new Vector2(0, 0);
-            fillAreaRect.offsetMax = new Vector2(0,0);
+            
 
             GameObject fillObject = new GameObject(PluginName + "_" + Name + "_" + "SliderFill");
             fillObject.transform.SetParent(fillAreaObject.transform, false);
             RectTransform fillRect = fillObject.AddComponent<RectTransform>();
-            fillRect.anchorMin = Vector2.zero;
-            fillRect.anchorMax = Vector2.one;
-            fillRect.offsetMin = new Vector2(0, 12);
-            fillRect.offsetMax = new Vector2(0, -12);
-            Image fillImage = fillObject.AddComponent<Image>();
-            fillImage.color = Meta.SliderFillColor;
-            Slider.fillRect = fillImage.rectTransform;
+
+            Fill = fillObject.AddComponent<Image>();
+            Fill.color = FillColor;
+            Slider.fillRect = Fill.rectTransform;
 
             GameObject handleObject = new GameObject(PluginName + "_" + Name + "_" + "SliderHandle");
             handleObject.transform.SetParent(sliderObject.transform, false);
             RectTransform handleRect = handleObject.AddComponent<RectTransform>();
-            handleRect.anchorMin = new Vector2(0, 0.5f);
-            handleRect.anchorMax = new Vector2(1, 0.5f);
-            handleRect.offsetMin = new Vector2(-10, 10); 
-            handleRect.offsetMax = new Vector2(10, -10); 
+            
 
             Image handleImage = handleObject.AddComponent<Image>();
             handleImage.color = Meta.SliderHandleColor;
             Slider.handleRect = handleRect;
+
+
+
+            if (Meta.SliderDirection == SliderDirection.vertical)
+            {
+                
+                backgroundRect.anchorMin = Vector2.zero;
+                backgroundRect.anchorMax = Vector2.one;
+
+                backgroundRect.offsetMin = new Vector2(10, 0);
+                backgroundRect.offsetMax = new Vector2(-10, 0);
+
+                layoutElement.minWidth = Meta.SliderSize.y;
+                layoutElement.minHeight = Meta.SliderSize.x;
+                layoutElement.preferredWidth = Meta.SliderSize.w;
+                layoutElement.preferredHeight = Meta.SliderSize.z;
+                layoutElement.flexibleHeight = 1;
+
+                fillAreaRect.anchorMin = Vector2.zero;
+                fillAreaRect.anchorMax = Vector2.one;
+                fillAreaRect.offsetMin = new Vector2(0, 0);
+                fillAreaRect.offsetMax = new Vector2(0, 0);
+
+                fillRect.anchorMin = Vector2.zero;
+                fillRect.anchorMax = Vector2.one;
+                fillRect.offsetMin = new Vector2(12, 0);
+                fillRect.offsetMax = new Vector2(-12, 0);
+
+                handleRect.anchorMin = new Vector2(0.5f, 0);
+                handleRect.anchorMax = new Vector2(0.5f,  1);
+                handleRect.offsetMin = new Vector2(10, -10);
+                handleRect.offsetMax = new Vector2(-10, 10);
+                Slider.direction = Slider.Direction.BottomToTop;
+            }
+            else
+            {
+                
+                backgroundRect.anchorMin = Vector2.zero;
+                backgroundRect.anchorMax = Vector2.one;
+
+                backgroundRect.offsetMin = new Vector2(0, 10);
+                backgroundRect.offsetMax = new Vector2(0, -10);
+
+                layoutElement.minWidth = Meta.SliderSize.x;
+                layoutElement.minHeight = Meta.SliderSize.y;
+                layoutElement.preferredWidth = Meta.SliderSize.z;
+                layoutElement.preferredHeight = Meta.SliderSize.w;
+                layoutElement.flexibleWidth = 1;
+
+                fillAreaRect.anchorMin = Vector2.zero;
+                fillAreaRect.anchorMax = Vector2.one;
+                fillAreaRect.offsetMin = new Vector2(0, 0);
+                fillAreaRect.offsetMax = new Vector2(0, 0);
+
+                fillRect.anchorMin = Vector2.zero;
+                fillRect.anchorMax = Vector2.one;
+                fillRect.offsetMin = new Vector2(0, 12);
+                fillRect.offsetMax = new Vector2(0, -12);
+
+                handleRect.anchorMin = new Vector2(0, 0.5f);
+                handleRect.anchorMax = new Vector2(1, 0.5f);
+                handleRect.offsetMin = new Vector2(-10, 10);
+                handleRect.offsetMax = new Vector2(10, -10);
+                Slider.direction = Slider.Direction.LeftToRight;
+            }
 
 
 
@@ -255,12 +364,12 @@ namespace MoGUI
             if (Text != null)
             {
                 Text.Update(text);
-                Text.Container.transform.SetParent(Container.transform, false);
+                Text.Obj.transform.SetParent(Container.transform, false);
             }
             else
             {
                 Text = new MoGuiTxt(Meta, Name + "_" + label, text);
-                Text.Container.transform.SetParent(Container.transform, false);
+                Text.Obj.transform.SetParent(Container.transform, false);
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
 
@@ -276,7 +385,7 @@ namespace MoGUI
             else
             {
                 Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
-                Text.Container.transform.SetParent(Container.transform, false);
+                Text.Obj.transform.SetParent(Container.transform, false);
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
 
@@ -284,7 +393,11 @@ namespace MoGUI
 
         public override void Update()
         {
-            Text.Update();
+            if(Text != null)
+            {
+                Text.Update();
+            }
+            
             if (OnUpdateAction != null)
             {
                 if (float.TryParse(OnUpdateAction().ToString(), out float updatedValue))
@@ -292,6 +405,8 @@ namespace MoGUI
                     Slider.value = updatedValue;
                 }
             }
+            Fill.color = FillColor;
+
             Slider.minValue = MinValue;
             Slider.maxValue = MaxValue;
 

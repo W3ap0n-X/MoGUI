@@ -41,6 +41,20 @@ namespace MoGUI
             }
         }
 
+        public override void SetLayout()
+        {
+            minWidth = Meta.ButtonSize.x;
+            minHeight = Meta.ButtonSize.y;
+            //preferredWidth = Meta.ButtonSize.z;
+            //preferredHeight = Meta.ButtonSize.w;
+            flexibleHeight = 1;
+            flexibleWidth = 1;
+        }
+
+        //public override void _Init()
+        //{
+        //    Container = CreateContainer();
+        //}
         public GameObject CreateButton(Action onClickAction)
         {
             GameObject buttonObject = new GameObject(PluginName + "_" + Name + "_" + "Button");
@@ -48,16 +62,13 @@ namespace MoGUI
             Image buttonImage = buttonObject.AddComponent<Image>();
             buttonImage.color = Meta.ButtonColor;
 
-            LayoutElement layoutElement = buttonObject.AddComponent<LayoutElement>();
-            layoutElement.minWidth = Meta.ButtonSize.x;
-            layoutElement.minHeight = Meta.ButtonSize.y;
-            layoutElement.preferredWidth = Meta.ButtonSize.z;
-            layoutElement.preferredHeight = Meta.ButtonSize.w;
+            AddLayoutElement(buttonObject);
+            SetLayout();
 
             Button buttonComponent = buttonObject.AddComponent<Button>();
             buttonComponent.onClick.AddListener(() => onClickAction?.Invoke());
-
-            buttonObject.transform.SetParent(Container.transform, false);
+            
+            //buttonObject.transform.SetParent(Container.transform, false);
             return buttonObject;
         }
 
@@ -76,14 +87,14 @@ namespace MoGUI
             if (Text != null)
             {
                 Text.Update(text);
-                Text.Container.transform.SetParent(Obj.transform, false);
+                Text.Obj.transform.SetParent(Obj.transform, false);
             }
             else
             {
                 Text = new MoGuiTxt(Meta, Name + "_" + label, text);
-                Text.Container.transform.SetParent(Obj.transform, false);
-                HorizontalLayoutGroup layoutGroup = Text.Container.GetComponent<HorizontalLayoutGroup>();
-                layoutGroup.childForceExpandHeight = true;
+                Text.Obj.transform.SetParent(Obj.transform, false);
+                //HorizontalLayoutGroup layoutGroup = Text.Container.GetComponent<HorizontalLayoutGroup>();
+                //layoutGroup.childForceExpandHeight = true;
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
             }
 
@@ -95,14 +106,14 @@ namespace MoGUI
             {
                 Text.Update(onUpdateAction());
 
-                Text.Container.transform.SetParent(Obj.transform, false);
+                Text.Obj.transform.SetParent(Obj.transform, false);
             }
             else
             {
                 Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
-                Text.Container.transform.SetParent(Obj.transform, false);
-                HorizontalLayoutGroup layoutGroup = Text.Container.GetComponent<HorizontalLayoutGroup>();
-                layoutGroup.childForceExpandHeight = true;
+                Text.Obj.transform.SetParent(Obj.transform, false);
+                //HorizontalLayoutGroup layoutGroup = Text.Container.GetComponent<HorizontalLayoutGroup>();
+                //layoutGroup.childForceExpandHeight = true;
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
             }
 

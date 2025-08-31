@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 namespace MoGUI
 {
@@ -63,9 +64,18 @@ namespace MoGUI
             }
         }
 
+        public override void SetLayout()
+        {
+            minWidth = Meta.InputSize.x;
+            minHeight = Meta.InputSize.y;
+            //preferredWidth = Meta.InputSize.z;
+            //preferredHeight = Meta.InputSize.w;
+            flexibleHeight = 1;
+            flexibleWidth = 1;
+        }
+
         public MoGuiInput(MoGuiMeta meta, string name, MoCaInput args) : base(meta, name)
         {
-            
 
             if (args.OnUpdateAction != null)
             {
@@ -159,11 +169,10 @@ namespace MoGUI
             GameObject inputObject = new GameObject(PluginName + "_" + Name + "_" + "InputField");
             inputObject.transform.SetParent(Container.transform, false);
 
-            LayoutElement layoutElement = inputObject.AddComponent<LayoutElement>();
-            layoutElement.minWidth = Meta.InputSize.x;
-            layoutElement.minHeight = Meta.InputSize.y;
-            layoutElement.preferredWidth = Meta.InputSize.z;
-            layoutElement.preferredHeight = Meta.InputSize.w;
+            AddLayoutElement(inputObject);
+            SetLayout();
+
+            
 
 
             RectTransform inputRect = inputObject.GetComponent<RectTransform>();
@@ -196,7 +205,7 @@ namespace MoGUI
             placeholderRect.offsetMax = new Vector2(-10, -5);
 
             PlaceHolderText = placeholderObject.AddComponent<Text>();
-            PlaceHolderText.alignment = TextAnchor.MiddleLeft;
+            PlaceHolderText.alignment = Meta.TxtAnchor;
 
             PlaceHolderText.text = "Enter Value...";
 
@@ -214,10 +223,10 @@ namespace MoGUI
             RectTransform textRect = textObject.AddComponent<RectTransform>();
             textRect.anchorMin = Vector2.zero;
             textRect.anchorMax = Vector2.one;
-            textRect.offsetMin = new Vector2(10, 5);
-            textRect.offsetMax = new Vector2(-10, -5);
+            textRect.offsetMin = new Vector2(Meta.TxtMargin *2, Meta.TxtMargin);
+            textRect.offsetMax = new Vector2(Meta.TxtMargin * -2, Meta.TxtMargin * -1);
             InputText = textObject.AddComponent<Text>();
-            InputText.alignment = TextAnchor.MiddleLeft;
+            InputText.alignment = Meta.TxtAnchor;
 
             //InputText.text = Value.ToString() ?? null;
 
@@ -233,13 +242,13 @@ namespace MoGUI
             if (Text != null)
             {
                 Text.Update(text);
-                Text.Container.transform.SetParent(Container.transform, false);
+                Text.Obj.transform.SetParent(Container.transform, false);
             }
             else
             {
                 Text = new MoGuiTxt(Meta, Name + "_" + label, text);
-                Text.Container.transform.SetParent(Container.transform, false);
-                Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
+                Text.Obj.transform.SetParent(Container.transform, false);
+                Text.Obj.GetComponent<Text>().alignment = Meta.TxtAnchor;
             }
 
         }
@@ -248,13 +257,13 @@ namespace MoGUI
             if (Text != null)
             {
                 Text.Update(onUpdateAction);
-                Text.Container.transform.SetParent(Container.transform, false);
+                Text.Obj.transform.SetParent(Container.transform, false);
             }
             else
             {
                 Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
-                Text.Container.transform.SetParent(Container.transform, false);
-                Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
+                Text.Obj.transform.SetParent(Container.transform, false);
+                Text.Obj.GetComponent<Text>().alignment = Meta.TxtAnchor;
             }
 
         }
@@ -296,7 +305,10 @@ namespace MoGUI
         }
         public override void Update()
         {
-            Text.Update();
+            if (Text != null)
+            {
+                Text.Update();
+            }
             if (!Input.isFocused)
             {
                 if (OnUpdateAction != null)
@@ -320,7 +332,7 @@ namespace MoGUI
             Func<object> text,
             string valType = "none",
             MoGuiMeta meta = null
-        ) : base(typeof(MoGuiInput), meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType)
+        ) : base(typeof(MoGuiInput), meta:meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType)
         {
 
         }
@@ -330,7 +342,7 @@ namespace MoGUI
             object text = null,
             string valType = "none",
             MoGuiMeta meta = null
-        ) : base(typeof(MoGuiInput), meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType)
+        ) : base(typeof(MoGuiInput), meta:meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType)
         {
 
         }
@@ -342,7 +354,7 @@ namespace MoGUI
             Action<object> onEditAction = null,
             Func<object> onUpdateAction = null,
             MoGuiMeta meta = null
-        ) : base(typeof(MoGuiInput), meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType)
+        ) : base(typeof(MoGuiInput), meta:meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType)
         {
             Value = value;
         }

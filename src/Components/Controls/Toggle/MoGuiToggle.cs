@@ -59,6 +59,8 @@ namespace MoGUI
 
         }
 
+        
+
         public MoGuiToggle(MoGuiMeta meta, string name, MoCaToggle args) : base(meta, name)
         {
             if (args.boundValue != null)
@@ -98,6 +100,14 @@ namespace MoGUI
             Container = CreateContainer(Meta.ToggleOrientation);
         }
 
+        public override void SetLayout()
+        {
+            minWidth = Meta.ToggleSize.x;
+            minHeight = Meta.ToggleSize.y;
+            preferredWidth = Meta.ToggleSize.z;
+            preferredHeight = Meta.ToggleSize.w;
+            flexibleWidth = 0;
+        }
         public GameObject CreateToggle(Action<bool> onClickAction)
         {
 
@@ -105,11 +115,10 @@ namespace MoGUI
             toggleObject.transform.SetParent(Container.transform, false);
 
             LayoutElement layoutElement = toggleObject.AddComponent<LayoutElement>();
-            layoutElement.minWidth = Meta.ToggleSize.x;
-            layoutElement.minHeight = Meta.ToggleSize.y;
-            layoutElement.preferredWidth = Meta.ToggleSize.z;
-            layoutElement.preferredHeight = Meta.ToggleSize.w;
-            layoutElement.flexibleWidth = 0;
+            
+
+            AddLayoutElement(toggleObject);
+            SetLayout();
 
             Toggle toggleComponent = toggleObject.AddComponent<Toggle>();
 
@@ -162,12 +171,12 @@ namespace MoGUI
             if (Label != null)
             {
                 Label.Update(text);
-                Label.Container.transform.SetParent(Container.transform, false);
+                Label.Obj.transform.SetParent(Container.transform, false);
             }
             else
             {
                 Label = new MoGuiTxt(Meta, Name + "_" + label, text);
-                Label.Container.transform.SetParent(Container.transform, false);
+                Label.Obj.transform.SetParent(Container.transform, false);
                 Label.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
 
@@ -177,19 +186,22 @@ namespace MoGUI
             if (Label != null)
             {
                 Label.Update(onUpdateAction);
-                Label.Container.transform.SetParent(Container.transform, false);
+                Label.Obj.transform.SetParent(Container.transform, false);
             }
             else
             {
                 Label = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
-                Label.Container.transform.SetParent(Container.transform, false);
+                Label.Obj.transform.SetParent(Container.transform, false);
                 Label.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
 
         }
         public override void Update()
         {
-            Label.Update();
+            if (Label != null)
+            {
+                Label.Update();
+            }
             if (boundValue != null) {
                 Obj.GetComponent<Toggle>().isOn = Value;
             } else
@@ -203,7 +215,12 @@ namespace MoGUI
     public class MoGuiToggleBt : MoGuiToggle
     {
 
+        public MoGuiToggleBt(MoGuiMeta meta, string name, Func<bool> value, Func<object> text, Action<bool> onClickAction) : base(meta, name)
+        {
+            boundValue = value;
+            Init(text, onClickAction);
 
+        }
         public MoGuiToggleBt(MoGuiMeta meta, string name, MoCaToggleBT args) : base(meta, name)
         {
             if(args.boundValue != null)
@@ -218,10 +235,21 @@ namespace MoGUI
 
         }
 
+
+
         void Init(Func<object> text, Action<bool> onClickAction)
         {
             Obj = CreateToggle(onClickAction);
             AddText("ToggleTxt", text);
+        }
+
+        public override void SetLayout()
+        {
+            minWidth = Meta.ButtonSize.x;
+            minHeight = Meta.ButtonSize.y;
+            //preferredWidth = Meta.ButtonSize.z;
+            //preferredHeight = Meta.ButtonSize.w;
+            flexibleWidth = 1;
         }
 
         public new GameObject CreateToggle(Action<bool> onClickAction)
@@ -230,11 +258,8 @@ namespace MoGUI
             GameObject toggleObject = new GameObject(PluginName + "_" + Name + "_" + "ToggleBT");
             toggleObject.transform.SetParent(Container.transform, false);
 
-            LayoutElement layoutElement = toggleObject.AddComponent<LayoutElement>();
-            layoutElement.minWidth = Meta.ButtonSize.x;
-            layoutElement.minHeight = Meta.ButtonSize.y;
-            layoutElement.preferredWidth = Meta.ButtonSize.z;
-            layoutElement.preferredHeight = Meta.ButtonSize.w;
+            AddLayoutElement(toggleObject);
+            SetLayout();
 
             Toggle toggleComponent = toggleObject.AddComponent<Toggle>();
 
@@ -293,15 +318,15 @@ namespace MoGUI
             if (Label != null)
             {
                 Label.Update(onUpdateAction);
-                Label.Container.transform.SetParent(Obj.transform, false);
+                Label.Obj.transform.SetParent(Obj.transform, false);
             }
             else
             {
                 Label = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
-                Label.Container.transform.SetParent(Obj.transform, false);
-                var labelLayout = Label.Container.GetComponent<HorizontalOrVerticalLayoutGroup>();
-                labelLayout.childAlignment = TextAnchor.MiddleCenter;
-                RectTransform labelRect = Label.Container.GetComponent<RectTransform>();
+                Label.Obj.transform.SetParent(Obj.transform, false);
+                //var labelLayout = Label.Container.GetComponent<HorizontalOrVerticalLayoutGroup>();
+                //labelLayout.childAlignment = TextAnchor.MiddleCenter;
+                RectTransform labelRect = Label.Obj.GetComponent<RectTransform>();
                 labelRect.anchoredPosition = new Vector2(0, 0);
                 labelRect.anchorMin = new Vector2(0, 0);
                 labelRect.anchorMax = new Vector2(1, 1);
