@@ -66,8 +66,54 @@ namespace MoGUI
 
     public class ControlMeta : BlockMeta
     {
+        public ControlOrientation orientation;
+        public ControlLabelPlacement labelPlacement;
         public ControlMeta(string name) : base(name) { }
+        
 
+
+        public ControlMeta Orientation(ControlOrientation controlOrientation)
+        {
+            orientation = controlOrientation;
+            return this;
+        }
+
+        public ControlMeta Orientation(string controlOrientation)
+        {
+            if(controlOrientation == "vertical")
+            {
+                orientation = ControlOrientation.vertical;
+            } else
+            {
+                orientation = ControlOrientation.horizontal;
+            }
+
+                return this;
+        }
+
+        public ControlMeta LabelPlacement(ControlLabelPlacement placement)
+        {
+            labelPlacement = placement;
+            return this;
+        }
+
+        public ControlMeta LabelPlacement(string placement)
+        {
+            if (placement == "after")
+            {
+                labelPlacement = ControlLabelPlacement.after;
+            }
+            else if( placement == "none")
+            {
+                labelPlacement = ControlLabelPlacement.none;
+            }
+            else
+            {
+                labelPlacement = ControlLabelPlacement.before;
+            }
+
+            return this;
+        }
 
     }
 

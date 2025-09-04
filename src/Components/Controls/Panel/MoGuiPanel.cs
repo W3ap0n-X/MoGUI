@@ -244,12 +244,6 @@ namespace MoGUI
                 return new MoGuiToggle(_args.Meta ?? Meta, Name + "_" + name, _args);
 
             }
-            else if (args.Type == typeof(MoGuiToggleBt))
-            {
-                MoCaToggleBT _args = (MoCaToggleBT)args;
-                return new MoGuiToggleBt(_args.Meta ?? Meta, Name + "_" + name, _args);
-
-            }
             else if (args.Type == typeof(MoGuiInput))
             {
                 MoCaInput _args = (MoCaInput)args;

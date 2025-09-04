@@ -20,6 +20,8 @@ namespace MoGUI
         public Vector2 Pos;
         public MoGuiMeta Meta;
 
+        public GuiMeta _Meta;
+
         public ControlOrientation Orientation = ControlOrientation.horizontal;
         public ControlLabelPlacement LabelPlacement = ControlLabelPlacement.after;
 
@@ -44,25 +46,6 @@ namespace MoGUI
 
         }
 
-        public MoGuiControl(string pluginName, string name, Vector2 size)
-        {
-            PluginName = pluginName;
-            Name = name;
-            Size = size;
-            Meta = new MoGuiMeta(pluginName, name);
-            _Init();
-        }
-
-        public MoGuiControl(string pluginName, string name, Vector2 size, Vector2 pos)
-        {
-
-            PluginName = pluginName;
-            Name = name;
-            Pos = pos;
-            Size = size;
-            Meta = new MoGuiMeta(pluginName, name);
-            _Init();
-        }
 
         public MoGuiControl(MoGuiMeta meta, string name, Vector2 size, Vector2 pos)
         {

@@ -12,9 +12,9 @@ namespace MoGUI
         public MoGuiTxt Label;
         protected Func<bool> boundValue;
         protected bool _value;
-        //ToggleType ToggleType = ToggleType.checkbox;
+        ToggleType ToggleType = ToggleType.checkbox;
 
-        
+
 
         public bool Value
         {
@@ -36,15 +36,17 @@ namespace MoGUI
             }
         }
 
-        public MoGuiToggle(MoGuiMeta meta, string name, Func<bool> value, Func<object> text, Action<bool> onClickAction) : base(meta, name)
+        public MoGuiToggle(MoGuiMeta meta, string name, Func<bool> value, Func<object> text, Action<bool> onClickAction, ToggleType type = ToggleType.checkbox) : base(meta, name)
         {
+            ToggleType = type;
             boundValue = value;
             Init(text, onClickAction);
 
         }
 
-        public MoGuiToggle(MoGuiMeta meta, string name, bool value, Func<object> text, Action<bool> onClickAction) : base(meta, name)
+        public MoGuiToggle(MoGuiMeta meta, string name, bool value, Func<object> text, Action<bool> onClickAction, ToggleType type = ToggleType.checkbox) : base(meta, name)
         {
+            ToggleType = type;
             _value = value;
 
             Init(text, onClickAction);
@@ -63,6 +65,7 @@ namespace MoGUI
 
         public MoGuiToggle(MoGuiMeta meta, string name, MoCaToggle args) : base(meta, name)
         {
+            ToggleType = args.ToggleType;
             if (args.boundValue != null)
             {
                 boundValue = args.boundValue;
@@ -79,20 +82,29 @@ namespace MoGUI
 
         void Init(Func<object> text, Action<bool> onClickAction)
         {
-            switch (Meta.ToggleLabelPlacement)
+            if (ToggleType == ToggleType.button)
             {
-                case ControlLabelPlacement.before:
-                    AddText("ToggleTxt", text);
-                    Obj = CreateToggle(onClickAction);
-                    break;
-                case ControlLabelPlacement.after:
-                    Obj = CreateToggle(onClickAction);
-                    AddText("ToggleTxt", text);
-                    break;
-                default:
-                    Obj = CreateToggle(onClickAction);
-                    break;
+                Obj = CreateToggle(onClickAction);
+                AddText("ToggleTxt", text);
             }
+            else
+            {
+                switch (Meta.ToggleLabelPlacement)
+                {
+                    case ControlLabelPlacement.before:
+                        AddText("ToggleTxt", text);
+                        Obj = CreateToggle(onClickAction);
+                        break;
+                    case ControlLabelPlacement.after:
+                        Obj = CreateToggle(onClickAction);
+                        AddText("ToggleTxt", text);
+                        break;
+                    default:
+                        Obj = CreateToggle(onClickAction);
+                        break;
+                }
+            }
+            
         }
 
         public override void _Init()
@@ -102,11 +114,25 @@ namespace MoGUI
 
         public override void SetLayout()
         {
-            minWidth = MoGui.TestMeta.Toggle.checkBoxSize.x;
-            minHeight = MoGui.TestMeta.Toggle.checkBoxSize.y;
-            preferredWidth = MoGui.TestMeta.Toggle.checkBoxSize.z;
-            preferredHeight = MoGui.TestMeta.Toggle.checkBoxSize.w;
-            flexibleWidth = 0;
+            if (ToggleType == ToggleType.button) 
+            {
+                minWidth = MoGui.TestMeta.Toggle.buttonSize.minWidth;
+                minHeight = MoGui.TestMeta.Toggle.buttonSize.minHeight;
+                if (MoGui.TestMeta.Toggle.checkBoxSize.preferredWidth != null) { preferredWidth = (float)MoGui.TestMeta.Toggle.checkBoxSize.preferredWidth; }
+                if (MoGui.TestMeta.Toggle.checkBoxSize.preferredHeight != null) { preferredHeight = (float)MoGui.TestMeta.Toggle.checkBoxSize.preferredHeight; }
+                flexibleWidth = MoGui.TestMeta.Toggle.buttonSize.flexibleWidth ?? 0;
+                flexibleHeight = MoGui.TestMeta.Toggle.buttonSize.flexibleHeight ?? 0;
+            }
+            else
+            {
+                minWidth = MoGui.TestMeta.Toggle.checkBoxSize.minWidth;
+                minHeight = MoGui.TestMeta.Toggle.checkBoxSize.minHeight;
+                if (MoGui.TestMeta.Toggle.checkBoxSize.preferredWidth != null) { preferredWidth = (float)MoGui.TestMeta.Toggle.checkBoxSize.preferredWidth; }
+                if (MoGui.TestMeta.Toggle.checkBoxSize.preferredHeight != null) { preferredHeight = (float)MoGui.TestMeta.Toggle.checkBoxSize.preferredHeight; }
+                flexibleWidth = MoGui.TestMeta.Toggle.checkBoxSize.flexibleWidth ?? 0;
+                flexibleHeight = MoGui.TestMeta.Toggle.checkBoxSize.flexibleHeight ?? 0;
+            }
+                
         }
         public GameObject CreateToggle(Action<bool> onClickAction)
         {
@@ -125,23 +151,49 @@ namespace MoGUI
             GameObject backgroundObject = new GameObject(PluginName + "_" + Name + "_" + "ToggleBackground");
             backgroundObject.transform.SetParent(toggleObject.transform, false);
             RectTransform backgroundRect = backgroundObject.AddComponent<RectTransform>();
-            backgroundRect.anchorMin = new Vector2(0.4f, 0.4f);
-            backgroundRect.anchorMax = new Vector2(0.6f, 0.6f);
-            backgroundRect.offsetMin = new Vector2(-5, -5);
-            backgroundRect.offsetMax = new Vector2(5, 5);
 
             Image backgroundImage = backgroundObject.AddComponent<Image>();
             backgroundImage.color = MoGui.TestMeta.Toggle.background;
 
-            
-
             GameObject checkmarkObject = new GameObject(PluginName + "_" + Name + "_" + "ToggleCheckmark");
             checkmarkObject.transform.SetParent(backgroundObject.transform, false);
             RectTransform checkmarkRect = checkmarkObject.AddComponent<RectTransform>();
-            checkmarkRect.anchorMin = new Vector2(0, 0);
-            checkmarkRect.anchorMax = new Vector2(1, 1);
-            checkmarkRect.offsetMin = new Vector2(2, 2);
-            checkmarkRect.offsetMax = new Vector2(-2, -2);
+            if (ToggleType == ToggleType.button)
+            {
+                
+                backgroundRect.anchorMin = new Vector2(0, 0);
+                backgroundRect.anchorMax = new Vector2(1, 1);
+                backgroundRect.offsetMin = new Vector2(0, 0);
+                backgroundRect.offsetMax = new Vector2(0, 0);
+
+
+                
+                checkmarkRect.anchorMin = new Vector2(0, 0);
+                checkmarkRect.anchorMax = new Vector2(1, 1);
+                checkmarkRect.offsetMin = new Vector2(2, 2);
+                checkmarkRect.offsetMax = new Vector2(-2, -2);
+            }
+            else
+            {
+
+                backgroundRect.anchorMin = new Vector2(0.4f, 0.4f);
+                backgroundRect.anchorMax = new Vector2(0.6f, 0.6f);
+                backgroundRect.offsetMin = new Vector2(-5, -5);
+                backgroundRect.offsetMax = new Vector2(5, 5);
+
+
+
+
+                checkmarkRect.anchorMin = new Vector2(0, 0);
+                checkmarkRect.anchorMax = new Vector2(1, 1);
+                checkmarkRect.offsetMin = new Vector2(2, 2);
+                checkmarkRect.offsetMax = new Vector2(-2, -2);
+            }
+
+            
+
+
+            
 
             Image checkmarkImage = checkmarkObject.AddComponent<Image>();
             checkmarkImage.color = MoGui.TestMeta.Toggle.checkBox;
@@ -168,32 +220,84 @@ namespace MoGUI
 
         public void AddText(string label, object text)
         {
-            if (Label != null)
+            if (ToggleType == ToggleType.button)
             {
-                Label.Update(text);
-                Label.Obj.transform.SetParent(Container.transform, false);
+                if (Label != null)
+                {
+                    Label.Update(text);
+                    Label.Obj.transform.SetParent(Obj.transform, false);
+                }
+                else
+                {
+                    Label = new MoGuiTxt(Meta, Name + "_" + label, text);
+                    Label.Obj.transform.SetParent(Obj.transform, false);
+                    //var labelLayout = Label.Container.GetComponent<HorizontalOrVerticalLayoutGroup>();
+                    //labelLayout.childAlignment = TextAnchor.MiddleCenter;
+                    RectTransform labelRect = Label.Obj.GetComponent<RectTransform>();
+                    labelRect.anchoredPosition = new Vector2(0, 0);
+                    labelRect.anchorMin = new Vector2(0, 0);
+                    labelRect.anchorMax = new Vector2(1, 1);
+                    labelRect.offsetMin = new Vector2(0, 0);
+                    labelRect.offsetMax = new Vector2(0, 0);
+                    Label.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
+                }
             }
             else
             {
-                Label = new MoGuiTxt(Meta, Name + "_" + label, text);
-                Label.Obj.transform.SetParent(Container.transform, false);
-                Label.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
+                if (Label != null)
+                {
+                    Label.Update(text);
+                    Label.Obj.transform.SetParent(Container.transform, false);
+                }
+                else
+                {
+                    Label = new MoGuiTxt(Meta, Name + "_" + label, text);
+                    Label.Obj.transform.SetParent(Container.transform, false);
+                    Label.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
+                }
             }
+            
 
         }
         public void AddText(string label, Func<object> onUpdateAction)
         {
-            if (Label != null)
+            if (ToggleType == ToggleType.button)
             {
-                Label.Update(onUpdateAction);
-                Label.Obj.transform.SetParent(Container.transform, false);
+                if (Label != null)
+                {
+                    Label.Update(onUpdateAction);
+                    Label.Obj.transform.SetParent(Obj.transform, false);
+                }
+                else
+                {
+                    Label = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
+                    Label.Obj.transform.SetParent(Obj.transform, false);
+                    //var labelLayout = Label.Container.GetComponent<HorizontalOrVerticalLayoutGroup>();
+                    //labelLayout.childAlignment = TextAnchor.MiddleCenter;
+                    RectTransform labelRect = Label.Obj.GetComponent<RectTransform>();
+                    labelRect.anchoredPosition = new Vector2(0, 0);
+                    labelRect.anchorMin = new Vector2(0, 0);
+                    labelRect.anchorMax = new Vector2(1, 1);
+                    labelRect.offsetMin = new Vector2(0, 0);
+                    labelRect.offsetMax = new Vector2(0, 0);
+                    Label.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
+                }
             }
             else
             {
-                Label = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
-                Label.Obj.transform.SetParent(Container.transform, false);
-                Label.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
+                if (Label != null)
+                {
+                    Label.Update(onUpdateAction);
+                    Label.Obj.transform.SetParent(Container.transform, false);
+                }
+                else
+                {
+                    Label = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
+                    Label.Obj.transform.SetParent(Container.transform, false);
+                    Label.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
+                }
             }
+            
 
         }
         public override void Update()
@@ -212,130 +316,6 @@ namespace MoGUI
         }
     }
 
-    public class MoGuiToggleBt : MoGuiToggle
-    {
-
-        public MoGuiToggleBt(MoGuiMeta meta, string name, Func<bool> value, Func<object> text, Action<bool> onClickAction) : base(meta, name)
-        {
-            boundValue = value;
-            Init(text, onClickAction);
-
-        }
-        public MoGuiToggleBt(MoGuiMeta meta, string name, MoCaToggleBT args) : base(meta, name)
-        {
-            if(args.boundValue != null)
-            {
-                boundValue = args.boundValue;
-            } else
-            {
-                _value = args._value;
-            }
-            
-            Init(args.Text, args.OnClickAction);
-
-        }
-
-
-
-        void Init(Func<object> text, Action<bool> onClickAction)
-        {
-            Obj = CreateToggle(onClickAction);
-            AddText("ToggleTxt", text);
-        }
-
-        public override void SetLayout()
-        {
-            minWidth = Meta.ButtonSize.x;
-            minHeight = Meta.ButtonSize.y;
-            //preferredWidth = Meta.ButtonSize.z;
-            //preferredHeight = Meta.ButtonSize.w;
-            flexibleWidth = 1;
-        }
-
-        public new GameObject CreateToggle(Action<bool> onClickAction)
-        {
-
-            GameObject toggleObject = new GameObject(PluginName + "_" + Name + "_" + "ToggleBT");
-            toggleObject.transform.SetParent(Container.transform, false);
-
-            AddLayoutElement(toggleObject);
-            SetLayout();
-
-            Toggle toggleComponent = toggleObject.AddComponent<Toggle>();
-
-            
-
-            GameObject backgroundObject = new GameObject(PluginName + "_" + Name + "_" + "ToggleBackground");
-            backgroundObject.transform.SetParent(toggleObject.transform, false);
-            RectTransform backgroundRect = backgroundObject.AddComponent<RectTransform>();
-            backgroundRect.anchorMin = new Vector2(0, 0);
-            backgroundRect.anchorMax = new Vector2(1, 1);
-            backgroundRect.offsetMin = new Vector2(0, 0);
-            backgroundRect.offsetMax = new Vector2(0, 0);
-
-            
-
-            Image backgroundImage = backgroundObject.AddComponent<Image>();
-            backgroundImage.color = MoGui.TestMeta.Toggle.background;
-
-
-
-            GameObject checkmarkObject = new GameObject(PluginName + "_" + Name + "_" + "ToggleCheckmark");
-            checkmarkObject.transform.SetParent(backgroundObject.transform, false);
-            RectTransform checkmarkRect = checkmarkObject.AddComponent<RectTransform>();
-            checkmarkRect.anchorMin = new Vector2(0, 0);
-            checkmarkRect.anchorMax = new Vector2(1, 1);
-            checkmarkRect.offsetMin = new Vector2(2, 2);
-            checkmarkRect.offsetMax = new Vector2(-2, -2);
-
-            Image checkmarkImage = checkmarkObject.AddComponent<Image>();
-            checkmarkImage.color = MoGui.TestMeta.Toggle.checkBox;
-
-            toggleComponent.graphic = checkmarkImage;
-            toggleComponent.isOn = Value;
-            OnClickAction = onClickAction;
-
-            //GameObject textObject = new GameObject(PluginName + "_" + Name + "_" + "TEST");
-            //textObject.transform.SetParent(toggleObject.transform, false);
-            //RectTransform textBackgroundRect = textObject.AddComponent<RectTransform>();
-            //textBackgroundRect.anchorMin = new Vector2(0, 0);
-            //textBackgroundRect.anchorMax = new Vector2(1, 1);
-            //textBackgroundRect.offsetMin = new Vector2(0, 0);
-            //textBackgroundRect.offsetMax = new Vector2(0, 0);
-            //Text textComponent = textObject.AddComponent<Text>();
-            //textComponent.font = Meta.Font;
-            //textComponent.fontSize = Meta.FontSize;
-            //textComponent.color = Meta.FontColor;
-            
-
-            toggleComponent.onValueChanged.AddListener(_OnClickAction);
-
-            return toggleObject;
-        }
-
-        public new void AddText(string label, Func<object> onUpdateAction)
-        {
-            if (Label != null)
-            {
-                Label.Update(onUpdateAction);
-                Label.Obj.transform.SetParent(Obj.transform, false);
-            }
-            else
-            {
-                Label = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
-                Label.Obj.transform.SetParent(Obj.transform, false);
-                //var labelLayout = Label.Container.GetComponent<HorizontalOrVerticalLayoutGroup>();
-                //labelLayout.childAlignment = TextAnchor.MiddleCenter;
-                RectTransform labelRect = Label.Obj.GetComponent<RectTransform>();
-                labelRect.anchoredPosition = new Vector2(0, 0);
-                labelRect.anchorMin = new Vector2(0, 0);
-                labelRect.anchorMax = new Vector2(1, 1);
-                labelRect.offsetMin = new Vector2(0, 0);
-                labelRect.offsetMax = new Vector2(0, 0);
-                Label.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
-            }
-
-        }
-    }
+    
 
 }

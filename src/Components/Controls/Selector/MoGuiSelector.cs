@@ -43,7 +43,7 @@ namespace MoGUI
             }
             foreach (var item in _options)
             {
-                MoGuiToggleBt newToggle = new MoGuiToggleBt(Meta, Name + "_Option_" + item.Key, () => item.Value, () => item.Key, (val) => _options[item.Key] = val);
+                MoGuiToggle newToggle = new MoGuiToggle(Meta, Name + "_Option_" + item.Key, () => item.Value, () => item.Key, (val) => _options[item.Key] = val, ToggleType.button);
                 newToggle.Obj.GetComponent<Toggle>().group = ToggleGroup;
                 newToggle.Container.transform.SetParent(Obj.transform, false);
                 moGuiToggles.Add(newToggle);

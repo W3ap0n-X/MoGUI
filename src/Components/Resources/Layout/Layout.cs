@@ -133,6 +133,7 @@ namespace MoGUI
         public Vector2 minSize;
         public Vector2 size;
         public Vector2 Flex;
+        public SizeSettings sizing;
 
         public BlockMeta(string name) : base(name) { }
 
@@ -140,21 +141,26 @@ namespace MoGUI
 
         public BlockMeta Size(Vector2 _size)
         {
-            size = _size;
+            sizing.SetPref(_size);
             return this;
         }
 
         public BlockMeta MinSize(Vector2 _size)
         {
-            minSize = _size;
+            sizing.SetMin(_size);
             return this;
         }
         public BlockMeta FlexSize(Vector2 _size)
         {
-            Flex = _size;
+            sizing.SetFlex(_size);
             return this;
         }
 
-        
+        public BlockMeta Sizing(SizeSettings sizeSettings)
+        {
+            sizing = sizeSettings;
+            return this;
+        }
+
     }
 }

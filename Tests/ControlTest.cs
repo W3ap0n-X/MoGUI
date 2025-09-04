@@ -186,7 +186,7 @@ namespace MoGUI.Tests
             // Add toggle with bound value
             var TestToggle1 = (MoGuiToggle)Panel.AddControl("row1", "col1", "TestToggle1", new MoCaToggle(boundValue: () => bool1, onClickAction: (val) => bool1 = val, boundText: () => "bool1=" + bool1));
             // Add togglebutton with bound value
-            Panel.AddControl("row1", "col1", "ToggleBt0", new MoCaToggleBT(boundValue: () => bool4, onClickAction: (val) => bool4 = val, boundText: () => "bool4=" + bool4));
+            Panel.AddControl("row1", "col1", "ToggleBt0", new MoCaToggle(boundValue: () => bool4, onClickAction: (val) => bool4 = val, boundText: () => "bool4=" + bool4, toggleType: ToggleType.button));
             // Add toggle with with Bound Value that will not be saved as a variable to test if it can be called from panel with name 
             Panel.AddControl("row1", "col1", "TestToggle2", new MoCaToggle(boundValue: () => bool2, onClickAction: (val) => bool2 = val, boundText: () => "bool2=" + bool2));
             // Add toggle with bound value to be used for read test
@@ -198,7 +198,7 @@ namespace MoGUI.Tests
             // add toggle that is "read-only" with bound variable
             Panel.AddControl("row1", "col1", "TestToggle6", new MoCaToggle(boundValue: () => bool2, boundText: () => "bool2=" + bool2));
             // add toggle that is "read-only" with bound toggle
-            Panel.AddControl("row1", "col1", "TestToggle7", new MoCaToggle(boundValue: () => ((MoGuiToggleBt)Panel.Components["ToggleBt0"]).Value, boundText: () => "ToggleBt0: " + ((MoGuiToggleBt)Panel.Components["ToggleBt0"]).Value));
+            Panel.AddControl("row1", "col1", "TestToggle7", new MoCaToggle(boundValue: () => ((MoGuiToggle)Panel.Components["ToggleBt0"]).Value, boundText: () => "ToggleBt0: " + ((MoGuiToggle)Panel.Components["ToggleBt0"]).Value));
 
             // Text displays to verify functionality and logical continuity.
             Panel.AddControl("row1", "col2", "TestText1", new MoCaText(() => "bool1=" + bool1));
