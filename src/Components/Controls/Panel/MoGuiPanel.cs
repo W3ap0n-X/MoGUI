@@ -65,7 +65,7 @@ namespace MoGUI
             ContainerSize.anchorMin = new Vector2(0, 0);
             ContainerSize.anchorMax = new Vector2(1, 1);
             ContainerSize.offsetMin = new Vector2(0, 0);
-            ContainerSize.offsetMax = new Vector2(0, -Meta.HeaderSize);
+            ContainerSize.offsetMax = new Vector2(0, -MoGui.TestMeta.Panel.Header.size);
 
             Header = new MoGuiHeader(Meta, canvas, this, name, true);
             Header.Obj.transform.SetParent(Obj.transform, false);
@@ -94,7 +94,7 @@ namespace MoGUI
                 ContainerSize.anchorMin = new Vector2(0, 0);
                 ContainerSize.anchorMax = new Vector2(1, 1);
                 ContainerSize.offsetMin = new Vector2(0, 0);
-                ContainerSize.offsetMax = new Vector2(0, -Meta.HeaderSize);
+                ContainerSize.offsetMax = new Vector2(0, -MoGui.TestMeta.Panel.Header.size);
 
                 PanelSize.anchorMin = new Vector2(0, 0);
                 PanelSize.anchorMax = new Vector2(1, 1);
@@ -123,7 +123,7 @@ namespace MoGUI
             
 
             Image panelImage = layoutObject.AddComponent<Image>();
-            panelImage.color = Meta.PanelColor.Base;
+            panelImage.color = MoGui.TestMeta.Panel.background.Color;
 
 
 
@@ -134,7 +134,7 @@ namespace MoGUI
             ContainerSize.offsetMin = new Vector2(0, 0);
             ContainerSize.offsetMax = new Vector2(0, 0);
 
-            layoutGroup.spacing = Meta.TxtMargin;
+            layoutGroup.spacing = MoGui.TestMeta.Margin;
             layoutGroup.childForceExpandWidth = false;
             layoutGroup.childForceExpandHeight = false;
             return layoutObject;
@@ -455,7 +455,7 @@ namespace MoGUI
 
         public override void Init(bool topLevel)
         {
-            Meta.PanelColor.Base = Meta.HeaderColor;
+            Meta.PanelColor.Color = Meta.HeaderColor;
 
             Meta.FontSize = Meta.HeaderFontSize;
             Meta.ButtonFontSize = Meta.HeaderExitFontSize;
@@ -469,6 +469,7 @@ namespace MoGUI
                 AddXButton("MinGui", "␣", () => MinGui());
                 Meta.ButtonColor = Meta.HeaderExitColor;
                 AddXButton("HideGui", "╳", () => ShowGui(false));
+                GetButton("HideGui").Background(MoGui.TestMeta.Panel.Header.hideColor);
                 AddResize();
             } else
             {
@@ -484,11 +485,11 @@ namespace MoGUI
             var panelObject = new GameObject(PluginName + "_" + Name + "_" + "HeaderPanel");
 
             Image panelImage = panelObject.AddComponent<Image>();
-            panelImage.color = Meta.HeaderColor;
+            panelImage.color = MoGui.TestMeta.Panel.background.Shade;
             RectTransform panelRect = panelObject.GetComponent<RectTransform>();
             panelRect.anchorMin = new Vector2(0, 1);
             panelRect.anchorMax = new Vector2(1, 1);
-            panelRect.offsetMin = new Vector2(0, -Meta.HeaderSize);
+            panelRect.offsetMin = new Vector2(0, -MoGui.TestMeta.Panel.Header.size);
             panelRect.offsetMax = new Vector2(0, 0);
 
 
@@ -509,8 +510,8 @@ namespace MoGUI
             headerLayoutGroup.childControlHeight = true;
             headerLayoutGroup.childForceExpandHeight = false;
             headerLayoutGroup.childForceExpandWidth = false;
-            headerLayoutGroup.padding = new RectOffset(Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin);
-            headerLayoutGroup.spacing = Meta.TxtMargin;
+            headerLayoutGroup.padding = new RectOffset(MoGui.TestMeta.Margin, MoGui.TestMeta.Margin, MoGui.TestMeta.Margin, MoGui.TestMeta.Margin);
+            headerLayoutGroup.spacing = MoGui.TestMeta.Margin;
 
             
             RectTransform layoutRect = layoutObject.GetComponent<RectTransform>();
@@ -524,7 +525,7 @@ namespace MoGUI
 
         public override void SetLayout()
         {
-            minHeight = Meta.HeaderSize;
+            minHeight = MoGui.TestMeta.Panel.Header.size;
             minWidth = 100;
             //preferredWidth = 250;
             flexibleWidth = 1;
@@ -554,11 +555,24 @@ namespace MoGUI
                 newTxt = new MoGuiButton(Meta, Name + "_" + label, text, onUpdateAction);
                 newTxt.Obj.transform.SetParent(Container.transform, false);
 
-                newTxt.minWidth = Meta.HeaderSize - 2 * Meta.TxtMargin;
-                newTxt.minHeight = Meta.HeaderSize - 2 * Meta.TxtMargin;
-                newTxt.preferredHeight = newTxt.minHeight;
-                newTxt.preferredWidth = newTxt.minWidth;
+                var width = MoGui.TestMeta.Panel.Header.size - 2 * MoGui.TestMeta.Margin;
+                var height = MoGui.TestMeta.Panel.Header.size - 2 * MoGui.TestMeta.Margin;
+
+                newTxt.minWidth = width;
+                newTxt.minHeight = height;
+                
+                newTxt.preferredHeight = width;
+                newTxt.preferredWidth = width;
+
+                newTxt.Text.minWidth = width - 2 * MoGui.TestMeta.Margin;
+                newTxt.Text.minHeight = width - 2 * MoGui.TestMeta.Margin;
+
+                newTxt.Text.preferredHeight = width - 2 * MoGui.TestMeta.Margin;
+                newTxt.Text.preferredWidth = width - 2 * MoGui.TestMeta.Margin;
+
+                newTxt.Text.Text.fontSize = MoGui.TestMeta.Panel.Header.btFontSize;
                 newTxt.flexibleWidth = 0.1f;
+                newTxt.Text.flexibleWidth = 0.1f;
                 Components.Add(label, newTxt);
 
             }
@@ -579,6 +593,7 @@ namespace MoGUI
                 newTxt = new MoGuiTxt(Meta, Name + "_" + label, text);
                 newTxt.Obj.transform.SetParent(Container.transform, false);
                 newTxt.Text.alignment = TextAnchor.MiddleLeft;
+                newTxt.Text.fontSize = MoGui.TestMeta.Panel.Header.titleFontSize;
                 LayoutElement titleLayoutElement = newTxt.Obj.AddComponent<LayoutElement>();
                 titleLayoutElement.flexibleWidth = 1;
                 Components.Add(label, newTxt);
@@ -595,8 +610,8 @@ namespace MoGUI
 
             LayoutElement resizeLayoutElement = resizeIconObject.AddComponent<LayoutElement>();
             
-            resizeLayoutElement.minWidth = Meta.HeaderSize - 2 * Meta.TxtMargin;
-            resizeLayoutElement.minHeight = Meta.HeaderSize - 2 * Meta.TxtMargin;
+            resizeLayoutElement.minWidth = MoGui.TestMeta.Panel.Header.size - 2 * MoGui.TestMeta.Margin;
+            resizeLayoutElement.minHeight = MoGui.TestMeta.Panel.Header.size - 2 * MoGui.TestMeta.Margin;
 
             Text dragSymbol = resizeIconObject.AddComponent<Text>();
             dragSymbol.text = "❏";
@@ -625,6 +640,106 @@ namespace MoGUI
             {
                 Title = title;
             }
+        }
+    }
+
+    public class PanelMeta : ComponentMeta
+    {
+        public MoGuiColor background = GuiMeta.DefaultPanelColor;
+        public Vector2 size;
+        public TextAnchor childAlignment = TextAnchor.UpperLeft;
+
+        public HeaderMeta Header;
+
+        public PanelMeta(string name) : base(name) 
+        {
+            SetHeader();
+        }
+
+        public PanelMeta Alignment(TextAnchor _alignment)
+        {
+            childAlignment = _alignment;
+            return this;
+        }
+
+        public PanelMeta Background(Color _color)
+        {
+            background = new MoGuiColor(_color);
+            return this;
+        }
+
+        public PanelMeta Background(MoGuiColor _color)
+        {
+            background = _color;
+            return this;
+        }
+
+        public PanelMeta Size(Vector2 _size)
+        {
+            size = _size;
+            return this;
+        }
+        public void SetHeader()
+        {
+            Header = new HeaderMeta(background);
+        }
+
+    }
+
+    public class HeaderMeta
+    {
+        public int size = 40;
+
+        public MoGuiColor Color;
+
+        public HeaderMeta(MoGuiColor color)
+        {
+            Color = new MoGuiColor(color.Shade);
+        }
+
+        public HeaderMeta(Color color)
+        {
+            Color = new MoGuiColor(new MoGuiColor(color).Shade);
+        }
+
+        public HeaderMeta Size(int _size)
+        {
+            size = _size;
+            return this;
+        }
+        public int titleFontSize = 18;
+
+        public HeaderMeta TitleFontSize(int _size)
+        {
+            titleFontSize = _size;
+            return this;
+        }
+        public int btFontSize = 18;
+
+        public HeaderMeta BtFontSize(int _size)
+        {
+            btFontSize = _size;
+            return this;
+        }
+        public Color background;
+        public HeaderMeta Background(Color _color)
+        {
+            background = _color;
+            return this;
+        }
+
+        public Color hideColor = GuiMeta.DefaultHeaderExitColor;
+        public HeaderMeta HhideColor(Color _color)
+        {
+            hideColor = _color;
+            return this;
+        }
+
+        public Color minColor;
+        public HeaderMeta MinColor(Color _color)
+        {
+            minColor = _color;
+            return this;
         }
     }
 

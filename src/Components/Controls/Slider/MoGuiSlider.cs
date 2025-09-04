@@ -25,7 +25,7 @@ namespace MoGUI
                 }
                 else
                 {
-                    return Meta.SliderFillColor;
+                    return MoGui.TestMeta.Slider.Color.Shade;
                 }
             }
         }
@@ -231,7 +231,7 @@ namespace MoGUI
             
 
             Image backgroundImage = backgroundObject.AddComponent<Image>();
-            backgroundImage.color = Meta.SliderTrackColor;
+            backgroundImage.color = MoGui.TestMeta.Slider.Color.Shade;
 
             GameObject fillAreaObject = new GameObject(PluginName + "_" + Name + "_" + "SliderFillArea");
             fillAreaObject.transform.SetParent(sliderObject.transform, false);
@@ -252,7 +252,7 @@ namespace MoGUI
             
 
             Image handleImage = handleObject.AddComponent<Image>();
-            handleImage.color = Meta.SliderHandleColor;
+            handleImage.color = MoGui.TestMeta.Slider.Color.Tint;
             Slider.handleRect = handleRect;
 
 
@@ -431,6 +431,8 @@ namespace MoGUI
 
     }
 
+
+
     public class MoCaSlider : MoGCArgs
     {
         public Vector2 Range;
@@ -469,5 +471,21 @@ namespace MoGUI
         }
 
 
+
+
     }
+
+
+    public class SliderMeta : ControlMeta
+    {
+
+
+        public MoGuiColor Color = GuiMeta.DefaultPanelColor;
+
+        public SliderMeta(string name) : base(name) { }
+
+
+    }
+
+
 }

@@ -59,6 +59,7 @@ namespace MoGUI
         h3,
         h4,
         h5,
+        h6,
         label,
         small
     }
@@ -76,13 +77,13 @@ namespace MoGUI
         hide
     }
 
-    public enum TextStyle
-    {
-        none,
-        bold,
-        italic,
-        underline
-    }
+    //public enum TextStyle
+    //{
+    //    none,
+    //    bold,
+    //    italic,
+    //    underline
+    //}
 
     //public enum ToggleType
     //{

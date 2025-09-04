@@ -184,4 +184,12 @@ namespace MoGUI
             return () => obj;
         }
     }
+
+    public class ControlMeta : BlockMeta
+    {
+        public ControlMeta(string name) : base(name) { }
+
+
+    }
+
 }

@@ -171,4 +171,12 @@ namespace MoGUI
 
 
     }
+
+    public class SelectorMeta : ControlMeta
+    {
+
+        public SelectorMeta(string name) : base(name) { }
+
+
+    }
 }
