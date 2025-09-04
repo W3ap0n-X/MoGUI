@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
+using static System.Net.Mime.MediaTypeNames;
 
 
 namespace MoGUI
@@ -36,7 +37,7 @@ namespace MoGUI
         public static Vector4 DefaultSliderSize = new Vector4(50, 25, 100, 40);
         public static Vector4 DefaultToggleSize = new Vector4(15, 15, 20, 20);
         public static Vector4 DefaultButtonSize = new Vector4(60, 30, 100, 40);
-        public static Vector4 DefaultInputSize = new Vector4(20, 20, 80, 30);
+        public static Vector4 DefaultInputSize = new Vector4(20, 30, 80, 40);
         public static SliderDirection DefaultSliderDirection = SliderDirection.horizontal;
         public static TextAnchor DefaultTxtAnchor = TextAnchor.MiddleLeft;
 
@@ -105,6 +106,9 @@ namespace MoGUI
         public ControlLabelPlacement LabelPlacement;
 
         public ControlOrientation SelectorOrientation;
+
+
+        
 
         public MoGuiMeta(string pluginName, string name
             , int? txtMargin = null
@@ -355,7 +359,6 @@ namespace MoGUI
         public Color FontColor { get; set; }
         public int TextMargin { get; set; }
         public TextAlignment TextAlignment { get; set; }
-        public TextStyle TextStyle { get; set; }
     }
 
     public class MoGuiTheme
@@ -372,7 +375,8 @@ namespace MoGUI
 
         Color _base;
         public Func<Color> BoundBase;
-        public Color Base 
+        public Action<Color> BoundOut;
+        public Color Color
         { 
             get 
             {
@@ -385,23 +389,35 @@ namespace MoGUI
                     return _base;
                 }
             }
-            set { _base = value; }
+            set 
+            {
+                if (BoundOut != null)
+                {
+                    BoundOut(value);
+
+                }
+                else
+                {
+                    _base = value;
+                }
+                
+            }
         }
+
         public Color Shade
         {
             get
             {
-                return MutateColor(Base, DarkFactor);
+                return MutateColor(Color, DarkFactor);
             }
         }
         public Color Tint
         {
             get
             {
-                return MutateColor(Base, Factor);
+                return MutateColor(Color, Factor);
             }
         }
-
 
 
         public float Factor;
@@ -419,29 +435,50 @@ namespace MoGUI
             set { darkFactor = value; }
         }
 
-        
-
+        public float R
+        {
+            get => Color.r;
+            set { Color = new Color(value, Color.g, Color.b, Color.a); }
+        }
+        public float G
+        {
+            get => Color.g;
+            set { Color = new Color( Color.r, value, Color.b, Color.a); }
+        }
+        public float B
+        {
+            get => Color.b;
+            set { Color = new Color(Color.r, Color.g, value, Color.a); }
+        }
+        public float A
+        {
+            get => Color.a;
+            set { Color = new Color(Color.r, Color.g, Color.b, value); }
+        }
 
         public MoGuiColor(Color color, float factor = 0.5f, float? darkfactor = null)
         {
             BoundBase = () => color;
-            darkFactor = darkfactor;
+            BoundOut = (val) => color = val;
+            darkFactor = darkfactor * -1;
             Factor = factor;
         }
 
         public MoGuiColor(ColorWrapper color, float factor = 0.5f, float? darkfactor = null)
         {
             BoundBase = () => color.Color;
-            darkFactor = darkfactor;
+            darkFactor = darkfactor * -1;
             Factor = factor;
         }
 
         public MoGuiColor(Func<Color> color, float factor = 0.5f, float? darkfactor = null)
         {
             BoundBase = color;
-            darkFactor = darkfactor;
+            darkFactor = darkfactor * -1;
             Factor = factor;
         }
+
+
 
 
         public Color MutateColor( Color color, float factor)

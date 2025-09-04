@@ -325,4 +325,15 @@ namespace MoGUI
         }
 
     }
+
+    public class DDLMeta : ControlMeta
+    {
+
+
+        public MoGuiColor Color = GuiMeta.DefaultPanelColor;
+        public MoGuiColor textColor = GuiMeta.DefaultFontColor;
+        public DDLMeta(string name) : base(name) { }
+
+
+    }
 }

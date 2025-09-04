@@ -9,6 +9,7 @@ namespace MoGUI
     public class MoGuiButton : MoGuiControl
     {
         public MoGuiTxt Text;
+        public Image background;
 
 
         public MoGuiButton(MoGuiMeta meta, string name, Func<object> onUpdateAction, Action onClickAction) : base(meta, name)
@@ -59,8 +60,8 @@ namespace MoGUI
         {
             GameObject buttonObject = new GameObject(PluginName + "_" + Name + "_" + "Button");
 
-            Image buttonImage = buttonObject.AddComponent<Image>();
-            buttonImage.color = Meta.ButtonColor;
+            background = buttonObject.AddComponent<Image>();
+            background.color = MoGui.TestMeta.Button.background.Color;
 
             AddLayoutElement(buttonObject);
             SetLayout();
@@ -96,6 +97,8 @@ namespace MoGUI
                 //HorizontalLayoutGroup layoutGroup = Text.Container.GetComponent<HorizontalLayoutGroup>();
                 //layoutGroup.childForceExpandHeight = true;
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
+                Text.minHeight = minHeight - (2 * MoGui.TestMeta.Margin);
+                Text.minWidth = minWidth - (2 * MoGui.TestMeta.Margin);
             }
 
         }
@@ -115,12 +118,19 @@ namespace MoGUI
                 //HorizontalLayoutGroup layoutGroup = Text.Container.GetComponent<HorizontalLayoutGroup>();
                 //layoutGroup.childForceExpandHeight = true;
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
+                Text.minHeight = minHeight - (2* MoGui.TestMeta.Margin);
+                Text.minWidth = minWidth - (2 * MoGui.TestMeta.Margin);
             }
 
         }
 
 
         public override void Update() => Text.Update();
+
+        public void Background(Color _color)
+        {
+            background.color = _color;
+        }
     }
 
     public class MoCaButton : MoGCArgs
@@ -140,6 +150,29 @@ namespace MoGUI
         ) : base(typeof(MoGuiButton), meta, text: text)
         {
             OnClickAction = onClickAction;
+        }
+    }
+
+    public class ButtonMeta : ControlMeta
+    {
+        Font font;
+        int fontsize;
+        public MoGuiColor background = new MoGuiColor(GuiMeta.DefaultPanelColor.Tint);
+        // Vector2 minSize;
+        // Vector2 Size;
+
+        public ButtonMeta(string name) : base(name) { }
+
+        public ButtonMeta Background(Color _color)
+        {
+            background = new MoGuiColor(_color);
+            return this;
+        }
+
+        public ButtonMeta Background(MoGuiColor _color)
+        {
+            background = _color;
+            return this;
         }
     }
 }

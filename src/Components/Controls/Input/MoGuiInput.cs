@@ -177,7 +177,7 @@ namespace MoGUI
 
             RectTransform inputRect = inputObject.GetComponent<RectTransform>();
 
-            inputObject.AddComponent<Image>().color = Meta.InputColor;
+            inputObject.AddComponent<Image>().color = MoGui.TestMeta.Input.background;
 
             GameObject textObject = CreateInputText();
             textObject.transform.SetParent(inputObject.transform, false);
@@ -201,15 +201,15 @@ namespace MoGUI
             RectTransform placeholderRect = placeholderObject.AddComponent<RectTransform>();
             placeholderRect.anchorMin = Vector2.zero;
             placeholderRect.anchorMax = Vector2.one;
-            placeholderRect.offsetMin = new Vector2(10, 5);
-            placeholderRect.offsetMax = new Vector2(-10, -5);
+            placeholderRect.offsetMin = new Vector2(MoGui.TestMeta.Margin * 2, MoGui.TestMeta.Margin);
+            placeholderRect.offsetMax = new Vector2(MoGui.TestMeta.Margin * -2, MoGui.TestMeta.Margin * -1);
 
             PlaceHolderText = placeholderObject.AddComponent<Text>();
             PlaceHolderText.alignment = Meta.TxtAnchor;
 
             PlaceHolderText.text = "Enter Value...";
 
-            PlaceHolderText.color = Meta.InputPlaceholderFontColor;
+            PlaceHolderText.color = MoGui.TestMeta.Input.textColor.Shade;
             PlaceHolderText.fontStyle = FontStyle.Italic;
             PlaceHolderText.fontSize = Meta.InputFontSize;
             PlaceHolderText.font = Meta.InputFont;
@@ -223,14 +223,14 @@ namespace MoGUI
             RectTransform textRect = textObject.AddComponent<RectTransform>();
             textRect.anchorMin = Vector2.zero;
             textRect.anchorMax = Vector2.one;
-            textRect.offsetMin = new Vector2(Meta.TxtMargin *2, Meta.TxtMargin);
-            textRect.offsetMax = new Vector2(Meta.TxtMargin * -2, Meta.TxtMargin * -1);
+            textRect.offsetMin = new Vector2(MoGui.TestMeta.Margin *2, MoGui.TestMeta.Margin);
+            textRect.offsetMax = new Vector2(MoGui.TestMeta.Margin * -2, MoGui.TestMeta.Margin * -1);
             InputText = textObject.AddComponent<Text>();
             InputText.alignment = Meta.TxtAnchor;
 
             //InputText.text = Value.ToString() ?? null;
 
-            InputText.color = Meta.InputFontColor;
+            InputText.color = MoGui.TestMeta.Input.textColor.Color;
             InputText.fontSize = Meta.InputFontSize;
             InputText.font = Meta.InputFont;
 
@@ -358,6 +358,22 @@ namespace MoGUI
         {
             Value = value;
         }
+
+    }
+
+
+    public class InputMeta : ControlMeta
+    {
+
+        public Color background = GuiMeta.DefaultPanelColor.Shade;
+
+        public MoGuiColor textColor = GuiMeta.DefaultFontColor;
+
+        public InputMeta(string name) : base(name) { }
+
+
+
+
 
     }
 }

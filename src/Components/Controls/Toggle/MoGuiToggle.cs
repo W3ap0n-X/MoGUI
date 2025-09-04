@@ -102,10 +102,10 @@ namespace MoGUI
 
         public override void SetLayout()
         {
-            minWidth = Meta.ToggleSize.x;
-            minHeight = Meta.ToggleSize.y;
-            preferredWidth = Meta.ToggleSize.z;
-            preferredHeight = Meta.ToggleSize.w;
+            minWidth = MoGui.TestMeta.Toggle.checkBoxSize.x;
+            minHeight = MoGui.TestMeta.Toggle.checkBoxSize.y;
+            preferredWidth = MoGui.TestMeta.Toggle.checkBoxSize.z;
+            preferredHeight = MoGui.TestMeta.Toggle.checkBoxSize.w;
             flexibleWidth = 0;
         }
         public GameObject CreateToggle(Action<bool> onClickAction)
@@ -131,7 +131,7 @@ namespace MoGUI
             backgroundRect.offsetMax = new Vector2(5, 5);
 
             Image backgroundImage = backgroundObject.AddComponent<Image>();
-            backgroundImage.color = Meta.ToggleColor;
+            backgroundImage.color = MoGui.TestMeta.Toggle.background;
 
             
 
@@ -144,7 +144,7 @@ namespace MoGUI
             checkmarkRect.offsetMax = new Vector2(-2, -2);
 
             Image checkmarkImage = checkmarkObject.AddComponent<Image>();
-            checkmarkImage.color = Meta.ToggleCheckColor;
+            checkmarkImage.color = MoGui.TestMeta.Toggle.checkBox;
 
             toggleComponent.graphic = checkmarkImage;
             toggleComponent.isOn = Value;
@@ -276,9 +276,9 @@ namespace MoGUI
             
 
             Image backgroundImage = backgroundObject.AddComponent<Image>();
-            backgroundImage.color = Meta.ToggleColor;
+            backgroundImage.color = MoGui.TestMeta.Toggle.background;
 
-            
+
 
             GameObject checkmarkObject = new GameObject(PluginName + "_" + Name + "_" + "ToggleCheckmark");
             checkmarkObject.transform.SetParent(backgroundObject.transform, false);
@@ -289,7 +289,7 @@ namespace MoGUI
             checkmarkRect.offsetMax = new Vector2(-2, -2);
 
             Image checkmarkImage = checkmarkObject.AddComponent<Image>();
-            checkmarkImage.color = Meta.ToggleCheckColor;
+            checkmarkImage.color = MoGui.TestMeta.Toggle.checkBox;
 
             toggleComponent.graphic = checkmarkImage;
             toggleComponent.isOn = Value;
@@ -421,6 +421,37 @@ namespace MoGUI
                 OnClickAction = onClickAction;
             }
         }
+    }
+
+
+    public class ToggleMeta :ControlMeta
+    {
+
+        // Checkbox
+
+        public Color background = GuiMeta.DefaultPanelColor.Shade;
+        public Color checkBox = GuiMeta.DefaultPanelColor.Tint;
+
+        public Vector4 checkBoxSize = new Vector4(15, 15, 20, 20);
+
+        public ToggleMeta(string name) : base(name) { }
+
+
+
+        public ToggleMeta Background(Color _color)
+        {
+            background = _color;
+            return this;
+        }
+
+        public ToggleMeta CheckBox(Color _color)
+        {
+            checkBox = _color;
+            return this;
+        }
+
+
+
     }
 
 }

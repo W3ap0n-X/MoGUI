@@ -53,17 +53,8 @@ namespace MoGUI
 
             Brick = buttonObject.AddComponent<Image>();
             Brick.color = Value;
-
-            LayoutElement layoutElement = buttonObject.AddComponent<LayoutElement>();
-            layoutElement.minWidth = Meta.ButtonSize.x;
-            layoutElement.minHeight = Meta.ButtonSize.y;
-            layoutElement.preferredWidth = Meta.ButtonSize.z;
-            layoutElement.preferredHeight = Meta.ButtonSize.w;
-            layoutElement.flexibleWidth = 1;
-            layoutElement.flexibleHeight = 1;
-
-
-            //buttonObject.transform.SetParent(Container.transform, false);
+            AddLayoutElement(buttonObject);
+            SetLayout();
             return buttonObject;
         }
 
@@ -106,7 +97,11 @@ namespace MoGUI
 
         public override void SetLayout()
         {
+            minWidth = MoGui.TestMeta.ColorBlock.minSize.x;
+            minHeight = MoGui.TestMeta.ColorBlock.minSize.y;
 
+            flexibleWidth = 1;
+            flexibleHeight = 1;
         }
         public override void Update() 
         {
@@ -134,6 +129,13 @@ namespace MoGUI
         {
             Value = value;
         }
+
+    }
+
+    public class ColorBlockMeta : ControlMeta
+    {
+        public ColorBlockMeta(string name) : base(name) { MinSize(new Vector2(10, 10)); }
+
 
     }
 }

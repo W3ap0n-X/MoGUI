@@ -43,6 +43,11 @@ namespace MoGUI
                 Image bg = layoutObject.AddComponent<Image>();
                 bg.color = MoGUIManager._LayoutDebugRowColor;
             }
+            if (MoGui.TestMeta.Rows.background != null)
+            {
+                Image bg = layoutObject.AddComponent<Image>();
+                bg.color = (Color)MoGui.TestMeta.Rows.background;
+            }
 
             return layoutObject;
         }
@@ -87,6 +92,17 @@ namespace MoGUI
         }
     }
 
+    public class RowMeta : LayoutMeta
+    {
+
+        public RowMeta(string name) : base(name)
+        {
+            MinSize(GuiMeta.DefaultRowMinSize);
+            FlexSize(GuiMeta.DefaultRowFlex);
+        }
+
+    }
+
     public class MoGuiCol : MoGuiLayoutBrick
     {
         private MoGuiRow _parent;
@@ -122,6 +138,12 @@ namespace MoGUI
                 Image bg = layoutObject.AddComponent<Image>();
                 bg.color = MoGUIManager._LayoutDebugColColor;
             }
+
+            if (MoGui.TestMeta.Cols.background != null)
+            {
+                Image bg = layoutObject.AddComponent<Image>();
+                bg.color = (Color)MoGui.TestMeta.Cols.background;
+            }
             return layoutObject;
         }
 
@@ -134,6 +156,18 @@ namespace MoGUI
         }
 
     }
+
+    public class ColMeta : LayoutMeta
+    {
+
+        public ColMeta(string name) : base(name)
+        {
+            MinSize(GuiMeta.DefaultColMinSize);
+            FlexSize(GuiMeta.DefaultColFlex);
+        }
+
+    }
+
     public abstract class MoGuiLayoutBrick
     {
         public GameObject Obj;
@@ -228,5 +262,59 @@ namespace MoGUI
         {
             Rect = rect;
         }
+    }
+
+    public class LayoutMeta : BlockMeta
+    {
+
+        public Color? background = null;
+        TextAnchor childAlignment = TextAnchor.UpperLeft;
+        public LayoutMeta(string name) : base(name) 
+        {
+
+        }
+        public LayoutMeta Alignment(TextAnchor _alignment)
+        {
+            childAlignment = _alignment;
+            return this;
+        }
+
+        public LayoutMeta Background(Color? _color = null)
+        {
+            background = _color;
+            return this;
+        }
+
+    }
+
+    public class BlockMeta : ComponentMeta
+    {
+        
+        public Vector2 minSize;
+        public Vector2 size;
+        public Vector2 Flex;
+
+        public BlockMeta(string name) : base(name) { }
+
+
+
+        public BlockMeta Size(Vector2 _size)
+        {
+            size = _size;
+            return this;
+        }
+
+        public BlockMeta MinSize(Vector2 _size)
+        {
+            minSize = _size;
+            return this;
+        }
+        public BlockMeta FlexSize(Vector2 _size)
+        {
+            Flex = _size;
+            return this;
+        }
+
+        
     }
 }
