@@ -42,6 +42,30 @@ namespace MoGUI
     }
 
 
+    public struct GuiColorSet
+    {
+        public MoGuiColor Panel;
+        public MoGuiColor Header;
+        public MoGuiColor Text;
+
+        public GuiColorSet(MoGuiColor panel, MoGuiColor text, MoGuiColor header = null)
+        {
+
+            Panel = panel;
+            Text = text;
+            Header = header?? new MoGuiColor(panel.Shade);
+        }
+
+        public GuiColorSet(Color panel, Color text, Color? header = null)
+        {
+
+            Panel = new MoGuiColor(panel);
+            Text = new MoGuiColor(text);
+            Header = new MoGuiColor(header ?? Panel.Shade);
+        }
+
+    }
+
     public class MoGuiMeta
     {
         public static Vector2 DefaultTextMinSize = new Vector4(20, 20);
@@ -52,25 +76,34 @@ namespace MoGUI
         public static Font DefaultFont = UnityEngine.Font.CreateDynamicFontFromOSFont("Arial", 24);
         public static int DefaultFontSize = 14;
         public static int DefaultMargin = 5;
-        public static MoGuiColor DefaultPanelColor = new MoGuiColor(new Color(0.2f, 0.2f, 0.2f, 0.8f), 0.25f, 0.4f);
-        public static MoGuiColor DefaultFontColor = new MoGuiColor(Color.white);
         public static Color DefaultHeaderExitColor = new Color(0.75f, 0.25f, 0.25f, 1f);
 
 
+        public GuiColorSet Colors;
+
         public Font font = DefaultFont;
         public int fontSize = DefaultFontSize;
-        public MoGuiColor fontColor = DefaultFontColor;
+        public MoGuiColor fontColor;
         public Vector2 TextMinSize = DefaultTextMinSize;
-        public MoGuiColor PanelColor = DefaultPanelColor;
         public int Margin = DefaultMargin;
         public ControlOrientation orientation = ControlOrientation.horizontal;
 
         public string Name;
         public string PluginName;
+
+        private void Defaults()
+        {
+            fontColor = Colors.Text;
+        }
+
         public MoGuiMeta(string pluginName, string name)
         {
+            Colors = new GuiColorSet(new MoGuiColor(new Color(0.2f, 0.2f, 0.2f, 0.8f), 0.25f, 0.4f), new MoGuiColor(Color.white));
             PluginName = pluginName;
             Name = name;
+
+            Defaults();
+
             SetPanel(name + "-Panel");
             SetRows(name + "-Row");
             SetCols(name + "-Col");
@@ -88,10 +121,13 @@ namespace MoGUI
 
         public MoGuiMeta(MoGuiMeta meta, string name)
         {
-            
-            
+            Colors = meta.Colors;
+
             PluginName = meta.PluginName;
             Name = name;
+
+            Defaults();
+
             SetPanel(meta.Panel);
             SetRows(meta.Rows);
             SetCols(meta.Cols);

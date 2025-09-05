@@ -55,12 +55,13 @@ namespace MoGUI
         public SizeSettings horizontalizeSettings = new SizeSettings(50, 25, 1, 0, 100, 40);
         public SizeSettings verticallizeSettings = new SizeSettings(25, 25, 1, 0, 40, 100);
 
-        public MoGuiColor Color = MoGuiMeta.DefaultPanelColor;
+        public MoGuiColor Color;
 
-        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, FontStyle.Bold, TextAnchor.MiddleLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
+        public TypographySettings labelSettings;
         public SliderMeta(MoGuiMeta parent, string name) : base(parent, name) 
         {
-
+            Color = _parent.Colors.Panel;
+            labelSettings = new TypographySettings(_parent.fontSize, FontStyle.Bold, TextAnchor.MiddleLeft, _parent.fontColor.Color, _parent.font);
         }
 
     }

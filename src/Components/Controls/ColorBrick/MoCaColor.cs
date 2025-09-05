@@ -33,8 +33,12 @@ namespace MoGUI
     public class ColorBlockMeta : ControlMeta
     {
         private SizeSettings _sizeSettings = new SizeSettings(20, 20, 1, 1);
-        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, FontStyle.Bold, TextAnchor.MiddleCenter, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
-        public ColorBlockMeta(MoGuiMeta parent, string name) : base(parent, name) { Sizing(_sizeSettings); }
+        public TypographySettings labelSettings;
+        public ColorBlockMeta(MoGuiMeta parent, string name) : base(parent, name) 
+        {
+            labelSettings = new TypographySettings(_parent.fontSize, FontStyle.Bold, TextAnchor.MiddleCenter, _parent.Colors.Text.Color, _parent.font);
+            Sizing(_sizeSettings); 
+        }
 
 
     }

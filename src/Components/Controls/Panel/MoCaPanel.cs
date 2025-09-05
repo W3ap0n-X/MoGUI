@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
 
 
 namespace MoGUI
@@ -24,10 +25,10 @@ namespace MoGUI
             }
         }
     }
-
+    
     public class PanelMeta : ComponentMeta
     {
-        public MoGuiColor background = MoGuiMeta.DefaultPanelColor;
+        public MoGuiColor background;
         public Vector2 size;
         public TextAnchor childAlignment = TextAnchor.UpperLeft;
 
@@ -35,6 +36,7 @@ namespace MoGUI
 
         public PanelMeta(MoGuiMeta parent, string name) : base(parent, name) 
         {
+            background = _parent.Colors.Panel;
             SetHeader();
         }
 
@@ -63,7 +65,7 @@ namespace MoGUI
         }
         public void SetHeader()
         {
-            Header = new HeaderMeta(background);
+            Header = new HeaderMeta(_parent);
         }
 
     }

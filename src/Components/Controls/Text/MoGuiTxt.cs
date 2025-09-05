@@ -212,11 +212,11 @@ namespace MoGUI
         }
         public void FontSettings(Font fontFace = null, int? fontSize = null,  FontStyle? style = null, TextAnchor? alignment = null, Color? color = null )
         {
-            FontSettings( new TypographySettings(fontSize ?? Settings.FontSize, style ?? Settings.Style, alignment ?? Settings.Alignment, fontFace ?? Settings.FontFace, color ?? Settings.FontColor) );
+            FontSettings( new TypographySettings(fontSize ?? Settings.FontSize, style ?? Settings.Style, alignment ?? Settings.Alignment, color ?? Settings.FontColor, fontFace ?? Settings.FontFace) );
         }
         public void FontSettings(string fontFace = null, int? fontSize = null, FontStyle? style = null, TextAnchor? alignment = null, Color? color = null)
         {
-            FontSettings(new TypographySettings(fontSize ?? Settings.FontSize, style ?? Settings.Style, alignment ?? Settings.Alignment, fontFace ?? Settings.FontFace.name, color ?? Settings.FontColor));
+            FontSettings(new TypographySettings(fontSize ?? Settings.FontSize, style ?? Settings.Style, alignment ?? Settings.Alignment, color ?? Settings.FontColor, fontFace ?? Settings.FontFace.name));
         }
 
     }

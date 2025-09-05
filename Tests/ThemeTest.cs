@@ -16,7 +16,7 @@ namespace MoGUI.Tests
         // Keycode used to show the gui if it is closed
         public KeyCode KeyCode;
         // Metadata for the second window
-        public MoGuiMeta Meta = new MoGuiMeta("ThemeTest", "Main");
+        public MoGuiMeta Meta;
         // flag to check if the Gui has been built.
         bool ui_init = false;
 
@@ -25,9 +25,10 @@ namespace MoGUI.Tests
         // Start is called before the first frame update
         void Start()
         {
+            Meta = new MoGuiMeta("ThemeTest", "Main");
             SetupVariables(Meta);
-            Meta.PanelColor.Color = new Color(0.00f, 0.00f, 0.00f, 0.00f);
-            
+            Meta.Panel.background.Color = new Color(0.00f, 0.00f, 0.00f, 0.00f);
+
             // Create the base Gui
             GUI = new MoGui(Meta, "ThemeTest", new Vector2(420, 520), Vector2.zero);
             GUI.Canvas.transform.SetParent(gameObject.transform, false);

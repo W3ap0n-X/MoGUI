@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
 
 namespace MoGUI
 {
@@ -58,15 +59,20 @@ namespace MoGUI
     public class ToggleMeta :ControlMeta
     {
 
-        public Color background = MoGuiMeta.DefaultPanelColor.Shade;
-        public Color checkBox = MoGuiMeta.DefaultPanelColor.Tint;
+        public Color background;
+        public Color checkBox;
 
         public SizeSettings checkBoxSize = new SizeSettings(15, 15, 0, 0, 20, 20);
         public SizeSettings buttonSize = new SizeSettings(60, 30, 1, 0);
-        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, FontStyle.Bold, TextAnchor.UpperLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
+        public TypographySettings labelSettings;
         public ToggleType toggleType = MoGUI.ToggleType.checkbox;
 
-        public ToggleMeta(MoGuiMeta parent, string name) : base(parent, name) { }
+        public ToggleMeta(MoGuiMeta parent, string name) : base(parent, name) 
+        {
+            background = _parent.Colors.Panel.Shade;
+            checkBox = _parent.Colors.Panel.Tint;
+            labelSettings = new TypographySettings(_parent.fontSize, FontStyle.Bold, TextAnchor.UpperLeft, _parent.fontColor.Color, _parent.font);
+        }
 
         public ToggleMeta Background(Color _color)
         {

@@ -47,14 +47,17 @@ namespace MoGUI
     public class InputMeta : ControlMeta
     {
         private SizeSettings _sizeSettings = new SizeSettings(20, 30, 1, 0, 80, 40);
-        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, FontStyle.Bold, TextAnchor.MiddleLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
-        public TypographySettings inputSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, FontStyle.Normal, TextAnchor.MiddleLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
-        public TypographySettings placeholderSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, FontStyle.Italic, TextAnchor.MiddleLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Shade);
-        public Color background = MoGuiMeta.DefaultPanelColor.Shade;
-        public MoGuiColor textColor = MoGuiMeta.DefaultFontColor;
+        public TypographySettings labelSettings;
+        public TypographySettings inputSettings;
+        public TypographySettings placeholderSettings;
+        public Color background;
         public InputMeta(MoGuiMeta parent, string name) : base(parent, name)
         {
             Sizing(_sizeSettings);
+            background = _parent.Colors.Panel.Shade;
+            labelSettings = new TypographySettings(_parent.fontSize, FontStyle.Bold, TextAnchor.MiddleLeft, _parent.fontColor.Color, _parent.font);
+            inputSettings = new TypographySettings(_parent.fontSize, FontStyle.Normal, TextAnchor.MiddleLeft, _parent.fontColor.Color, _parent.font);
+            placeholderSettings = new TypographySettings(_parent.fontSize, FontStyle.Italic, TextAnchor.MiddleLeft, _parent.fontColor.Shade, _parent.font);
         }
 
     }
