@@ -52,14 +52,15 @@ namespace MoGUI
     {
         public ControlOrientation direction = ControlOrientation.horizontal;
 
-        private SizeSettings _sizeSettings = new SizeSettings(50, 25, 1, 0, 100, 40);
+        public SizeSettings horizontalizeSettings = new SizeSettings(50, 25, 1, 0, 100, 40);
+        public SizeSettings verticallizeSettings = new SizeSettings(25, 25, 1, 0, 40, 100);
 
         public MoGuiColor Color = MoGuiMeta.DefaultPanelColor;
 
-        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, 1, FontStyle.Bold, TextAnchor.MiddleLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
-        public SliderMeta(string name) : base(name) 
+        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, FontStyle.Bold, TextAnchor.MiddleLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
+        public SliderMeta(MoGuiMeta parent, string name) : base(parent, name) 
         {
-            Sizing(_sizeSettings);
+
         }
 
     }

@@ -69,7 +69,7 @@ namespace MoGUI
 
         public ControlOrientation orientation = ControlOrientation.horizontal;
         public ControlLabelPlacement labelPlacement = ControlLabelPlacement.before;
-        public ControlMeta(string name) : base(name) { }
+        public ControlMeta(MoGuiMeta parent, string name) : base(parent, name) { }
         
 
 

@@ -204,20 +204,20 @@ namespace MoGUI
         {
             if (Direction == ControlOrientation.vertical)
             {
-                minWidth = Meta.Slider.sizing.minHeight;
-                minHeight = Meta.Slider.sizing.minWidth;
-                if (Meta.Slider.sizing.preferredWidth != null) { preferredWidth = (float)Meta.Slider.sizing.preferredWidth; }
-                if (Meta.Slider.sizing.preferredHeight != null) { preferredHeight = (float)Meta.Slider.sizing.preferredHeight; }
-                flexibleWidth = Meta.Slider.sizing.flexibleWidth ?? 0;
-                flexibleHeight = Meta.Slider.sizing.flexibleHeight ?? 0;
+                minWidth = Meta.Slider.verticallizeSettings.minHeight;
+                minHeight = Meta.Slider.verticallizeSettings.minWidth;
+                if (Meta.Slider.verticallizeSettings.preferredWidth != null) { preferredWidth = (float)Meta.Slider.verticallizeSettings.preferredWidth; }
+                if (Meta.Slider.verticallizeSettings.preferredHeight != null) { preferredHeight = (float)Meta.Slider.verticallizeSettings.preferredHeight; }
+                flexibleWidth = Meta.Slider.verticallizeSettings.flexibleWidth ?? 0;
+                flexibleHeight = Meta.Slider.verticallizeSettings.flexibleHeight ?? 0;
             } else
             {
-                minWidth = Meta.Slider.sizing.minWidth;
-                minHeight = Meta.Slider.sizing.minHeight;
-                if (Meta.Slider.sizing.preferredWidth != null) { preferredWidth = (float)Meta.Slider.sizing.preferredWidth; }
-                if (Meta.Slider.sizing.preferredHeight != null) { preferredHeight = (float)Meta.Slider.sizing.preferredHeight; }
-                flexibleWidth = Meta.Slider.sizing.flexibleWidth ?? 0;
-                flexibleHeight = Meta.Slider.sizing.flexibleHeight ?? 0;
+                minWidth = Meta.Slider.horizontalizeSettings.minWidth;
+                minHeight = Meta.Slider.horizontalizeSettings.minHeight;
+                if (Meta.Slider.horizontalizeSettings.preferredWidth != null) { preferredWidth = (float)Meta.Slider.horizontalizeSettings.preferredWidth; }
+                if (Meta.Slider.horizontalizeSettings.preferredHeight != null) { preferredHeight = (float)Meta.Slider.horizontalizeSettings.preferredHeight; }
+                flexibleWidth = Meta.Slider.horizontalizeSettings.flexibleWidth ?? 0;
+                flexibleHeight = Meta.Slider.horizontalizeSettings.flexibleHeight ?? 0;
             }
         }
 

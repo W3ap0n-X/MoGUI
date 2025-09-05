@@ -188,8 +188,8 @@ namespace MoGUI
 
         public MoGuiColor Color;
 
-        public TypographySettings titleSettings = new TypographySettings(18, 1, FontStyle.Bold, TextAnchor.MiddleLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
-        public TypographySettings buttonSettings = new TypographySettings(18, 1, FontStyle.Bold, TextAnchor.MiddleCenter, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
+        public TypographySettings titleSettings = new TypographySettings(18, FontStyle.Bold, TextAnchor.MiddleLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
+        public TypographySettings buttonSettings = new TypographySettings(18, FontStyle.Bold, TextAnchor.MiddleCenter, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
         public HeaderMeta(MoGuiColor color)
         {
             Color = new MoGuiColor(color.Shade);

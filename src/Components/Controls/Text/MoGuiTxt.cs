@@ -134,11 +134,6 @@ namespace MoGUI
             FontSettings(Settings.FontFace, fontSize: size);
         }
 
-        public void FontSizeFactor(float size)
-        {
-            FontSettings(Settings.FontFace, sizeFactor: size);
-        }
-
         public void TextAlignment(TextAnchor alignment)
         {
             FontSettings(Settings.FontFace, alignment: alignment);
@@ -215,13 +210,13 @@ namespace MoGUI
             Settings = settings;
             setFont();
         }
-        public void FontSettings(Font fontFace = null, float? sizeFactor = null, int? fontSize = null,  FontStyle? style = null, TextAnchor? alignment = null, Color? color = null )
+        public void FontSettings(Font fontFace = null, int? fontSize = null,  FontStyle? style = null, TextAnchor? alignment = null, Color? color = null )
         {
-            FontSettings( new TypographySettings(fontSize ?? Settings.FontSize, sizeFactor ?? Settings.FontSizeFactor, style ?? Settings.Style, alignment ?? Settings.Alignment, fontFace ?? Settings.FontFace, color ?? Settings.FontColor) );
+            FontSettings( new TypographySettings(fontSize ?? Settings.FontSize, style ?? Settings.Style, alignment ?? Settings.Alignment, fontFace ?? Settings.FontFace, color ?? Settings.FontColor) );
         }
-        public void FontSettings(string fontFace = null, float? sizeFactor = null, int? fontSize = null, FontStyle? style = null, TextAnchor? alignment = null, Color? color = null)
+        public void FontSettings(string fontFace = null, int? fontSize = null, FontStyle? style = null, TextAnchor? alignment = null, Color? color = null)
         {
-            FontSettings(new TypographySettings(fontSize ?? Settings.FontSize, sizeFactor ?? Settings.FontSizeFactor, style ?? Settings.Style, alignment ?? Settings.Alignment, fontFace ?? Settings.FontFace.name, color ?? Settings.FontColor));
+            FontSettings(new TypographySettings(fontSize ?? Settings.FontSize, style ?? Settings.Style, alignment ?? Settings.Alignment, fontFace ?? Settings.FontFace.name, color ?? Settings.FontColor));
         }
 
     }

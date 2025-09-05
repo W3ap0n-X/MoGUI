@@ -53,11 +53,16 @@ namespace MoGUI
             flexibleHeight = 1;
         }
 
+        public T AddControl<T>(string name, MoGCArgs args)
+        {
+            return (T)((object)_parent.AddControl<T>(Name, name, args));
+        }
+
     }
 
     public class ColMeta : LayoutMeta
     {
-        public ColMeta(string name) : base(name)
+        public ColMeta(MoGuiMeta parent, string name) : base(parent, name)
         {
             MinSize(MoGuiMeta.DefaultColMinSize);
             FlexSize(MoGuiMeta.DefaultColFlex);

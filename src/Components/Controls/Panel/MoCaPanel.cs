@@ -33,7 +33,7 @@ namespace MoGUI
 
         public HeaderMeta Header;
 
-        public PanelMeta(string name) : base(name) 
+        public PanelMeta(MoGuiMeta parent, string name) : base(parent, name) 
         {
             SetHeader();
         }

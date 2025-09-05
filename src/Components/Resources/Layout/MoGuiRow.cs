@@ -87,11 +87,16 @@ namespace MoGUI
                 item.Value.Update();
             }
         }
+
+        public T AddControl<T>(string col, string name, MoGCArgs args)
+        {
+            return (T)((object)_parent.AddControl(Name, col, name, args));
+        }
     }
 
     public class RowMeta : LayoutMeta
     {
-        public RowMeta(string name) : base(name)
+        public RowMeta(MoGuiMeta parent, string name) : base(parent, name)
         {
             MinSize(MoGuiMeta.DefaultRowMinSize);
             FlexSize(MoGuiMeta.DefaultRowFlex);

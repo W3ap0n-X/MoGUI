@@ -47,12 +47,12 @@ namespace MoGUI
     public class InputMeta : ControlMeta
     {
         private SizeSettings _sizeSettings = new SizeSettings(20, 30, 1, 0, 80, 40);
-        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, 1, FontStyle.Bold, TextAnchor.MiddleLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
-        public TypographySettings inputSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, 1, FontStyle.Normal, TextAnchor.MiddleLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
-        public TypographySettings placeholderSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, 1, FontStyle.Italic, TextAnchor.MiddleLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Shade);
+        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, FontStyle.Bold, TextAnchor.MiddleLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
+        public TypographySettings inputSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, FontStyle.Normal, TextAnchor.MiddleLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
+        public TypographySettings placeholderSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, FontStyle.Italic, TextAnchor.MiddleLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Shade);
         public Color background = MoGuiMeta.DefaultPanelColor.Shade;
         public MoGuiColor textColor = MoGuiMeta.DefaultFontColor;
-        public InputMeta(string name) : base(name)
+        public InputMeta(MoGuiMeta parent, string name) : base(parent, name)
         {
             Sizing(_sizeSettings);
         }

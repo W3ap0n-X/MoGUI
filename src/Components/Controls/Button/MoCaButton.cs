@@ -30,10 +30,10 @@ namespace MoGUI
     public class ButtonMeta : ControlMeta
     {
         private SizeSettings _sizeSettings = new SizeSettings(60,30,1,0,100,40);
-        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, 1, FontStyle.Bold, TextAnchor.MiddleCenter, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
+        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, FontStyle.Bold, TextAnchor.MiddleCenter, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
         public MoGuiColor background = new MoGuiColor(MoGuiMeta.DefaultPanelColor.TintRaw, 0.6f);
 
-        public ButtonMeta(string name) : base(name) 
+        public ButtonMeta(MoGuiMeta parent, string name) : base(parent, name) 
         {
             Sizing(_sizeSettings);
         }

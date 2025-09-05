@@ -110,7 +110,7 @@ namespace MoGUI
         public PanelMeta Panel;
         public MoGuiMeta SetPanel(string name)
         {
-            Panel = new PanelMeta(name);
+            Panel = new PanelMeta(this,name);
             return this;
         }
         public MoGuiMeta SetPanel(PanelMeta meta)
@@ -123,12 +123,12 @@ namespace MoGUI
 
         public MoGuiMeta SetRows(string name)
         {
-            Rows = new RowMeta(name);
+            Rows = new RowMeta(this, name);
             return this;
         }
         public MoGuiMeta SetRows(RowMeta meta)
         {
-            Rows = meta.Copy<RowMeta>();
+            Rows = meta.Copy<RowMeta>(this);
             return this;
         }
 
@@ -136,12 +136,12 @@ namespace MoGUI
 
         public MoGuiMeta SetCols(string name)
         {
-            Cols = new ColMeta(name);
+            Cols = new ColMeta(this, name);
             return this;
         }
         public MoGuiMeta SetCols(ColMeta meta)
         {
-            Cols = meta.Copy<ColMeta>();
+            Cols = meta.Copy<ColMeta>(this);
             return this;
         }
 
@@ -149,12 +149,12 @@ namespace MoGUI
 
         public MoGuiMeta SetTypography(string name)
         {
-            Text = new TypographyMeta(name);
+            Text = new TypographyMeta(this, name);
             return this;
         }
         public MoGuiMeta SetTypography(TypographyMeta meta)
         {
-            Text = meta.Copy<TypographyMeta>();
+            Text = meta.Copy<TypographyMeta>(this);
             return this;
         }
 
@@ -162,12 +162,12 @@ namespace MoGUI
 
         public MoGuiMeta SetButton(string name)
         {
-            Button = new ButtonMeta(name);
+            Button = new ButtonMeta(this, name);
             return this;
         }
         public MoGuiMeta SetButton(ButtonMeta meta)
         {
-            Button = meta.Copy<ButtonMeta>();
+            Button = meta.Copy<ButtonMeta>(this);
             return this;
         }
 
@@ -175,12 +175,12 @@ namespace MoGUI
 
         public MoGuiMeta SetToggle(string name)
         {
-            Toggle = new ToggleMeta(name);
+            Toggle = new ToggleMeta(this, name);
             return this;
         }
         public MoGuiMeta SetToggle(ToggleMeta meta)
         {
-            Toggle = meta.Copy<ToggleMeta>();
+            Toggle = meta.Copy<ToggleMeta>(this);
             return this;
         }
 
@@ -188,12 +188,12 @@ namespace MoGUI
 
         public MoGuiMeta SetColorBlock(string name)
         {
-            ColorBlock = new ColorBlockMeta(name);
+            ColorBlock = new ColorBlockMeta(this, name);
             return this;
         }
         public MoGuiMeta SetColorBlock(ColorBlockMeta meta)
         {
-            ColorBlock = meta.Copy<ColorBlockMeta>();
+            ColorBlock = meta.Copy<ColorBlockMeta>(this);
             return this;
         }
 
@@ -201,12 +201,12 @@ namespace MoGUI
 
         public MoGuiMeta SetInput(string name)
         {
-            Input = new InputMeta(name);
+            Input = new InputMeta(this, name);
             return this;
         }
         public MoGuiMeta SetInput(InputMeta meta)
         {
-            Input = meta.Copy<InputMeta>();
+            Input = meta.Copy<InputMeta>(this);
             return this;
         }
 
@@ -214,12 +214,12 @@ namespace MoGUI
 
         public MoGuiMeta SetSlider(string name)
         {
-            Slider = new SliderMeta(name);
+            Slider = new SliderMeta(this, name);
             return this;
         }
         public MoGuiMeta SetSlider(SliderMeta meta)
         {
-            Slider = meta.Copy<SliderMeta>();
+            Slider = meta.Copy<SliderMeta>(this);
             return this;
         }
 
@@ -227,12 +227,12 @@ namespace MoGUI
 
         public MoGuiMeta SetSelector(string name)
         {
-            Selector = new SelectorMeta(name);
+            Selector = new SelectorMeta(this, name);
             return this;
         }
         public MoGuiMeta SetSelector(SelectorMeta meta)
         {
-            Selector = meta.Copy<SelectorMeta>();
+            Selector = meta.Copy<SelectorMeta>(this);
             return this;
         }
 
@@ -240,12 +240,12 @@ namespace MoGUI
 
         public MoGuiMeta SetDDL(string name)
         {
-            DDL = new DDLMeta(name);
+            DDL = new DDLMeta(this, name);
             return this;
         }
         public MoGuiMeta SetDDL(DDLMeta meta)
         {
-            DDL = meta.Copy<DDLMeta>();
+            DDL = meta.Copy<DDLMeta>(this);
             return this;
         }
 

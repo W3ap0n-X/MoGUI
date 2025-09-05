@@ -42,23 +42,43 @@ namespace MoGUI
     {
         private SizeSettings _sizeSettings = new SizeSettings(20,20, 1,1);
         public Dictionary<TextElement, TextMeta> Type = new Dictionary<TextElement, TextMeta>();
-        public Dictionary<string, TypographySettings> elementSettings = new Dictionary<string, TypographySettings>()
+        public Dictionary<string, float> elemSizeMultiplier = new Dictionary<string, float>()
         {
-            { "text", new TypographySettings( 1, FontStyle.Normal, TextAnchor.UpperLeft) },
-            { "title", new TypographySettings(2, FontStyle.Bold, TextAnchor.MiddleCenter) },
-            { "h1", new TypographySettings(1.8f, FontStyle.Bold, TextAnchor.LowerCenter) },
-            { "h2", new TypographySettings(1.6f, FontStyle.Bold, TextAnchor.UpperLeft) },
-            { "h3", new TypographySettings(1.5f, FontStyle.Bold, TextAnchor.UpperLeft) },
-            { "h4", new TypographySettings(1.4f, FontStyle.Normal, TextAnchor.UpperLeft) },
-            { "h5", new TypographySettings(1.3f, FontStyle.Bold, TextAnchor.UpperLeft) },
-            { "h6", new TypographySettings(1.2f, FontStyle.Normal, TextAnchor.UpperLeft) },
-            { "label" ,new TypographySettings(1, FontStyle.Bold, TextAnchor.UpperLeft) },
-            { "small", new TypographySettings(0.8f, FontStyle.Italic, TextAnchor.UpperLeft) }
+            { "text",  1 },
+            { "title", 2 },
+            { "h1", 1.8f},
+            { "h2", 1.6f },
+            { "h3", 1.5f },
+            { "h4", 1.4f },
+            { "h5", 1.3f },
+            { "h6", 1.2f },
+            { "label" ,1 },
+            { "small", 0.8f }
         };
 
-        public int fontSize = 14;
-        public TypographyMeta(string name) : base(name)
+        public Dictionary<string, TypographySettings> elementSettings;
+
+        private void CreateTypographySet()
         {
+            elementSettings = new Dictionary<string, TypographySettings>()
+            {
+                { "text", new TypographySettings( elemSizeMultiplier["text"] * _parent.fontSize, FontStyle.Normal, TextAnchor.UpperLeft) },
+                { "title", new TypographySettings(elemSizeMultiplier["title"] * _parent.fontSize, FontStyle.Bold, TextAnchor.MiddleCenter) },
+                { "h1", new TypographySettings(elemSizeMultiplier["h1"] * _parent.fontSize, FontStyle.Bold, TextAnchor.LowerCenter) },
+                { "h2", new TypographySettings(elemSizeMultiplier["h2"] * _parent.fontSize, FontStyle.Bold, TextAnchor.UpperLeft) },
+                { "h3", new TypographySettings(elemSizeMultiplier["h3"] * _parent.fontSize, FontStyle.Bold, TextAnchor.UpperLeft) },
+                { "h4", new TypographySettings(elemSizeMultiplier["h4"] * _parent.fontSize, FontStyle.Normal, TextAnchor.UpperLeft) },
+                { "h5", new TypographySettings(elemSizeMultiplier["h5"] * _parent.fontSize, FontStyle.Bold, TextAnchor.UpperLeft) },
+                { "h6", new TypographySettings(elemSizeMultiplier["h6"] * _parent.fontSize, FontStyle.Normal, TextAnchor.UpperLeft) },
+                { "label" ,new TypographySettings(elemSizeMultiplier["label"] * _parent.fontSize, FontStyle.Bold, TextAnchor.UpperLeft) },
+                { "small", new TypographySettings(elemSizeMultiplier["small"] * _parent.fontSize, FontStyle.Italic, TextAnchor.UpperLeft) }
+            };
+        }
+
+        public int fontSize = 14;
+        public TypographyMeta(MoGuiMeta parent, string name) : base(parent, name)
+        {
+            CreateTypographySet();
             Sizing(_sizeSettings);
             Defaults();
         }
@@ -68,7 +88,7 @@ namespace MoGUI
             foreach (var item in elementSettings)
             {
                 var thing = new TextMeta().Element(item.Key)
-                    .FontSize(fontSize * item.Value.FontSizeFactor)
+                    .FontSize(item.Value.FontSize)
                     .Style(item.Value.Style)
                     .Anchor(item.Value.Alignment)
                     .Font(item.Value.FontFace)
@@ -130,17 +150,15 @@ namespace MoGUI
 
     public struct TypographySettings
     {
-        public float FontSizeFactor;
         public int FontSize;
         public FontStyle Style;
         public TextAnchor Alignment;
         public Font FontFace;
         public Color FontColor;
 
-        public TypographySettings(int size, float sizeFactor, FontStyle style, TextAnchor alignment, Font fontFace = null, Color? color = null)
+        public TypographySettings(int size, FontStyle style, TextAnchor alignment, Font fontFace = null, Color? color = null)
         {
             FontSize = size;
-            FontSizeFactor = sizeFactor;
             Style = style;
             Alignment = alignment;
             if(fontFace != null)
@@ -160,10 +178,9 @@ namespace MoGUI
             
         }
 
-        public TypographySettings(int size, float sizeFactor, FontStyle style, TextAnchor alignment, string fontFace, Color? color = null)
+        public TypographySettings(int size, FontStyle style, TextAnchor alignment, string fontFace, Color? color = null)
         {
             FontSize = size;
-            FontSizeFactor = sizeFactor;
             Style = style;
             Alignment = alignment;
 
@@ -193,10 +210,9 @@ namespace MoGUI
             }
         }
 
-        public TypographySettings( float sizeFactor, FontStyle style, TextAnchor alignment, string fontFace, Color? color = null)
+        public TypographySettings( float size, FontStyle style, TextAnchor alignment, string fontFace, Color? color = null)
         {
-            FontSize = MoGuiMeta.DefaultFontSize;
-            FontSizeFactor = sizeFactor;
+            FontSize = Mathf.RoundToInt(size);
             Style = style;
             Alignment = alignment;
 
@@ -226,10 +242,10 @@ namespace MoGUI
             }
         }
 
-        public TypographySettings(float sizeFactor, FontStyle style, TextAnchor alignment, Font fontFace = null, Color? color = null)
+        public TypographySettings(float size, FontStyle style, TextAnchor alignment, Font fontFace = null, Color? color = null)
         {
-            FontSize = MoGuiMeta.DefaultFontSize;
-            FontSizeFactor = sizeFactor;
+            
+            FontSize = Mathf.RoundToInt(size);
             Style = style;
             Alignment = alignment;
 
@@ -254,7 +270,7 @@ namespace MoGUI
 
     public class TextMeta
     {
-        public TypographySettings settings = new TypographySettings(MoGuiMeta.DefaultFontSize, 1, FontStyle.Normal, TextAnchor.UpperLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
+        public TypographySettings settings = new TypographySettings(MoGuiMeta.DefaultFontSize, FontStyle.Normal, TextAnchor.UpperLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
 
         public Font font
         {

@@ -37,11 +37,11 @@ namespace MoGUI
     public class DDLMeta : ControlMeta
     {
         private SizeSettings _sizeSettings = new SizeSettings(40, 30, 1, 1);
-        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, 1, FontStyle.Bold, TextAnchor.MiddleLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
-        public TypographySettings listSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, 1, FontStyle.Normal, TextAnchor.MiddleLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
+        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, FontStyle.Bold, TextAnchor.MiddleLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
+        public TypographySettings listSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, FontStyle.Normal, TextAnchor.MiddleLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
         public MoGuiColor background = new MoGuiColor(MoGuiMeta.DefaultPanelColor.TintRaw, 0.6f);
         public MoGuiColor textColor = MoGuiMeta.DefaultFontColor;
-        public DDLMeta(string name) : base(name)
+        public DDLMeta(MoGuiMeta parent, string name) : base(parent, name)
         {
             Sizing(_sizeSettings);
         }

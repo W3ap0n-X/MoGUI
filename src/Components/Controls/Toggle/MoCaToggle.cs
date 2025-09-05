@@ -63,10 +63,10 @@ namespace MoGUI
 
         public SizeSettings checkBoxSize = new SizeSettings(15, 15, 0, 0, 20, 20);
         public SizeSettings buttonSize = new SizeSettings(60, 30, 1, 0);
-        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, 1, FontStyle.Bold, TextAnchor.UpperLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
+        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, FontStyle.Bold, TextAnchor.UpperLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
         public ToggleType toggleType = MoGUI.ToggleType.checkbox;
 
-        public ToggleMeta(string name) : base(name) { }
+        public ToggleMeta(MoGuiMeta parent, string name) : base(parent, name) { }
 
         public ToggleMeta Background(Color _color)
         {

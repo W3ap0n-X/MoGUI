@@ -28,8 +28,8 @@ namespace MoGUI
     {
         private ControlOrientation _orientation = ControlOrientation.vertical;
         public ControlOrientation direction = ControlOrientation.vertical;
-        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, 1, FontStyle.Bold, TextAnchor.MiddleCenter, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
-        public SelectorMeta(string name) : base(name) 
+        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, FontStyle.Bold, TextAnchor.MiddleCenter, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
+        public SelectorMeta(MoGuiMeta parent, string name) : base(parent, name) 
         {
             orientation = _orientation;
         }

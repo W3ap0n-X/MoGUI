@@ -93,11 +93,13 @@ namespace MoGUI
 
     public abstract class ComponentMeta
     {
+        public MoGuiMeta _parent;
         string ClassName;
         int margin;
 
-        public ComponentMeta(string name)
+        public ComponentMeta(MoGuiMeta parent, string name)
         {
+            _parent = parent;
             ClassName = name;
             Debug.Log("Name: " + name + "\n" + this.ToString());
         }
@@ -114,10 +116,18 @@ namespace MoGUI
             return this;
         }
 
-        public T Copy<T>()
+        public ComponentMeta SetParent(MoGuiMeta parent)
+        {
+            _parent = parent;
+            return this;
+        }
+
+        public T Copy<T>(MoGuiMeta parent)
         {
             Debug.Log("Name: " + ClassName + " copied");
-            return (T)this.MemberwiseClone();
+            var newmeta = this.MemberwiseClone();
+            // a little bit of syntax sorcery :: I csst... CAST!!! 
+            return (T)((object)((ComponentMeta)newmeta).SetParent(parent));
         }
     }
 
