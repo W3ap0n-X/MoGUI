@@ -129,5 +129,8 @@ A Button that allows you to select a value from a list. Can be supplied a `List<
 ### Selector
 A Unity Toggle Group that ensures only one option from a list is selected
 
+### ColorBrick
+
+
 ## Usage
 Coming soon!

@@ -31,7 +31,6 @@ namespace MoGUI.Tests
             // Create the base Gui
             GUI = new MoGui(Meta, "ThemeTest", new Vector2(420, 520), Vector2.zero);
             GUI.Canvas.transform.SetParent(gameObject.transform, false);
-            Meta.PanelColor.Color = MoGuiMeta.DefaultPanelColor;
 
 
         }
@@ -103,9 +102,9 @@ namespace MoGUI.Tests
             //Panel.AddControl("row0", "col1", "PanelColor-B", new MoCaSlider(colorSlideRange, (value) => PanelColor.B = (float)value, () => PanelColor.B, () => "PanelColor.b=" + PanelColor.B.ToString("f2"), "float"));
             //Panel.AddControl("row0", "col1", "PanelColor-A", new MoCaSlider(colorSlideRange, (value) => PanelColor.A = (float)value, () => PanelColor.A, () => "PanelColor.a=" + PanelColor.A.ToString("f2"), "float"));
             
-            BuildColorPicker(Panel, PanelColor, "row0", "col1", "PanelColor");
+            //BuildColorPicker(Panel, PanelColor, "row0", "col1", "PanelColor");
             TestColor0 = new MoGuiColor(testColor0);
-            BuildColorPicker(Panel, HeaderColor, "row0", "col2", "HeaderColor");
+            //BuildColorPicker(Panel, HeaderColor, "row0", "col2", "HeaderColor");
             //Panel.AddControl("row0", "col2", "HeaderColor", new MoCaColor(() => HeaderColor));
             //Panel.AddControl("row0", "col2", "HeaderColor-R", new MoCaSlider(colorSlideRange, (value) => HeaderColor.r = (float)value, () => HeaderColor.r, () => "HeaderColor.r=" + HeaderColor.r.ToString("f2"), "float"));
             //Panel.AddControl("row0", "col2", "HeaderColor-G", new MoCaSlider(colorSlideRange, (value) => HeaderColor.g = (float)value, () => HeaderColor.g, () => "HeaderColor.g=" + HeaderColor.g.ToString("f2"), "float"));
@@ -159,170 +158,170 @@ namespace MoGUI.Tests
 
         public void SetupVariables(MoGuiMeta meta)
         {
-            PanelColor = new ColorWrapper(meta.PanelColor.Color);
-            HeaderColor = new ColorWrapper(meta.HeaderColor);
-            FontSize = meta.FontSize;
-            HeaderFontSize = meta.HeaderFontSize;
-            HeaderSize = meta.HeaderSize;
-            PanelColor.Color = meta.PanelColor.Color;
-            HeaderColor.Color = meta.HeaderColor;
+            PanelColor = new ColorWrapper(meta.Panel.background.Color);
+            HeaderColor = new ColorWrapper(meta.Panel.Header.background);
+            //FontSize = meta.FontSize;
+            //HeaderFontSize = meta.HeaderFontSize;
+            //HeaderSize = meta.HeaderSize;
+            //PanelColor.Color = meta.PanelColor.Color;
+            //HeaderColor.Color = meta.HeaderColor;
         }
         int WindowCount;
         public void RunTestGui()
         {
-            var testMeta = new MoGuiMeta("ThemeTest", "Window" + WindowCount,
-                fontSize: FontSize,
-                headerFontSize: HeaderFontSize,
-                headerSize: HeaderSize,
-                panelColor: PanelColor.Color,
-                headerColor: HeaderColor.Color
-            );
-            GUI.AddPanel(testMeta, "Window" + WindowCount, new Vector2(450, 300), Vector2.zero);
+            //var testMeta = new MoGuiMeta("ThemeTest", "Window" + WindowCount,
+            //    fontSize: FontSize,
+            //    headerFontSize: HeaderFontSize,
+            //    headerSize: HeaderSize,
+            //    panelColor: PanelColor.Color,
+            //    headerColor: HeaderColor.Color
+            //);
+            //GUI.AddPanel(testMeta, "Window" + WindowCount, new Vector2(450, 300), Vector2.zero);
             WindowCount++;
 
         }
 
-        public void BuildColorPicker(MoGuiPanel Panel, ColorWrapper color, string row, string col, string name)
-        {
-            //Panel.Meta.PanelColor = MoGuiMeta.DefaultPanelColor;
-            var PickerPanel = Panel.AddPanel( row, col, name, new MoCaPanel(true, name));
-            //PickerPanel.AddScrollArea();
-            PickerPanel.Meta.TxtMargin = 0;
-            PickerPanel.Meta.TxtAnchor = TextAnchor.MiddleCenter;
-            PickerPanel.Meta.SliderDirection = SliderDirection.vertical;
-            PickerPanel.Meta.SliderLabelPlacement = ControlLabelPlacement.none;
-            PickerPanel.Meta.InputLabelPlacement = ControlLabelPlacement.none;
+        //public void BuildColorPicker(MoGuiPanel Panel, ColorWrapper color, string row, string col, string name)
+        //{
+        //    //Panel.Meta.PanelColor = MoGuiMeta.DefaultPanelColor;
+        //    var PickerPanel = Panel.AddPanel( row, col, name, new MoCaPanel(true, name));
+        //    //PickerPanel.AddScrollArea();
+        //    PickerPanel.Meta.TxtMargin = 0;
+        //    PickerPanel.Meta.TxtAnchor = TextAnchor.MiddleCenter;
+        //    PickerPanel.Meta.SliderDirection = SliderDirection.vertical;
+        //    PickerPanel.Meta.SliderLabelPlacement = ControlLabelPlacement.none;
+        //    PickerPanel.Meta.InputLabelPlacement = ControlLabelPlacement.none;
 
-            VerticalLayoutGroup layoutGroup = PickerPanel.Container.GetComponent<VerticalLayoutGroup>();
-            layoutGroup.childForceExpandHeight = false;
-            LayoutElement layoutElement = PickerPanel.Container.GetComponent<LayoutElement>();
-            layoutElement.preferredWidth = 280;
-            layoutElement.preferredHeight = 380;
+        //    VerticalLayoutGroup layoutGroup = PickerPanel.Container.GetComponent<VerticalLayoutGroup>();
+        //    layoutGroup.childForceExpandHeight = false;
+        //    LayoutElement layoutElement = PickerPanel.Container.GetComponent<LayoutElement>();
+        //    layoutElement.preferredWidth = 280;
+        //    layoutElement.preferredHeight = 380;
 
-            MoGuiColor _color = new MoGuiColor(() => color.Color, 0.5f);
-            PickerPanel.AddControl("0", "0", name + "_preview",new MoCaColor(() => _color.Color));
-            PickerPanel.AddControl("0", "1", name + "_previewT", new MoCaColor(() => _color.Tint));
-            PickerPanel.AddControl("0", "1", name + "_previewS", new MoCaColor(() => _color.Shade));
+        //    MoGuiColor _color = new MoGuiColor(() => color.Color, 0.5f);
+        //    PickerPanel.AddControl("0", "0", name + "_preview",new MoCaColor(() => _color.Color));
+        //    PickerPanel.AddControl("0", "1", name + "_previewT", new MoCaColor(() => _color.Tint));
+        //    PickerPanel.AddControl("0", "1", name + "_previewS", new MoCaColor(() => _color.Shade));
 
-            PickerPanel.Meta.SliderSize.z = 60;
-            PickerPanel.Meta.SliderTrackColor.a = 0.25f;
+        //    PickerPanel.Meta.Slider.sizing.preferredHeight = 60;
+        //    PickerPanel.Meta.SliderTrackColor.a = 0.25f;
 
-            var rSlider = PickerPanel.AddSlider("sliders", "r", name + "-R", new MoCaSlider(colorSlideRange, (value) => color.R = (float)value, () => color.R, () => color.R.ToString("f2"), "float", meta: PickerPanel.Meta));
-
-
-
-            var gSlider = PickerPanel.AddSlider("sliders", "g", name + "-G", new MoCaSlider(colorSlideRange, (value) => color.G = (float)value, () => color.G, () => color.G.ToString("f2"), "float"));
-
-            var bSlider = PickerPanel.AddSlider("sliders", "b", name + "-B", new MoCaSlider(colorSlideRange, (value) => color.B = (float)value, () => color.B, () => color.B.ToString("f2"), "float"));
-            var aSlider = PickerPanel.AddSlider("sliders", "a", name + "-A", new MoCaSlider(colorSlideRange, (value) => color.A = (float)value, () => color.A, () => color.A.ToString("f2"), "float"));
-            var lFactorSlider = PickerPanel.AddSlider("sliders", "lFactor", name + "-lFactor", new MoCaSlider(colorSlideRange, (value) => _color.Factor = (float)value, () => _color.Factor, () => _color.Factor.ToString("f2"), "float"));
-            var dFactorSlider = PickerPanel.AddSlider("sliders", "dFactor", name + "-dFactor", new MoCaSlider(colorSlideRange, (value) => _color.DarkFactor = (float)value * -1, () => _color.DarkFactor * -1, () => _color.Factor.ToString("f2"), "float"));
-
-            rSlider.BoundFillColor = () => new Color(rSlider.Value, 0, 0, aSlider.Value);
-            rSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
-            gSlider.BoundFillColor = () => new Color(0, gSlider.Value,  0, aSlider.Value);
-            gSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
-            bSlider.BoundFillColor = () => new Color(0, 0, bSlider.Value, aSlider.Value);
-            bSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
-            aSlider.BoundFillColor = () => new Color(1,1,1, aSlider.Value);
-            aSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
-            lFactorSlider.BoundFillColor = () => new Color(0.5f + (lFactorSlider.Value/2), 0.5f + (lFactorSlider.Value / 2), 0.5f + (lFactorSlider.Value / 2), 1);
-            lFactorSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
-            dFactorSlider.BoundFillColor = () => new Color(0.5f - (dFactorSlider.Value/2), 0.5f - (dFactorSlider.Value / 2), 0.5f - (dFactorSlider.Value / 2), 1);
-            dFactorSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
-            PickerPanel.Meta.InputFontSize = 11;
-            PickerPanel.AddControl("output", "0", name + "-Output", new MoCaInput(color.Color.ToString(), onUpdateAction: () => "new Color(" + color.R.ToString("f2") + "f, " + color.G.ToString("f2") + "f, " + color.B.ToString("f2") + "f," + color.A.ToString("f2") + "f)", text:"Base", valType:"none"));
-            PickerPanel.AddControl("output", "0", name + "-TOutput", new MoCaInput(_color.Tint.ToString(), onUpdateAction: () => "new Color(" + _color.Tint.r.ToString("f2") + "f, " + _color.Tint.g.ToString("f2") + "f, " + _color.Tint.b.ToString("f2") + "f," + _color.Tint.a.ToString("f2") + "f)", text: "Tint", valType: "none"));
-            PickerPanel.AddControl("output", "0", name + "-SOutput", new MoCaInput(_color.Shade.ToString(), onUpdateAction: () => "new Color(" + _color.Shade.r.ToString("f2") + "f, " + _color.Shade.g.ToString("f2") + "f, " + _color.Shade.b.ToString("f2") + "f," + _color.Shade.a.ToString("f2") + "f)", text: "Shade", valType: "none"));
-            var outputRowRect = PickerPanel.GetRow("output").Obj.GetComponent<RectTransform>();
-            outputRowRect.anchoredPosition = new Vector2(0, 0);
-            outputRowRect.anchorMax = Vector2.one;
-            outputRowRect.anchorMin = Vector2.zero;
-
-            PickerPanel.Meta.InputFontSize = 9;
-            PickerPanel.Meta.InputSize.w = 20;
-            PickerPanel.AddInput("sliders", "r", name + "-R_Input", new MoCaInput((value) => color.R = (float)value, () => color.R, "R", "float", meta: PickerPanel.Meta));
-            PickerPanel.AddInput("sliders", "g", name + "-G_Input", new MoCaInput((value) => color.G = (float)value, () => color.G, "G", "float"));
-            PickerPanel.AddInput("sliders", "b", name + "-B_Input", new MoCaInput((value) => color.B = (float)value, () => color.B, "B", "float"));
-            PickerPanel.AddInput("sliders", "a", name + "-A_Input", new MoCaInput((value) => color.A = (float)value, () => color.A, "A", "float"));
-            PickerPanel.AddInput("sliders", "lFactor", name + "-lFactor_Input", new MoCaInput((value) => _color.Factor = (float)value, () => _color.Factor, "lFactor", "float"));
-            PickerPanel.AddInput("sliders", "dFactor", name + "-dFactor_Input", new MoCaInput((value) => _color.DarkFactor = (float)value * -1, () => _color.DarkFactor * -1, "dFactor", "float"));
-
-
-            var sliderRow = PickerPanel.GetRow("sliders").Obj.GetComponent<HorizontalLayoutGroup>();
-            sliderRow.padding = new RectOffset(3, 3, 5, 5);
-            sliderRow.spacing = 5;
-        }
-
-        public void BuildColorPicker(MoGuiPanel Panel, MoGuiColor color, string row, string col, string name)
-        {
-            //Panel.Meta.PanelColor = MoGuiMeta.DefaultPanelColor;
-            var PickerPanel = Panel.AddPanel(row, col, name, new MoCaPanel(true, name));
-            //PickerPanel.AddScrollArea();
-            PickerPanel.Meta.TxtMargin = 0;
-            PickerPanel.Meta.TxtAnchor = TextAnchor.MiddleCenter;
-            PickerPanel.Meta.SliderDirection = SliderDirection.vertical;
-            PickerPanel.Meta.SliderLabelPlacement = ControlLabelPlacement.none;
-            PickerPanel.Meta.InputLabelPlacement = ControlLabelPlacement.none;
-
-            VerticalLayoutGroup layoutGroup = PickerPanel.Container.GetComponent<VerticalLayoutGroup>();
-            layoutGroup.childForceExpandHeight = false;
-            LayoutElement layoutElement = PickerPanel.Container.GetComponent<LayoutElement>();
-            layoutElement.preferredWidth = 280;
-            layoutElement.preferredHeight = 380;
-
-            PickerPanel.AddControl("0", "0", name + "_preview", new MoCaColor(() => color.Color));
-            PickerPanel.AddControl("0", "1", name + "_previewT", new MoCaColor(() => color.Tint));
-            PickerPanel.AddControl("0", "1", name + "_previewS", new MoCaColor(() => color.Shade));
-
-            PickerPanel.Meta.SliderSize.z = 60;
-            PickerPanel.Meta.SliderTrackColor.a = 0.25f;
-
-            var rSlider = PickerPanel.AddSlider("sliders", "r", name + "-R", new MoCaSlider(colorSlideRange, (value) => color.R = (float)value, () => color.R, () => color.R.ToString("f2"), "float", meta: PickerPanel.Meta));
+        //    var rSlider = PickerPanel.AddSlider("sliders", "r", name + "-R", new MoCaSlider(colorSlideRange, (value) => color.R = (float)value, () => color.R, () => color.R.ToString("f2"), "float", meta: PickerPanel.Meta));
 
 
 
-            var gSlider = PickerPanel.AddSlider("sliders", "g", name + "-G", new MoCaSlider(colorSlideRange, (value) => color.G = (float)value, () => color.G, () => color.G.ToString("f2"), "float"));
+        //    var gSlider = PickerPanel.AddSlider("sliders", "g", name + "-G", new MoCaSlider(colorSlideRange, (value) => color.G = (float)value, () => color.G, () => color.G.ToString("f2"), "float"));
 
-            var bSlider = PickerPanel.AddSlider("sliders", "b", name + "-B", new MoCaSlider(colorSlideRange, (value) => color.B = (float)value, () => color.B, () => color.B.ToString("f2"), "float"));
-            var aSlider = PickerPanel.AddSlider("sliders", "a", name + "-A", new MoCaSlider(colorSlideRange, (value) => color.A = (float)value, () => color.A, () => color.A.ToString("f2"), "float"));
-            var lFactorSlider = PickerPanel.AddSlider("sliders", "lFactor", name + "-lFactor", new MoCaSlider(colorSlideRange, (value) => color.Factor = (float)value, () => color.Factor, () => color.Factor.ToString("f2"), "float"));
-            var dFactorSlider = PickerPanel.AddSlider("sliders", "dFactor", name + "-dFactor", new MoCaSlider(colorSlideRange, (value) => color.DarkFactor = (float)value * -1, () => color.DarkFactor * -1, () => color.Factor.ToString("f2"), "float"));
+        //    var bSlider = PickerPanel.AddSlider("sliders", "b", name + "-B", new MoCaSlider(colorSlideRange, (value) => color.B = (float)value, () => color.B, () => color.B.ToString("f2"), "float"));
+        //    var aSlider = PickerPanel.AddSlider("sliders", "a", name + "-A", new MoCaSlider(colorSlideRange, (value) => color.A = (float)value, () => color.A, () => color.A.ToString("f2"), "float"));
+        //    var lFactorSlider = PickerPanel.AddSlider("sliders", "lFactor", name + "-lFactor", new MoCaSlider(colorSlideRange, (value) => _color.Factor = (float)value, () => _color.Factor, () => _color.Factor.ToString("f2"), "float"));
+        //    var dFactorSlider = PickerPanel.AddSlider("sliders", "dFactor", name + "-dFactor", new MoCaSlider(colorSlideRange, (value) => _color.DarkFactor = (float)value * -1, () => _color.DarkFactor * -1, () => _color.Factor.ToString("f2"), "float"));
 
-            rSlider.BoundFillColor = () => new Color(rSlider.Value, 0, 0, aSlider.Value);
-            rSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
-            gSlider.BoundFillColor = () => new Color(0, gSlider.Value, 0, aSlider.Value);
-            gSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
-            bSlider.BoundFillColor = () => new Color(0, 0, bSlider.Value, aSlider.Value);
-            bSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
-            aSlider.BoundFillColor = () => new Color(1, 1, 1, aSlider.Value);
-            aSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
-            lFactorSlider.BoundFillColor = () => new Color(0.5f + (lFactorSlider.Value / 2), 0.5f + (lFactorSlider.Value / 2), 0.5f + (lFactorSlider.Value / 2), 1);
-            lFactorSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
-            dFactorSlider.BoundFillColor = () => new Color(0.5f - (dFactorSlider.Value / 2), 0.5f - (dFactorSlider.Value / 2), 0.5f - (dFactorSlider.Value / 2), 1);
-            dFactorSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
-            PickerPanel.Meta.InputFontSize = 11;
-            PickerPanel.AddControl("output", "0", name + "-Output", new MoCaInput(color.Color.ToString(), onUpdateAction: () => "new Color(" + color.R.ToString("f2") + "f, " + color.G.ToString("f2") + "f, " + color.B.ToString("f2") + "f," + color.A.ToString("f2") + "f)", text: "Base", valType: "none"));
-            PickerPanel.AddControl("output", "0", name + "-TOutput", new MoCaInput(color.Tint.ToString(), onUpdateAction: () => "new Color(" + color.Tint.r.ToString("f2") + "f, " + color.Tint.g.ToString("f2") + "f, " + color.Tint.b.ToString("f2") + "f," + color.Tint.a.ToString("f2") + "f)", text: "Tint", valType: "none"));
-            PickerPanel.AddControl("output", "0", name + "-SOutput", new MoCaInput(color.Shade.ToString(), onUpdateAction: () => "new Color(" + color.Shade.r.ToString("f2") + "f, " + color.Shade.g.ToString("f2") + "f, " + color.Shade.b.ToString("f2") + "f," + color.Shade.a.ToString("f2") + "f)", text: "Shade", valType: "none"));
-            var outputRowRect = PickerPanel.GetRow("output").Obj.GetComponent<RectTransform>();
-            outputRowRect.anchoredPosition = new Vector2(0, 0);
-            outputRowRect.anchorMax = Vector2.one;
-            outputRowRect.anchorMin = Vector2.zero;
+        //    rSlider.BoundFillColor = () => new Color(rSlider.Value, 0, 0, aSlider.Value);
+        //    rSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
+        //    gSlider.BoundFillColor = () => new Color(0, gSlider.Value,  0, aSlider.Value);
+        //    gSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
+        //    bSlider.BoundFillColor = () => new Color(0, 0, bSlider.Value, aSlider.Value);
+        //    bSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
+        //    aSlider.BoundFillColor = () => new Color(1,1,1, aSlider.Value);
+        //    aSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
+        //    lFactorSlider.BoundFillColor = () => new Color(0.5f + (lFactorSlider.Value/2), 0.5f + (lFactorSlider.Value / 2), 0.5f + (lFactorSlider.Value / 2), 1);
+        //    lFactorSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
+        //    dFactorSlider.BoundFillColor = () => new Color(0.5f - (dFactorSlider.Value/2), 0.5f - (dFactorSlider.Value / 2), 0.5f - (dFactorSlider.Value / 2), 1);
+        //    dFactorSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
+        //    PickerPanel.Meta.InputFontSize = 11;
+        //    PickerPanel.AddControl("output", "0", name + "-Output", new MoCaInput(color.Color.ToString(), onUpdateAction: () => "new Color(" + color.R.ToString("f2") + "f, " + color.G.ToString("f2") + "f, " + color.B.ToString("f2") + "f," + color.A.ToString("f2") + "f)", text:"Base", valType:"none"));
+        //    PickerPanel.AddControl("output", "0", name + "-TOutput", new MoCaInput(_color.Tint.ToString(), onUpdateAction: () => "new Color(" + _color.Tint.r.ToString("f2") + "f, " + _color.Tint.g.ToString("f2") + "f, " + _color.Tint.b.ToString("f2") + "f," + _color.Tint.a.ToString("f2") + "f)", text: "Tint", valType: "none"));
+        //    PickerPanel.AddControl("output", "0", name + "-SOutput", new MoCaInput(_color.Shade.ToString(), onUpdateAction: () => "new Color(" + _color.Shade.r.ToString("f2") + "f, " + _color.Shade.g.ToString("f2") + "f, " + _color.Shade.b.ToString("f2") + "f," + _color.Shade.a.ToString("f2") + "f)", text: "Shade", valType: "none"));
+        //    var outputRowRect = PickerPanel.GetRow("output").Obj.GetComponent<RectTransform>();
+        //    outputRowRect.anchoredPosition = new Vector2(0, 0);
+        //    outputRowRect.anchorMax = Vector2.one;
+        //    outputRowRect.anchorMin = Vector2.zero;
 
-            PickerPanel.Meta.InputFontSize = 9;
-            PickerPanel.Meta.InputSize.w = 20;
-            PickerPanel.AddInput("sliders", "r", name + "-R_Input", new MoCaInput((value) => color.R = (float)value, () => color.R, "R", "float", meta: PickerPanel.Meta));
-            PickerPanel.AddInput("sliders", "g", name + "-G_Input", new MoCaInput((value) => color.G = (float)value, () => color.G, "G", "float"));
-            PickerPanel.AddInput("sliders", "b", name + "-B_Input", new MoCaInput((value) => color.B = (float)value, () => color.B, "B", "float"));
-            PickerPanel.AddInput("sliders", "a", name + "-A_Input", new MoCaInput((value) => color.A = (float)value, () => color.A, "A", "float"));
-            PickerPanel.AddInput("sliders", "lFactor", name + "-lFactor_Input", new MoCaInput((value) => color.Factor = (float)value, () => color.Factor, "lFactor", "float"));
-            PickerPanel.AddInput("sliders", "dFactor", name + "-dFactor_Input", new MoCaInput((value) => color.DarkFactor = (float)value * -1, () => color.DarkFactor * -1, "dFactor", "float"));
+        //    PickerPanel.Meta.InputFontSize = 9;
+        //    PickerPanel.Meta.InputSize.w = 20;
+        //    PickerPanel.AddInput("sliders", "r", name + "-R_Input", new MoCaInput((value) => color.R = (float)value, () => color.R, "R", "float", meta: PickerPanel.Meta));
+        //    PickerPanel.AddInput("sliders", "g", name + "-G_Input", new MoCaInput((value) => color.G = (float)value, () => color.G, "G", "float"));
+        //    PickerPanel.AddInput("sliders", "b", name + "-B_Input", new MoCaInput((value) => color.B = (float)value, () => color.B, "B", "float"));
+        //    PickerPanel.AddInput("sliders", "a", name + "-A_Input", new MoCaInput((value) => color.A = (float)value, () => color.A, "A", "float"));
+        //    PickerPanel.AddInput("sliders", "lFactor", name + "-lFactor_Input", new MoCaInput((value) => _color.Factor = (float)value, () => _color.Factor, "lFactor", "float"));
+        //    PickerPanel.AddInput("sliders", "dFactor", name + "-dFactor_Input", new MoCaInput((value) => _color.DarkFactor = (float)value * -1, () => _color.DarkFactor * -1, "dFactor", "float"));
 
 
-            var sliderRow = PickerPanel.GetRow("sliders").Obj.GetComponent<HorizontalLayoutGroup>();
-            sliderRow.padding = new RectOffset(3, 3, 5, 5);
-            sliderRow.spacing = 5;
-        }
+        //    var sliderRow = PickerPanel.GetRow("sliders").Obj.GetComponent<HorizontalLayoutGroup>();
+        //    sliderRow.padding = new RectOffset(3, 3, 5, 5);
+        //    sliderRow.spacing = 5;
+        //}
+
+        //public void BuildColorPicker(MoGuiPanel Panel, MoGuiColor color, string row, string col, string name)
+        //{
+        //    //Panel.Meta.PanelColor = MoGuiMeta.DefaultPanelColor;
+        //    var PickerPanel = Panel.AddPanel(row, col, name, new MoCaPanel(true, name));
+        //    //PickerPanel.AddScrollArea();
+        //    PickerPanel.Meta.TxtMargin = 0;
+        //    PickerPanel.Meta.TxtAnchor = TextAnchor.MiddleCenter;
+        //    PickerPanel.Meta.SliderDirection = SliderDirection.vertical;
+        //    PickerPanel.Meta.SliderLabelPlacement = ControlLabelPlacement.none;
+        //    PickerPanel.Meta.InputLabelPlacement = ControlLabelPlacement.none;
+
+        //    VerticalLayoutGroup layoutGroup = PickerPanel.Container.GetComponent<VerticalLayoutGroup>();
+        //    layoutGroup.childForceExpandHeight = false;
+        //    LayoutElement layoutElement = PickerPanel.Container.GetComponent<LayoutElement>();
+        //    layoutElement.preferredWidth = 280;
+        //    layoutElement.preferredHeight = 380;
+
+        //    PickerPanel.AddControl("0", "0", name + "_preview", new MoCaColor(() => color.Color));
+        //    PickerPanel.AddControl("0", "1", name + "_previewT", new MoCaColor(() => color.Tint));
+        //    PickerPanel.AddControl("0", "1", name + "_previewS", new MoCaColor(() => color.Shade));
+
+        //    PickerPanel.Meta.SliderSize.z = 60;
+        //    PickerPanel.Meta.SliderTrackColor.a = 0.25f;
+
+        //    var rSlider = PickerPanel.AddSlider("sliders", "r", name + "-R", new MoCaSlider(colorSlideRange, (value) => color.R = (float)value, () => color.R, () => color.R.ToString("f2"), "float", meta: PickerPanel.Meta));
+
+
+
+        //    var gSlider = PickerPanel.AddSlider("sliders", "g", name + "-G", new MoCaSlider(colorSlideRange, (value) => color.G = (float)value, () => color.G, () => color.G.ToString("f2"), "float"));
+
+        //    var bSlider = PickerPanel.AddSlider("sliders", "b", name + "-B", new MoCaSlider(colorSlideRange, (value) => color.B = (float)value, () => color.B, () => color.B.ToString("f2"), "float"));
+        //    var aSlider = PickerPanel.AddSlider("sliders", "a", name + "-A", new MoCaSlider(colorSlideRange, (value) => color.A = (float)value, () => color.A, () => color.A.ToString("f2"), "float"));
+        //    var lFactorSlider = PickerPanel.AddSlider("sliders", "lFactor", name + "-lFactor", new MoCaSlider(colorSlideRange, (value) => color.Factor = (float)value, () => color.Factor, () => color.Factor.ToString("f2"), "float"));
+        //    var dFactorSlider = PickerPanel.AddSlider("sliders", "dFactor", name + "-dFactor", new MoCaSlider(colorSlideRange, (value) => color.DarkFactor = (float)value * -1, () => color.DarkFactor * -1, () => color.Factor.ToString("f2"), "float"));
+
+        //    rSlider.BoundFillColor = () => new Color(rSlider.Value, 0, 0, aSlider.Value);
+        //    rSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
+        //    gSlider.BoundFillColor = () => new Color(0, gSlider.Value, 0, aSlider.Value);
+        //    gSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
+        //    bSlider.BoundFillColor = () => new Color(0, 0, bSlider.Value, aSlider.Value);
+        //    bSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
+        //    aSlider.BoundFillColor = () => new Color(1, 1, 1, aSlider.Value);
+        //    aSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
+        //    lFactorSlider.BoundFillColor = () => new Color(0.5f + (lFactorSlider.Value / 2), 0.5f + (lFactorSlider.Value / 2), 0.5f + (lFactorSlider.Value / 2), 1);
+        //    lFactorSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
+        //    dFactorSlider.BoundFillColor = () => new Color(0.5f - (dFactorSlider.Value / 2), 0.5f - (dFactorSlider.Value / 2), 0.5f - (dFactorSlider.Value / 2), 1);
+        //    dFactorSlider.Container.GetComponent<VerticalLayoutGroup>().padding.bottom = 12;
+        //    PickerPanel.Meta.InputFontSize = 11;
+        //    PickerPanel.AddControl("output", "0", name + "-Output", new MoCaInput(color.Color.ToString(), onUpdateAction: () => "new Color(" + color.R.ToString("f2") + "f, " + color.G.ToString("f2") + "f, " + color.B.ToString("f2") + "f," + color.A.ToString("f2") + "f)", text: "Base", valType: "none"));
+        //    PickerPanel.AddControl("output", "0", name + "-TOutput", new MoCaInput(color.Tint.ToString(), onUpdateAction: () => "new Color(" + color.Tint.r.ToString("f2") + "f, " + color.Tint.g.ToString("f2") + "f, " + color.Tint.b.ToString("f2") + "f," + color.Tint.a.ToString("f2") + "f)", text: "Tint", valType: "none"));
+        //    PickerPanel.AddControl("output", "0", name + "-SOutput", new MoCaInput(color.Shade.ToString(), onUpdateAction: () => "new Color(" + color.Shade.r.ToString("f2") + "f, " + color.Shade.g.ToString("f2") + "f, " + color.Shade.b.ToString("f2") + "f," + color.Shade.a.ToString("f2") + "f)", text: "Shade", valType: "none"));
+        //    var outputRowRect = PickerPanel.GetRow("output").Obj.GetComponent<RectTransform>();
+        //    outputRowRect.anchoredPosition = new Vector2(0, 0);
+        //    outputRowRect.anchorMax = Vector2.one;
+        //    outputRowRect.anchorMin = Vector2.zero;
+
+        //    PickerPanel.Meta.InputFontSize = 9;
+        //    PickerPanel.Meta.InputSize.w = 20;
+        //    PickerPanel.AddInput("sliders", "r", name + "-R_Input", new MoCaInput((value) => color.R = (float)value, () => color.R, "R", "float", meta: PickerPanel.Meta));
+        //    PickerPanel.AddInput("sliders", "g", name + "-G_Input", new MoCaInput((value) => color.G = (float)value, () => color.G, "G", "float"));
+        //    PickerPanel.AddInput("sliders", "b", name + "-B_Input", new MoCaInput((value) => color.B = (float)value, () => color.B, "B", "float"));
+        //    PickerPanel.AddInput("sliders", "a", name + "-A_Input", new MoCaInput((value) => color.A = (float)value, () => color.A, "A", "float"));
+        //    PickerPanel.AddInput("sliders", "lFactor", name + "-lFactor_Input", new MoCaInput((value) => color.Factor = (float)value, () => color.Factor, "lFactor", "float"));
+        //    PickerPanel.AddInput("sliders", "dFactor", name + "-dFactor_Input", new MoCaInput((value) => color.DarkFactor = (float)value * -1, () => color.DarkFactor * -1, "dFactor", "float"));
+
+
+        //    var sliderRow = PickerPanel.GetRow("sliders").Obj.GetComponent<HorizontalLayoutGroup>();
+        //    sliderRow.padding = new RectOffset(3, 3, 5, 5);
+        //    sliderRow.spacing = 5;
+        //}
     }
 }

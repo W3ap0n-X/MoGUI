@@ -44,26 +44,6 @@ namespace MoGUI
 
         }
 
-        public MoGuiControl(string pluginName, string name, Vector2 size)
-        {
-            PluginName = pluginName;
-            Name = name;
-            Size = size;
-            Meta = new MoGuiMeta(pluginName, name);
-            _Init();
-        }
-
-        public MoGuiControl(string pluginName, string name, Vector2 size, Vector2 pos)
-        {
-
-            PluginName = pluginName;
-            Name = name;
-            Pos = pos;
-            Size = size;
-            Meta = new MoGuiMeta(pluginName, name);
-            _Init();
-        }
-
         public MoGuiControl(MoGuiMeta meta, string name, Vector2 size, Vector2 pos)
         {
 
@@ -77,7 +57,6 @@ namespace MoGUI
 
         public abstract void Update();
 
-
         public virtual void _Init()
         {
             
@@ -89,18 +68,18 @@ namespace MoGUI
             if (orientation == ControlOrientation.vertical)
             {
                 VerticalLayoutGroup layoutGroup = layoutObject.AddComponent<VerticalLayoutGroup>();
-                layoutGroup.padding = new RectOffset(Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin);
+                layoutGroup.padding = new RectOffset(Meta.Margin, Meta.Margin, Meta.Margin, Meta.Margin);
 
-                layoutGroup.spacing = Meta.TxtMargin;
+                layoutGroup.spacing = Meta.Margin;
                 layoutGroup.childForceExpandWidth = false;
                 layoutGroup.childForceExpandHeight = false;
             }
             else
             {
                 HorizontalLayoutGroup layoutGroup = layoutObject.AddComponent<HorizontalLayoutGroup>();
-                layoutGroup.padding = new RectOffset(Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin);
+                layoutGroup.padding = new RectOffset(Meta.Margin, Meta.Margin, Meta.Margin, Meta.Margin);
 
-                layoutGroup.spacing = Meta.TxtMargin;
+                layoutGroup.spacing = Meta.Margin;
                 layoutGroup.childForceExpandWidth = false;
                 layoutGroup.childForceExpandHeight = false;
             }
@@ -110,7 +89,7 @@ namespace MoGUI
         }
         public virtual GameObject CreateContainer()
         {
-            GameObject layoutObject = this.CreateContainer(Meta.Orientation);
+            GameObject layoutObject = this.CreateContainer(Meta.orientation);
             return layoutObject;
         }
 
@@ -127,69 +106,6 @@ namespace MoGUI
         public float flexibleHeight { get => LoElement.flexibleHeight; set { LoElement.flexibleHeight = value; } }
         public float preferredWidth { get => LoElement.preferredWidth; set { LoElement.preferredWidth = value; } }
         public float preferredHeight { get => LoElement.preferredHeight; set { LoElement.preferredHeight = value; } }
-    }
-
-    public abstract class MoGCArgs
-    {
-        public Action OnClickAction;
-        public Func<object> OnUpdateAction;
-        public Action<object> OnEditAction;
-        public Func<object> Text;
-        public string ValType;
-        public string Orientation;
-        public string LabelPlacement;
-        public Type Type;
-        public MoGuiMeta Meta;
-
-
-        public MoGCArgs(Type type,
-            MoGuiMeta meta = null,
-            Func<object> value = null,
-             Action onClickAction = null,
-             Func<object> onUpdateAction = null,
-             Action<object> onEditAction = null,
-             Func<object> text = null,
-             string valType = "none"
-        )
-        {
-            Type = type;
-            Meta = meta;
-            OnClickAction = onClickAction;
-            OnUpdateAction = onUpdateAction;
-            OnEditAction = onEditAction;
-            Text = text;
-            ValType = valType;
-        }
-
-        public MoGCArgs(Type type, object value = null,
-             Action onClickAction = null,
-             Func<object> onUpdateAction = null,
-             Action<object> onEditAction = null,
-             object text = null,
-             string valType = null,
-            MoGuiMeta meta = null
-        )
-        {
-            Type = type;
-            Meta = meta;
-            OnClickAction = onClickAction;
-            OnUpdateAction = onUpdateAction;
-            OnEditAction = onEditAction;
-            Text = ConvertString(text);
-            ValType = valType;
-        }
-
-        public Func<object> ConvertString(object obj)
-        {
-            return () => obj;
-        }
-    }
-
-    public class ControlMeta : BlockMeta
-    {
-        public ControlMeta(string name) : base(name) { }
-
-
     }
 
 }

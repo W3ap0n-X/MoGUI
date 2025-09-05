@@ -28,22 +28,22 @@ namespace MoGUI.Tests
         void Start()
         {
             // Set up meta for secondary window using different fonts and base colors
-            Win2Meta = new MoGuiMeta("ControlTest", "Window 2",
-                font: Font.CreateDynamicFontFromOSFont("Times New Roman", 20),
-                panelColor: new Color(1, 1, 1, 0.7f),
-                headerColor: new Color(0.3f, 0.3f, 0.8f, 1),
-                headerFontColor: new Color(0.8f, 0.8f, 0.8f, 1),
-                fontColor: Color.black,
-                buttonColor: new Color(0.5f, 0.5f, 0.8f, 1),
-                toggleColor: new Color(0.9f, 0.9f, 0.9f),
-                toggleCheckColor: new Color(0.4f, 0.4f, 0.4f),
-                inputColor: new Color(0.9f, 0.9f, 0.9f)
-            );
+            //Win2Meta = new MoGuiMeta("ControlTest", "Window 2",
+            //    font: Font.CreateDynamicFontFromOSFont("Times New Roman", 20),
+            //    panelColor: new Color(1, 1, 1, 0.7f),
+            //    headerColor: new Color(0.3f, 0.3f, 0.8f, 1),
+            //    headerFontColor: new Color(0.8f, 0.8f, 0.8f, 1),
+            //    fontColor: Color.black,
+            //    buttonColor: new Color(0.5f, 0.5f, 0.8f, 1),
+            //    toggleColor: new Color(0.9f, 0.9f, 0.9f),
+            //    toggleCheckColor: new Color(0.4f, 0.4f, 0.4f),
+            //    inputColor: new Color(0.9f, 0.9f, 0.9f)
+            //);
             // Create the base Gui
             GUI = new MoGui("ControlTest", new Vector2(600, 400), Vector2.zero);
             GUI.Canvas.transform.SetParent(gameObject.transform, false);
             // Create the secondary window
-            GUI.AddPanel(Win2Meta, "Window 2", new Vector2(450, 300), Vector2.zero);
+            //GUI.AddPanel(Win2Meta, "Window 2", new Vector2(450, 300), Vector2.zero);
         }
 
         // Update is called once per frame
@@ -55,7 +55,7 @@ namespace MoGUI.Tests
                 // Setup content on RootPanel
                 BuildUI(GUI.Main);
                 // Setup content on secondary window
-                BuildUI(GUI.Panels["Window 2"]);
+                //BuildUI(GUI.Panels["Window 2"]);
             }
             else
             {
@@ -186,7 +186,7 @@ namespace MoGUI.Tests
             // Add toggle with bound value
             var TestToggle1 = (MoGuiToggle)Panel.AddControl("row1", "col1", "TestToggle1", new MoCaToggle(boundValue: () => bool1, onClickAction: (val) => bool1 = val, boundText: () => "bool1=" + bool1));
             // Add togglebutton with bound value
-            Panel.AddControl("row1", "col1", "ToggleBt0", new MoCaToggleBT(boundValue: () => bool4, onClickAction: (val) => bool4 = val, boundText: () => "bool4=" + bool4));
+            Panel.AddControl("row1", "col1", "ToggleBt0", new MoCaToggle(boundValue: () => bool4, onClickAction: (val) => bool4 = val, boundText: () => "bool4=" + bool4, toggleType: ToggleType.button));
             // Add toggle with with Bound Value that will not be saved as a variable to test if it can be called from panel with name 
             Panel.AddControl("row1", "col1", "TestToggle2", new MoCaToggle(boundValue: () => bool2, onClickAction: (val) => bool2 = val, boundText: () => "bool2=" + bool2));
             // Add toggle with bound value to be used for read test
@@ -198,7 +198,7 @@ namespace MoGUI.Tests
             // add toggle that is "read-only" with bound variable
             Panel.AddControl("row1", "col1", "TestToggle6", new MoCaToggle(boundValue: () => bool2, boundText: () => "bool2=" + bool2));
             // add toggle that is "read-only" with bound toggle
-            Panel.AddControl("row1", "col1", "TestToggle7", new MoCaToggle(boundValue: () => ((MoGuiToggleBt)Panel.Components["ToggleBt0"]).Value, boundText: () => "ToggleBt0: " + ((MoGuiToggleBt)Panel.Components["ToggleBt0"]).Value));
+            Panel.AddControl("row1", "col1", "TestToggle7", new MoCaToggle(boundValue: () => ((MoGuiToggle)Panel.Components["ToggleBt0"]).Value, boundText: () => "ToggleBt0: " + ((MoGuiToggle)Panel.Components["ToggleBt0"]).Value));
 
             // Text displays to verify functionality and logical continuity.
             Panel.AddControl("row1", "col2", "TestText1", new MoCaText(() => "bool1=" + bool1));
@@ -279,10 +279,10 @@ namespace MoGUI.Tests
                 ));
 
             // create vertical slider
-            Panel.AddControl("row4", "col0", "TestSlider7", new MoCaSlider(testRange, (value) => float0 = (float)value, () => float0, () => "float0=" + float0, "float", meta: new MoGuiMeta(meta: Panel.Meta, name: "TestSlider7", sliderDirection: SliderDirection.vertical)));
-            Panel.AddControl("row4", "col1", "TestSlider8", new MoCaSlider(testRange0, (value) => float1 = (float)value, () => float1, () => "float1=" + float1, "float", meta: new MoGuiMeta(meta: Panel.Meta, name: "TestSlider7", sliderDirection: SliderDirection.vertical)));
-            Panel.AddControl("row4", "col3", "TestSlider9", new MoCaSlider(testRange, (value) => float0 = (float)value, () => float0, () => "float0=" + float0, "float", meta: new MoGuiMeta(meta: Panel.Meta, name: "TestSlider7", sliderDirection: SliderDirection.vertical)));
-            Panel.AddControl("row4", "col4", "TestSlider10", new MoCaSlider(testRange0, (value) => float1 = (float)value, () => float1, () => "float1=" + float1, "float", meta: new MoGuiMeta(meta: Panel.Meta, name: "TestSlider7", sliderDirection: SliderDirection.vertical)));
+            Panel.AddControl("row4", "col0", "TestSlider7", new MoCaSlider(testRange, (value) => float0 = (float)value, () => float0, () => "float0=" + float0, "float", direction: ControlOrientation.vertical));
+            Panel.AddControl("row4", "col1", "TestSlider8", new MoCaSlider(testRange0, (value) => float1 = (float)value, () => float1, () => "float1=" + float1, "float", direction: ControlOrientation.vertical));
+            Panel.AddControl("row4", "col3", "TestSlider9", new MoCaSlider(testRange, (value) => float0 = (float)value, () => float0, () => "float0=" + float0, "float", direction: ControlOrientation.vertical));
+            Panel.AddControl("row4", "col4", "TestSlider10", new MoCaSlider(testRange0, (value) => float1 = (float)value, () => float1, () => "float1=" + float1, "float", direction: ControlOrientation.vertical));
         }
 
         // used for input tests
@@ -401,7 +401,7 @@ namespace MoGUI.Tests
         {
             Panel.AddControl("row0", "col0", "TestSelectGroupsText0", new MoCaText("Selectors"));
             var TestSelectGroup0 = (MoGuiSelector)Panel.AddControl("row1", "col0", "TestSelectGroup0", new MoCaSelector(testOptions0, "TestSelectGroup0"));
-            var TestSelectGroup1 = (MoGuiSelector)Panel.AddControl("row2", "col0", "TestSelectGroup1", new MoCaSelector(testOptions0, "TestSelectGroup1", meta: new MoGuiMeta(TestSelectGroup0.Meta, "TestSelectGroup1", selectorOrientation: ControlOrientation.horizontal)));
+            var TestSelectGroup1 = (MoGuiSelector)Panel.AddControl("row2", "col0", "TestSelectGroup1", new MoCaSelector(testOptions0, "TestSelectGroup1", direction:ControlOrientation.horizontal));
             Panel.AddControl("row1", "col1", "TestSelectGroup0Text", new MoCaText(() => "TestSelectGroup0.Value: " + TestSelectGroup0.Value));
             Panel.AddControl("row1", "col1", "TestSelectGroup1Text", new MoCaText(() => "TestSelectGroup1.Value: " + TestSelectGroup1.Value));
         }

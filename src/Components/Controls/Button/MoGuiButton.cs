@@ -11,10 +11,14 @@ namespace MoGUI
         public MoGuiTxt Text;
         public Image background;
 
+        public bool interactible
+        {
+            get { return Obj.GetComponent<Button>().interactable; }
+            set { Obj.GetComponent<Button>().interactable = value; }
+        }
 
         public MoGuiButton(MoGuiMeta meta, string name, Func<object> onUpdateAction, Action onClickAction) : base(meta, name)
         {
-            Meta.FontSize = Meta.ButtonFontSize;
             
             Obj = CreateButton(onClickAction);
             AddText("ButtonText", onUpdateAction);
@@ -22,14 +26,12 @@ namespace MoGUI
 
         public MoGuiButton(MoGuiMeta meta, string name, string text, Action onClickAction) : base(meta, name)
         {
-            Meta.FontSize = Meta.ButtonFontSize;
             Obj = CreateButton(onClickAction);
             AddText("ButtonText", text);
         }
 
         public MoGuiButton(MoGuiMeta meta, string name, MoCaButton args) : base(meta, name)
         {
-            Meta.FontSize = Meta.ButtonFontSize;
             Obj = CreateButton(args.OnClickAction);
 
             if (args.Text != null)
@@ -44,32 +46,32 @@ namespace MoGUI
 
         public override void SetLayout()
         {
-            minWidth = Meta.ButtonSize.x;
-            minHeight = Meta.ButtonSize.y;
-            //preferredWidth = Meta.ButtonSize.z;
-            //preferredHeight = Meta.ButtonSize.w;
-            flexibleHeight = 1;
-            flexibleWidth = 1;
+
+            minWidth = Meta.Button.sizing.minWidth;
+            minHeight = Meta.Button.sizing.minHeight;
+            if (Meta.Button.sizing.preferredWidth != null) { preferredWidth = (float)Meta.Button.sizing.preferredWidth; }
+            if (Meta.Button.sizing.preferredHeight != null) { preferredHeight = (float)Meta.Button.sizing.preferredHeight; }
+            flexibleWidth = Meta.Button.sizing.flexibleWidth ?? 0;
+            flexibleHeight = Meta.Button.sizing.flexibleHeight ?? 0;
         }
 
-        //public override void _Init()
-        //{
-        //    Container = CreateContainer();
-        //}
         public GameObject CreateButton(Action onClickAction)
         {
             GameObject buttonObject = new GameObject(PluginName + "_" + Name + "_" + "Button");
 
             background = buttonObject.AddComponent<Image>();
-            background.color = MoGui.TestMeta.Button.background.Color;
+            background.color = Meta.Button.background.Color;
 
             AddLayoutElement(buttonObject);
             SetLayout();
 
             Button buttonComponent = buttonObject.AddComponent<Button>();
             buttonComponent.onClick.AddListener(() => onClickAction?.Invoke());
+
+            ColorBlock stateColors = buttonComponent.colors;
+            stateColors.highlightedColor = Meta.Button.background.Tint;
+            stateColors.disabledColor = Meta.Button.background.Shade;
             
-            //buttonObject.transform.SetParent(Container.transform, false);
             return buttonObject;
         }
 
@@ -92,13 +94,10 @@ namespace MoGUI
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, text);
+                Text = new MoGuiTxt(Meta, Name + "_" + label, text:text, Meta.Button.labelSettings);
                 Text.Obj.transform.SetParent(Obj.transform, false);
-                //HorizontalLayoutGroup layoutGroup = Text.Container.GetComponent<HorizontalLayoutGroup>();
-                //layoutGroup.childForceExpandHeight = true;
-                Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
-                Text.minHeight = minHeight - (2 * MoGui.TestMeta.Margin);
-                Text.minWidth = minWidth - (2 * MoGui.TestMeta.Margin);
+                Text.minHeight = minHeight - (2 * Meta.Margin);
+                Text.minWidth = minWidth - (2 * Meta.Margin);
             }
 
         }
@@ -113,13 +112,10 @@ namespace MoGUI
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
+                Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction, Meta.Button.labelSettings);
                 Text.Obj.transform.SetParent(Obj.transform, false);
-                //HorizontalLayoutGroup layoutGroup = Text.Container.GetComponent<HorizontalLayoutGroup>();
-                //layoutGroup.childForceExpandHeight = true;
-                Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
-                Text.minHeight = minHeight - (2* MoGui.TestMeta.Margin);
-                Text.minWidth = minWidth - (2 * MoGui.TestMeta.Margin);
+                Text.minHeight = minHeight - (2* Meta.Margin);
+                Text.minWidth = minWidth - (2 * Meta.Margin);
             }
 
         }
@@ -133,46 +129,4 @@ namespace MoGUI
         }
     }
 
-    public class MoCaButton : MoGCArgs
-    {
-
-        public MoCaButton(Func<object> text,
-            Action onClickAction,
-            MoGuiMeta meta = null
-        ) : base(typeof(MoGuiButton), meta, text: text)
-        {
-            OnClickAction = onClickAction;
-        }
-
-        public MoCaButton(object text,
-            Action onClickAction,
-            MoGuiMeta meta = null
-        ) : base(typeof(MoGuiButton), meta, text: text)
-        {
-            OnClickAction = onClickAction;
-        }
-    }
-
-    public class ButtonMeta : ControlMeta
-    {
-        Font font;
-        int fontsize;
-        public MoGuiColor background = new MoGuiColor(GuiMeta.DefaultPanelColor.Tint);
-        // Vector2 minSize;
-        // Vector2 Size;
-
-        public ButtonMeta(string name) : base(name) { }
-
-        public ButtonMeta Background(Color _color)
-        {
-            background = new MoGuiColor(_color);
-            return this;
-        }
-
-        public ButtonMeta Background(MoGuiColor _color)
-        {
-            background = _color;
-            return this;
-        }
-    }
 }

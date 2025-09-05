@@ -81,12 +81,14 @@ namespace MoGUI
 
         public override void SetLayout()
         {
-            minWidth = Meta.DDLSize.x;
-            minHeight = Meta.DDLSize.y;
-            //preferredWidth = Meta.DDLSize.z;
-            //preferredHeight = Meta.DDLSize.w;
-            flexibleHeight = 1;
-            flexibleWidth = 1;
+
+
+            minWidth = Meta.DDL.sizing.minWidth;
+            minHeight = Meta.DDL.sizing.minHeight;
+            if (Meta.DDL.sizing.preferredWidth != null) { preferredWidth = (float)Meta.DDL.sizing.preferredWidth; }
+            if (Meta.DDL.sizing.preferredHeight != null) { preferredHeight = (float)Meta.DDL.sizing.preferredHeight; }
+            flexibleWidth = Meta.DDL.sizing.flexibleWidth ?? 0;
+            flexibleHeight = Meta.DDL.sizing.flexibleHeight ?? 0;
         }
 
         private GameObject CreateDropdown()
@@ -96,7 +98,7 @@ namespace MoGUI
 
             _dropdown = dropdownObject.AddComponent<Dropdown>();
             Image image = dropdownObject.AddComponent<Image>();
-            image.color = Meta.DDLButtonColor;
+            image.color = Meta.DDL.background.Color;
 
             AddLayoutElement(dropdownObject);
             SetLayout();
@@ -112,10 +114,11 @@ namespace MoGUI
             captionRect.offsetMax = new Vector2(-10, 0);
 
             Text captionText = captionTextObject.AddComponent<Text>();
-            captionText.alignment = TextAnchor.MiddleLeft;
-            captionText.font = Meta.DDLFont;
-            captionText.color = Meta.DDLFontColor;
-            captionText.fontSize = Meta.DDLFontSize;
+            captionText.font = Meta.DDL.labelSettings.FontFace;
+            captionText.fontSize = Meta.DDL.labelSettings.FontSize;
+            captionText.color = Meta.DDL.labelSettings.FontColor;
+            captionText.fontStyle = Meta.DDL.labelSettings.Style;
+            captionText.alignment = Meta.DDL.labelSettings.Alignment;
             captionText.text = "Select...";
             _dropdown.captionText = captionText;
 
@@ -126,10 +129,11 @@ namespace MoGUI
 
             Text dragSymbol = arrowObject.AddComponent<Text>();
             dragSymbol.text = "︾";
-            dragSymbol.font = Meta.DDLFont;
-            dragSymbol.fontSize = Meta.DDLFontSize;
-            dragSymbol.color = Meta.DDLFontColor;
-            dragSymbol.alignment = TextAnchor.MiddleCenter;
+            dragSymbol.font = Meta.DDL.labelSettings.FontFace;
+            dragSymbol.fontSize = Meta.DDL.labelSettings.FontSize;
+            dragSymbol.color = Meta.DDL.labelSettings.FontColor;
+            dragSymbol.fontStyle = Meta.DDL.labelSettings.Style;
+            dragSymbol.alignment = Meta.DDL.labelSettings.Alignment;
 
             RectTransform arrowRect = arrowObject.GetComponent<RectTransform>();
             arrowRect.anchorMin = new Vector2(1, 0.5f);
@@ -150,7 +154,7 @@ namespace MoGUI
             templateRect.offsetMin = new Vector2(0, -150);
             templateRect.offsetMax = new Vector2(0, 0);
             templateObject.AddComponent<CanvasGroup>().alpha = 0;
-            templateObject.AddComponent<Image>().color = Meta.DDLListColor;
+            templateObject.AddComponent<Image>().color = Meta.Panel.background.Shade;
             templateObject.SetActive(false);
             _dropdown.template = templateRect;
 
@@ -166,7 +170,7 @@ namespace MoGUI
             viewportRect.offsetMax = Vector2.zero;
 
             Image viewportImage = viewportObject.AddComponent<Image>();
-            viewportImage.color = Meta.DDLListColor;
+            viewportImage.color = Meta.Panel.background.Shade;
             Mask viewportMask = viewportObject.AddComponent<Mask>();
             viewportMask.showMaskGraphic = true;
 
@@ -212,10 +216,11 @@ namespace MoGUI
             itemLabelRect.offsetMin = new Vector2(5, 0);
             itemLabelRect.offsetMax = new Vector2(-25, 0);
             Text itemLabel = itemLabelObject.AddComponent<Text>();
-            itemLabel.alignment = TextAnchor.MiddleLeft;
-            itemLabel.font = Meta.DDLListFont;
-            itemLabel.fontSize = Meta.DDLFontSize;
-            itemLabel.color = Meta.DDLListItemFontColor;
+            itemLabel.alignment = Meta.DDL.listSettings.Alignment;
+            itemLabel.color = Meta.DDL.listSettings.FontColor;
+            itemLabel.fontStyle = Meta.DDL.listSettings.Style;
+            itemLabel.fontSize = Meta.DDL.listSettings.FontSize;
+            itemLabel.font = Meta.DDL.listSettings.FontFace;
 
             GameObject checkmarkObject = new GameObject(PluginName + "_" + Name + "_DropdownCheckmark");
             checkmarkObject.transform.SetParent(itemObject.transform, false);
@@ -296,44 +301,5 @@ namespace MoGUI
         {
             Selected = GetSelected(_dropdown.value);
         }
-    }
-
-    public class MoCaDDL : MoGCArgs
-    {
-
-        public List<string> DDLOptions;
-        public Dictionary<string, int> DDLBoundOptions = null;
-        public MoCaDDL(List<string> dDLOptions,
-            Action<object> onEditAction = null,
-            string valType = "none",
-            MoGuiMeta meta = null
-        ) : base(typeof(MoGuiDDL), meta, valType: valType)
-        {
-            if (onEditAction != null) { OnEditAction = onEditAction; }
-            DDLOptions = dDLOptions;
-        }
-
-        public MoCaDDL(Dictionary<string, int> dDLBoundOptions,
-            Action<object> onEditAction = null,
-            string valType = "none",
-            MoGuiMeta meta = null
-        ) : base(typeof(MoGuiDDL), meta, valType: valType)
-        {
-            if (onEditAction != null) { OnEditAction = onEditAction; }
-
-            DDLBoundOptions = dDLBoundOptions;
-        }
-
-    }
-
-    public class DDLMeta : ControlMeta
-    {
-
-
-        public MoGuiColor Color = GuiMeta.DefaultPanelColor;
-        public MoGuiColor textColor = GuiMeta.DefaultFontColor;
-        public DDLMeta(string name) : base(name) { }
-
-
     }
 }

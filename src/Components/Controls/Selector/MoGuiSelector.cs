@@ -15,13 +15,14 @@ namespace MoGUI
 
         List<MoGuiToggle> moGuiToggles = new List<MoGuiToggle>();
         ToggleGroup ToggleGroup;
-
+        public ControlOrientation Direction;
         public object Value;
 
         public MoGuiSelector(MoGuiMeta meta, string name, MoCaSelector args) : base(meta, name)
         {
+            Direction = args.Direction ?? Meta.Selector.direction;
             Options = args.Options;
-            switch (Meta.SliderLabelPlacement)
+            switch (Meta.Selector.labelPlacement)
             {
                 case ControlLabelPlacement.before:
                     AddText("SelectorTxt", args.Text);
@@ -43,7 +44,7 @@ namespace MoGUI
             }
             foreach (var item in _options)
             {
-                MoGuiToggleBt newToggle = new MoGuiToggleBt(Meta, Name + "_Option_" + item.Key, () => item.Value, () => item.Key, (val) => _options[item.Key] = val);
+                MoGuiToggle newToggle = new MoGuiToggle(Meta, Name + "_Option_" + item.Key, () => item.Value, () => item.Key, (val) => _options[item.Key] = val, ToggleType.button);
                 newToggle.Obj.GetComponent<Toggle>().group = ToggleGroup;
                 newToggle.Container.transform.SetParent(Obj.transform, false);
                 moGuiToggles.Add(newToggle);
@@ -53,7 +54,7 @@ namespace MoGUI
 
         public override void _Init()
         {
-            Container = CreateContainer(Meta.SliderOrientation);
+            Container = CreateContainer(Meta.Selector.orientation);
         }
         public override void SetLayout()
         {
@@ -70,7 +71,7 @@ namespace MoGUI
 
 
             ToggleGroup = selectorObject.AddComponent<ToggleGroup>();
-            if (Meta.SelectorOrientation == ControlOrientation.vertical)
+            if (Direction == ControlOrientation.vertical)
             {
                 VerticalLayoutGroup layoutGroup = selectorObject.AddComponent<VerticalLayoutGroup>();
                 layoutGroup.childForceExpandWidth = false;
@@ -101,7 +102,7 @@ namespace MoGUI
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, text);
+                Text = new MoGuiTxt(Meta, Name + "_" + label, text:text, Meta.Selector.labelSettings);
                 Text.Obj.transform.SetParent(Container.transform, false);
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
@@ -117,7 +118,7 @@ namespace MoGUI
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
+                Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction, Meta.Selector.labelSettings);
                 Text.Obj.transform.SetParent(Container.transform, false);
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
@@ -154,28 +155,6 @@ namespace MoGUI
             GetValue();
 
         }
-
-
-    }
-
-    public class MoCaSelector : MoGCArgs
-    {
-        public Dictionary<string, object> Options;
-        public MoCaSelector(Dictionary<string, object> options,
-            string text,
-            MoGuiMeta meta = null
-        ) : base(typeof(MoGuiSelector), meta:meta, text: text)
-        {
-            Options = options;
-        }
-
-
-    }
-
-    public class SelectorMeta : ControlMeta
-    {
-
-        public SelectorMeta(string name) : base(name) { }
 
 
     }

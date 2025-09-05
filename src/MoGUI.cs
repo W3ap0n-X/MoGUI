@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Xml.Linq;
 
 namespace MoGUI
 {
@@ -12,10 +13,6 @@ namespace MoGUI
         public MoGuiPanel Main;
         public string PluginName;
         public MoGuiMeta Meta;
-
-        public static GuiMeta TestMeta = new GuiMeta("TEST");
-
-        //GuiMeta TestMeta;
 
         public Dictionary<string, MoGuiPanel> Panels = new Dictionary<string, MoGuiPanel>();
         public MoGui(string pluginName, Vector2 size, Vector2 pos)
@@ -32,7 +29,6 @@ namespace MoGUI
 
         void Init(Vector2 size, Vector2 pos)
         {
-            //TestMeta = new GuiMeta("TEST");
             PluginName = Meta.PluginName;
             Canvas = CreateCanvas();
             Main = new MoGuiPanel(Meta, "Main", Canvas, size, pos);
@@ -95,136 +91,6 @@ namespace MoGUI
 
     }
 
-    public class GuiMeta
-    {
-        public static Vector2 DefaultTextMinSize = new Vector4(20, 20);
-        public static Vector2 DefaultColMinSize = new Vector4(10, 10);
-        public static Vector2 DefaultColFlex = new Vector4(1, 1);
-        public static Vector2 DefaultRowMinSize = new Vector4(10, 10);
-        public static Vector2 DefaultRowFlex = new Vector4(1, 1);
-        public static Font DefaultFont = UnityEngine.Font.CreateDynamicFontFromOSFont("Arial", 24);
-        public static int DefaultFontSize = 14;
-        public static int DefaultMargin = 5;
-        public static MoGuiColor DefaultPanelColor = new MoGuiColor(new Color(0.2f, 0.2f, 0.2f, 0.8f), 0.25f,0.4f);
-        public static MoGuiColor DefaultFontColor = new MoGuiColor(Color.white);
-        public static Color DefaultHeaderExitColor = new Color(0.75f, 0.25f, 0.25f, 1f);
-
-
-        public Font font = DefaultFont;
-        public int fontSize = DefaultFontSize;
-        public MoGuiColor fontColor = DefaultFontColor;
-        public Vector2 TextMinSize = DefaultTextMinSize;
-        public MoGuiColor PanelColor = DefaultPanelColor;
-        public int Margin = DefaultMargin;
-
-        public string Name;
-
-        public GuiMeta(string name)
-        {
-            Name = name;
-            SetPanel(name + "-Panel");
-            SetRows(name + "-Row");
-            SetCols(name + "-Col");
-            SetButton(name + "-Button");
-            SetTypography(name + "-Text");
-            SetToggle(name + "-Toggle");
-            SetColorBlock(name + "-ColorBlock");
-            SetInput(name + "-Input");
-            SetSlider(name + "-Slider");
-            SetSelector(name + "-Selector");
-            SetDDL(name + "-DDL");
-
-            Debug.Log("Name: " + name + "\n" + this.ToString());
-        }
-
-        public  PanelMeta Panel;
-        public GuiMeta SetPanel(string name)
-        {
-            Panel = new PanelMeta(name);
-            return this;
-        }
-
-        public LayoutMeta Rows;
-
-        public GuiMeta SetRows(string name)
-        {
-            Rows = new LayoutMeta(name);
-            return this;
-        }
-
-        public LayoutMeta Cols;
-
-        public GuiMeta SetCols(string name)
-        {
-            Cols = new LayoutMeta(name);
-            return this;
-        }
-
-        public TypographyMeta Text;
-
-        public GuiMeta SetTypography(string name)
-        {
-            Text = new TypographyMeta(name);
-            return this;
-        }
-
-        public ButtonMeta Button;
-
-        public GuiMeta SetButton(string name)
-        {
-            Button = new ButtonMeta(name);
-            return this;
-        }
-
-        public ToggleMeta Toggle;
-
-        public GuiMeta SetToggle(string name)
-        {
-            Toggle = new ToggleMeta(name);
-            return this;
-        }
-
-        public ColorBlockMeta ColorBlock;
-
-        public GuiMeta SetColorBlock(string name)
-        {
-            ColorBlock = new ColorBlockMeta(name);
-            return this;
-        }
-
-        public InputMeta Input;
-
-        public GuiMeta SetInput(string name)
-        {
-            Input = new InputMeta(name);
-            return this;
-        }
-
-        public SliderMeta Slider;
-
-        public GuiMeta SetSlider(string name)
-        {
-            Slider = new SliderMeta(name);
-            return this;
-        }
-
-        public SelectorMeta Selector;
-
-        public GuiMeta SetSelector(string name)
-        {
-            Selector = new SelectorMeta(name);
-            return this;
-        }
-
-        public DDLMeta DDL;
-
-        public GuiMeta SetDDL(string name)
-        {
-            DDL = new DDLMeta(name);
-            return this;
-        }
-    }
-
     public abstract class ComponentMeta
     {
         string ClassName;
@@ -248,7 +114,11 @@ namespace MoGUI
             return this;
         }
 
-        //public abstract void SetDefaults();
+        public T Copy<T>()
+        {
+            Debug.Log("Name: " + ClassName + " copied");
+            return (T)this.MemberwiseClone();
+        }
     }
 
 }
