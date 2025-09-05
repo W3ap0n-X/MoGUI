@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using Unity.VisualScripting;
+
 
 
 namespace MoGUI
@@ -47,6 +47,31 @@ namespace MoGUI
         public MoGuiColor Panel;
         public MoGuiColor Header;
         public MoGuiColor Text;
+        public MoGuiColor Control;
+
+        public GuiColorSet(Color? baseColor = null )
+        {
+
+
+
+            Panel = new MoGuiColor( ( baseColor ?? new Color(0.2f, 0.2f, 0.2f, 0.8f)) );
+
+            
+            if (Panel.Luminance <= 0.5f) 
+            {
+                Panel.setRange(0.25f, 0.4f);
+                Text = new MoGuiColor(Color.white);
+                Header = new MoGuiColor(Panel.Shade);
+                Control = new MoGuiColor(Panel.Tint);
+            }
+            else
+            {
+                Panel.setRange(-0.25f, 0.4f);
+                Text = new MoGuiColor(Color.black);
+                Header = new MoGuiColor(Panel.Shade);
+                Control = new MoGuiColor(Panel.Tint);
+            }
+        }
 
         public GuiColorSet(MoGuiColor panel, MoGuiColor text, MoGuiColor header = null)
         {
@@ -54,6 +79,7 @@ namespace MoGUI
             Panel = panel;
             Text = text;
             Header = header?? new MoGuiColor(panel.Shade);
+            Control = new MoGuiColor(panel.Tint);
         }
 
         public GuiColorSet(Color panel, Color text, Color? header = null)
@@ -62,6 +88,7 @@ namespace MoGUI
             Panel = new MoGuiColor(panel);
             Text = new MoGuiColor(text);
             Header = new MoGuiColor(header ?? Panel.Shade);
+            Control = new MoGuiColor(Panel.Tint);
         }
 
     }
@@ -78,6 +105,8 @@ namespace MoGUI
         public static int DefaultMargin = 5;
         public static Color DefaultHeaderExitColor = new Color(0.75f, 0.25f, 0.25f, 1f);
 
+        public Color? _baseColor = null;
+        
 
         public GuiColorSet Colors;
 
@@ -98,7 +127,9 @@ namespace MoGUI
 
         public MoGuiMeta(string pluginName, string name)
         {
-            Colors = new GuiColorSet(new MoGuiColor(new Color(0.2f, 0.2f, 0.2f, 0.8f), 0.25f, 0.4f), new MoGuiColor(Color.white));
+            _baseColor = Color.cyan;
+
+            Colors = new GuiColorSet(_baseColor);
             PluginName = pluginName;
             Name = name;
 
@@ -391,6 +422,10 @@ namespace MoGUI
         public float Factor;
         float? darkFactor = null;
 
+        public float Luminance
+        {
+            get { return 0.2126f * R + 0.7152f * G + 0.0722f * B; }
+        }
 
         public float DarkFactor
         {
@@ -447,7 +482,11 @@ namespace MoGUI
         }
 
 
-
+        public void setRange(float factor, float? darkfactor = null)
+        {
+            Factor = factor;
+            darkFactor = darkfactor * -1;
+        }
 
         public Color MutateColor( Color color, float factor)
         {
