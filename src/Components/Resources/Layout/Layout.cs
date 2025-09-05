@@ -56,11 +56,11 @@ namespace MoGUI
         {
             if (preferredWidthPercentage > 0 && parentRect != null)
             {
-                preferredWidth = (parentRect.rect.width - (Meta.TxtMargin*2)) * (preferredWidthPercentage / 100f);
+                preferredWidth = (parentRect.rect.width - (Meta.Margin * 2)) * (preferredWidthPercentage / 100f);
             }
             if (preferredHeightPercentage > 0 && parentRect != null)
             {
-                preferredHeight = (parentRect.rect.height - (Meta.TxtMargin * 2)) * (preferredHeightPercentage / 100f);
+                preferredHeight = (parentRect.rect.height - (Meta.Margin * 2)) * (preferredHeightPercentage / 100f);
             }
         }
 
@@ -129,15 +129,11 @@ namespace MoGUI
 
     public class BlockMeta : ComponentMeta
     {
-        
         public Vector2 minSize;
         public Vector2 size;
         public Vector2 Flex;
         public SizeSettings sizing;
-
         public BlockMeta(string name) : base(name) { }
-
-
 
         public BlockMeta Size(Vector2 _size)
         {

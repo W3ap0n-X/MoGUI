@@ -15,14 +15,12 @@ namespace MoGUI
         public object Value;
         string Type;
 
-        
-
         public MoGuiInput(MoGuiMeta meta, string name, Func<object> text, Func<object> onUpdateAction, Action<object> onEditAction, string type) : base(meta, name)
         {
             OnUpdateAction = onUpdateAction;
             Type = type;
             OnEditAction = onEditAction;
-            switch (Meta.InputLabelPlacement)
+            switch (Meta.Input.labelPlacement)
             {
                 case ControlLabelPlacement.before:
                     AddText("InputTxt", text);
@@ -36,18 +34,14 @@ namespace MoGUI
                     Obj = CreateInput();
                     break;
             }
-
         }
 
         public MoGuiInput(MoGuiMeta meta, string name, object text, Func<object> onUpdateAction, Action<object> onEditAction, string type) : base(meta, name)
         {
             OnUpdateAction = onUpdateAction;
             OnEditAction = onEditAction;
-
             Type = type;
-
-            
-            switch (Meta.InputLabelPlacement)
+            switch (Meta.Input.labelPlacement)
             {
                 case ControlLabelPlacement.before:
                     AddText("InputTxt", text);
@@ -65,17 +59,16 @@ namespace MoGUI
 
         public override void SetLayout()
         {
-            minWidth = Meta.InputSize.x;
-            minHeight = Meta.InputSize.y;
-            //preferredWidth = Meta.InputSize.z;
-            //preferredHeight = Meta.InputSize.w;
-            flexibleHeight = 1;
-            flexibleWidth = 1;
+            minWidth = Meta.Input.sizing.minWidth;
+            minHeight = Meta.Input.sizing.minHeight;
+            if (Meta.Input.sizing.preferredWidth != null) { preferredWidth = (float)Meta.Input.sizing.preferredWidth; }
+            if (Meta.Input.sizing.preferredHeight != null) { preferredHeight = (float)Meta.Input.sizing.preferredHeight; }
+            flexibleWidth = Meta.Input.sizing.flexibleWidth ?? 0;
+            flexibleHeight = Meta.Input.sizing.flexibleHeight ?? 0;
         }
 
         public MoGuiInput(MoGuiMeta meta, string name, MoCaInput args) : base(meta, name)
         {
-
             if (args.OnUpdateAction != null)
             {
                 OnUpdateAction = args.OnUpdateAction;
@@ -84,11 +77,7 @@ namespace MoGUI
             {
                 OnEditAction = args.OnEditAction;
             }
-
-            
-
             Type = args.ValType;
-
             if (args.Value != null)
             {
                 Value = args.Value;
@@ -97,8 +86,7 @@ namespace MoGUI
             {
                 Value = args.OnUpdateAction();
             }
-
-            switch (Meta.InputLabelPlacement)
+            switch (Meta.Input.labelPlacement)
             {
                 case ControlLabelPlacement.before:
                     AddText("InputTxt", args.Text);
@@ -116,7 +104,7 @@ namespace MoGUI
 
         public override void _Init()
         {
-            Container = CreateContainer(Meta.InputOrientation);
+            Container = CreateContainer(Meta.Input.orientation);
         }
 
         public InputField.CharacterValidation getTypeValidation(string type)
@@ -136,7 +124,6 @@ namespace MoGUI
                     Validator = InputField.CharacterValidation.None;
                     break;
             }
-
             return Validator;
         }
 
@@ -157,12 +144,8 @@ namespace MoGUI
                     Validator = InputField.ContentType.Standard;
                     break;
             }
-
             return Validator;
         }
-
-        
-
         public GameObject CreateInput()
         {
             GameObject inputObject = new GameObject(PluginName + "_" + Name + "_" + "InputField");
@@ -170,13 +153,9 @@ namespace MoGUI
 
             AddLayoutElement(inputObject);
             SetLayout();
-
-            
-
-
             RectTransform inputRect = inputObject.GetComponent<RectTransform>();
 
-            inputObject.AddComponent<Image>().color = MoGui.TestMeta.Input.background;
+            inputObject.AddComponent<Image>().color = Meta.Input.background;
 
             GameObject textObject = CreateInputText();
             textObject.transform.SetParent(inputObject.transform, false);
@@ -200,18 +179,18 @@ namespace MoGUI
             RectTransform placeholderRect = placeholderObject.AddComponent<RectTransform>();
             placeholderRect.anchorMin = Vector2.zero;
             placeholderRect.anchorMax = Vector2.one;
-            placeholderRect.offsetMin = new Vector2(MoGui.TestMeta.Margin * 2, MoGui.TestMeta.Margin);
-            placeholderRect.offsetMax = new Vector2(MoGui.TestMeta.Margin * -2, MoGui.TestMeta.Margin * -1);
+            placeholderRect.offsetMin = new Vector2(Meta.Margin * 2, Meta.Margin);
+            placeholderRect.offsetMax = new Vector2(Meta.Margin * -2, Meta.Margin * -1);
 
             PlaceHolderText = placeholderObject.AddComponent<Text>();
-            PlaceHolderText.alignment = Meta.TxtAnchor;
+            PlaceHolderText.alignment = Meta.Input.placeholderSettings.Alignment;
 
             PlaceHolderText.text = "Enter Value...";
 
-            PlaceHolderText.color = MoGui.TestMeta.Input.textColor.Shade;
-            PlaceHolderText.fontStyle = FontStyle.Italic;
-            PlaceHolderText.fontSize = Meta.InputFontSize;
-            PlaceHolderText.font = Meta.InputFont;
+            PlaceHolderText.color = Meta.Input.placeholderSettings.FontColor;
+            PlaceHolderText.fontStyle = Meta.Input.placeholderSettings.Style;
+            PlaceHolderText.fontSize = Meta.Input.placeholderSettings.FontSize;
+            PlaceHolderText.font = Meta.Input.placeholderSettings.FontFace;
 
             return placeholderObject;
         }
@@ -222,16 +201,15 @@ namespace MoGUI
             RectTransform textRect = textObject.AddComponent<RectTransform>();
             textRect.anchorMin = Vector2.zero;
             textRect.anchorMax = Vector2.one;
-            textRect.offsetMin = new Vector2(MoGui.TestMeta.Margin *2, MoGui.TestMeta.Margin);
-            textRect.offsetMax = new Vector2(MoGui.TestMeta.Margin * -2, MoGui.TestMeta.Margin * -1);
+            textRect.offsetMin = new Vector2(Meta.Margin *2, Meta.Margin);
+            textRect.offsetMax = new Vector2(Meta.Margin * -2, Meta.Margin * -1);
             InputText = textObject.AddComponent<Text>();
-            InputText.alignment = Meta.TxtAnchor;
+            InputText.alignment = Meta.Input.inputSettings.Alignment;
 
-            //InputText.text = Value.ToString() ?? null;
-
-            InputText.color = MoGui.TestMeta.Input.textColor.Color;
-            InputText.fontSize = Meta.InputFontSize;
-            InputText.font = Meta.InputFont;
+            InputText.color = Meta.Input.inputSettings.FontColor;
+            InputText.fontStyle = Meta.Input.inputSettings.Style;
+            InputText.fontSize = Meta.Input.inputSettings.FontSize;
+            InputText.font = Meta.Input.inputSettings.FontFace;
 
             return textObject;
         }
@@ -245,9 +223,8 @@ namespace MoGUI
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, text);
+                Text = new MoGuiTxt(Meta, Name + "_" + label, text:text, Meta.Input.labelSettings);
                 Text.Obj.transform.SetParent(Container.transform, false);
-                Text.Obj.GetComponent<Text>().alignment = Meta.TxtAnchor;
             }
 
         }
@@ -260,9 +237,8 @@ namespace MoGUI
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
+                Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction, Meta.Input.labelSettings);
                 Text.Obj.transform.SetParent(Container.transform, false);
-                Text.Obj.GetComponent<Text>().alignment = Meta.TxtAnchor;
             }
 
         }
@@ -319,7 +295,6 @@ namespace MoGUI
             {
                 Value = InputText.text;
             }
-                
         }
     }
 }

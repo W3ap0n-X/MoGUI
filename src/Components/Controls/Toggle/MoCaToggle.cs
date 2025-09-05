@@ -6,49 +6,6 @@ using UnityEngine.EventSystems;
 
 namespace MoGUI
 {
-
-    //public class MoCaToggleBT : MoGCArgs
-    //{
-    //    public new Action<bool> OnClickAction;
-
-
-    //    public Func<bool> boundValue;
-    //    public bool _value;
-
-    //    public MoCaToggleBT(
-    //    bool? value = null,
-    //    Func<bool> boundValue = null,
-    //    Action<bool> onClickAction = null,
-    //    string text = null,
-    //    Func<object> boundText = null,
-    //    MoGuiMeta meta = null
-    //) : base(typeof(MoGuiToggleBt), meta)
-    //    {
-    //        if (boundValue != null)
-    //        {
-    //            this.boundValue = boundValue;
-    //        }
-    //        else if (value.HasValue)
-    //        {
-    //            _value = value.Value;
-    //        }
-
-    //        if (boundText != null)
-    //        {
-    //            Text = boundText;
-    //        }
-    //        else if (text != null)
-    //        {
-    //            Text = () => text;
-    //        }
-
-    //        if (onClickAction != null)
-    //        {
-    //            OnClickAction = onClickAction;
-    //        }
-    //    }
-    //}
-
     public class MoCaToggle : MoGCArgs
     {
         
@@ -59,14 +16,14 @@ namespace MoGUI
         public bool _value;
 
         public MoCaToggle(
-        bool? value = null,
-        Func<bool> boundValue = null,
-        Action<bool> onClickAction = null,
-        string text = null,
-        Func<object> boundText = null,
-        ToggleType? toggleType = null,
-        MoGuiMeta meta = null
-    ) : base(typeof(MoGuiToggle), meta)
+            bool? value = null,
+            Func<bool> boundValue = null,
+            Action<bool> onClickAction = null,
+            string text = null,
+            Func<object> boundText = null,
+            ToggleType? toggleType = null,
+            MoGuiMeta meta = null
+        ) : base(typeof(MoGuiToggle), meta)
         {
             if (boundValue != null)
             {
@@ -98,23 +55,18 @@ namespace MoGUI
         }
     }
 
-
     public class ToggleMeta :ControlMeta
     {
 
-        // Checkbox
-
-        public Color background = GuiMeta.DefaultPanelColor.Shade;
-        public Color checkBox = GuiMeta.DefaultPanelColor.Tint;
+        public Color background = MoGuiMeta.DefaultPanelColor.Shade;
+        public Color checkBox = MoGuiMeta.DefaultPanelColor.Tint;
 
         public SizeSettings checkBoxSize = new SizeSettings(15, 15, 0, 0, 20, 20);
         public SizeSettings buttonSize = new SizeSettings(60, 30, 1, 0);
-
+        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, 1, FontStyle.Bold, TextAnchor.UpperLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
         public ToggleType toggleType = MoGUI.ToggleType.checkbox;
 
         public ToggleMeta(string name) : base(name) { }
-
-
 
         public ToggleMeta Background(Color _color)
         {

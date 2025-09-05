@@ -14,8 +14,6 @@ namespace MoGUI
         protected bool _value;
         ToggleType ToggleType = ToggleType.checkbox;
 
-
-
         public bool Value
         {
             get 
@@ -30,9 +28,7 @@ namespace MoGUI
             }
             set 
             {
-
                  _value = value; 
-
             }
         }
 
@@ -50,13 +46,6 @@ namespace MoGUI
             _value = value;
 
             Init(text, onClickAction);
-
-
-        }
-
-        protected MoGuiToggle(MoGuiMeta meta, string name) : base(meta, name)
-        {
-           
 
 
         }
@@ -89,7 +78,7 @@ namespace MoGUI
             }
             else
             {
-                switch (Meta.ToggleLabelPlacement)
+                switch (Meta.Toggle.labelPlacement)
                 {
                     case ControlLabelPlacement.before:
                         AddText("ToggleTxt", text);
@@ -109,28 +98,28 @@ namespace MoGUI
 
         public override void _Init()
         {
-            Container = CreateContainer(Meta.ToggleOrientation);
+            Container = CreateContainer(Meta.Toggle.orientation);
         }
 
         public override void SetLayout()
         {
             if (ToggleType == ToggleType.button) 
             {
-                minWidth = MoGui.TestMeta.Toggle.buttonSize.minWidth;
-                minHeight = MoGui.TestMeta.Toggle.buttonSize.minHeight;
-                if (MoGui.TestMeta.Toggle.checkBoxSize.preferredWidth != null) { preferredWidth = (float)MoGui.TestMeta.Toggle.checkBoxSize.preferredWidth; }
-                if (MoGui.TestMeta.Toggle.checkBoxSize.preferredHeight != null) { preferredHeight = (float)MoGui.TestMeta.Toggle.checkBoxSize.preferredHeight; }
-                flexibleWidth = MoGui.TestMeta.Toggle.buttonSize.flexibleWidth ?? 0;
-                flexibleHeight = MoGui.TestMeta.Toggle.buttonSize.flexibleHeight ?? 0;
+                minWidth = Meta.Toggle.buttonSize.minWidth;
+                minHeight = Meta.Toggle.buttonSize.minHeight;
+                if (Meta.Toggle.buttonSize.preferredWidth != null) { preferredWidth = (float)Meta.Toggle.buttonSize.preferredWidth; }
+                if (Meta.Toggle.buttonSize.preferredHeight != null) { preferredHeight = (float)Meta.Toggle.buttonSize.preferredHeight; }
+                flexibleWidth = Meta.Toggle.buttonSize.flexibleWidth ?? 0;
+                flexibleHeight = Meta.Toggle.buttonSize.flexibleHeight ?? 0;
             }
             else
             {
-                minWidth = MoGui.TestMeta.Toggle.checkBoxSize.minWidth;
-                minHeight = MoGui.TestMeta.Toggle.checkBoxSize.minHeight;
-                if (MoGui.TestMeta.Toggle.checkBoxSize.preferredWidth != null) { preferredWidth = (float)MoGui.TestMeta.Toggle.checkBoxSize.preferredWidth; }
-                if (MoGui.TestMeta.Toggle.checkBoxSize.preferredHeight != null) { preferredHeight = (float)MoGui.TestMeta.Toggle.checkBoxSize.preferredHeight; }
-                flexibleWidth = MoGui.TestMeta.Toggle.checkBoxSize.flexibleWidth ?? 0;
-                flexibleHeight = MoGui.TestMeta.Toggle.checkBoxSize.flexibleHeight ?? 0;
+                minWidth = Meta.Toggle.checkBoxSize.minWidth;
+                minHeight = Meta.Toggle.checkBoxSize.minHeight;
+                if (Meta.Toggle.checkBoxSize.preferredWidth != null) { preferredWidth = (float)Meta.Toggle.checkBoxSize.preferredWidth; }
+                if (Meta.Toggle.checkBoxSize.preferredHeight != null) { preferredHeight = (float)Meta.Toggle.checkBoxSize.preferredHeight; }
+                flexibleWidth = Meta.Toggle.checkBoxSize.flexibleWidth ?? 0;
+                flexibleHeight = Meta.Toggle.checkBoxSize.flexibleHeight ?? 0;
             }
                 
         }
@@ -153,21 +142,18 @@ namespace MoGUI
             RectTransform backgroundRect = backgroundObject.AddComponent<RectTransform>();
 
             Image backgroundImage = backgroundObject.AddComponent<Image>();
-            backgroundImage.color = MoGui.TestMeta.Toggle.background;
+            backgroundImage.color = Meta.Toggle.background;
 
             GameObject checkmarkObject = new GameObject(PluginName + "_" + Name + "_" + "ToggleCheckmark");
             checkmarkObject.transform.SetParent(backgroundObject.transform, false);
             RectTransform checkmarkRect = checkmarkObject.AddComponent<RectTransform>();
             if (ToggleType == ToggleType.button)
             {
-                
                 backgroundRect.anchorMin = new Vector2(0, 0);
                 backgroundRect.anchorMax = new Vector2(1, 1);
                 backgroundRect.offsetMin = new Vector2(0, 0);
                 backgroundRect.offsetMax = new Vector2(0, 0);
 
-
-                
                 checkmarkRect.anchorMin = new Vector2(0, 0);
                 checkmarkRect.anchorMax = new Vector2(1, 1);
                 checkmarkRect.offsetMin = new Vector2(2, 2);
@@ -175,14 +161,10 @@ namespace MoGUI
             }
             else
             {
-
                 backgroundRect.anchorMin = new Vector2(0.4f, 0.4f);
                 backgroundRect.anchorMax = new Vector2(0.6f, 0.6f);
                 backgroundRect.offsetMin = new Vector2(-5, -5);
                 backgroundRect.offsetMax = new Vector2(5, 5);
-
-
-
 
                 checkmarkRect.anchorMin = new Vector2(0, 0);
                 checkmarkRect.anchorMax = new Vector2(1, 1);
@@ -190,13 +172,8 @@ namespace MoGUI
                 checkmarkRect.offsetMax = new Vector2(-2, -2);
             }
 
-            
-
-
-            
-
             Image checkmarkImage = checkmarkObject.AddComponent<Image>();
-            checkmarkImage.color = MoGui.TestMeta.Toggle.checkBox;
+            checkmarkImage.color = Meta.Toggle.checkBox;
 
             toggleComponent.graphic = checkmarkImage;
             toggleComponent.isOn = Value;
@@ -229,10 +206,8 @@ namespace MoGUI
                 }
                 else
                 {
-                    Label = new MoGuiTxt(Meta, Name + "_" + label, text);
+                    Label = new MoGuiTxt(Meta, Name + "_" + label, text:text, Meta.Toggle.labelSettings);
                     Label.Obj.transform.SetParent(Obj.transform, false);
-                    //var labelLayout = Label.Container.GetComponent<HorizontalOrVerticalLayoutGroup>();
-                    //labelLayout.childAlignment = TextAnchor.MiddleCenter;
                     RectTransform labelRect = Label.Obj.GetComponent<RectTransform>();
                     labelRect.anchoredPosition = new Vector2(0, 0);
                     labelRect.anchorMin = new Vector2(0, 0);
@@ -251,7 +226,7 @@ namespace MoGUI
                 }
                 else
                 {
-                    Label = new MoGuiTxt(Meta, Name + "_" + label, text);
+                    Label = new MoGuiTxt(Meta, Name + "_" + label, text: text, Meta.Toggle.labelSettings);
                     Label.Obj.transform.SetParent(Container.transform, false);
                     Label.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
                 }
@@ -270,10 +245,8 @@ namespace MoGUI
                 }
                 else
                 {
-                    Label = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
+                    Label = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction, Meta.Toggle.labelSettings);
                     Label.Obj.transform.SetParent(Obj.transform, false);
-                    //var labelLayout = Label.Container.GetComponent<HorizontalOrVerticalLayoutGroup>();
-                    //labelLayout.childAlignment = TextAnchor.MiddleCenter;
                     RectTransform labelRect = Label.Obj.GetComponent<RectTransform>();
                     labelRect.anchoredPosition = new Vector2(0, 0);
                     labelRect.anchorMin = new Vector2(0, 0);
@@ -292,7 +265,7 @@ namespace MoGUI
                 }
                 else
                 {
-                    Label = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
+                    Label = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction, Meta.Toggle.labelSettings);
                     Label.Obj.transform.SetParent(Container.transform, false);
                     Label.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
                 }

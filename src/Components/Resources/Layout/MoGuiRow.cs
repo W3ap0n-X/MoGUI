@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using System.Xml.Linq;
 
 namespace MoGUI
 {
@@ -21,7 +20,6 @@ namespace MoGUI
             {
                 Meta = meta;
             }
-
             Columns = new Dictionary<string, MoGuiCol>();
             Obj = Create(name);
             AddLayoutElement(Obj);
@@ -32,21 +30,20 @@ namespace MoGUI
         {
             GameObject layoutObject = new GameObject(Meta.PluginName + "_" + Meta.Name + "_" + "Row_" + name);
             HorizontalLayoutGroup layoutGroup = layoutObject.AddComponent<HorizontalLayoutGroup>();
-            layoutGroup.padding = new RectOffset(Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin);
-            layoutGroup.spacing = Meta.TxtMargin;
+            layoutGroup.padding = new RectOffset(Meta.Margin, Meta.Margin, Meta.Margin, Meta.Margin);
+            layoutGroup.spacing = Meta.Margin;
             layoutGroup.childForceExpandWidth = false;
             layoutGroup.childForceExpandHeight = false;
-
 
             if (MoGUIManager._LayoutDebug)
             {
                 Image bg = layoutObject.AddComponent<Image>();
                 bg.color = MoGUIManager._LayoutDebugRowColor;
             }
-            if (MoGui.TestMeta.Rows.background != null)
+            if (Meta.Rows.background != null)
             {
                 Image bg = layoutObject.AddComponent<Image>();
-                bg.color = (Color)MoGui.TestMeta.Rows.background;
+                bg.color = (Color)Meta.Rows.background;
             }
 
             return layoutObject;
@@ -94,11 +91,10 @@ namespace MoGUI
 
     public class RowMeta : LayoutMeta
     {
-
         public RowMeta(string name) : base(name)
         {
-            MinSize(GuiMeta.DefaultRowMinSize);
-            FlexSize(GuiMeta.DefaultRowFlex);
+            MinSize(MoGuiMeta.DefaultRowMinSize);
+            FlexSize(MoGuiMeta.DefaultRowFlex);
         }
 
     }

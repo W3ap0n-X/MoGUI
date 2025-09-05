@@ -27,7 +27,7 @@ namespace MoGUI
 
     public class PanelMeta : ComponentMeta
     {
-        public MoGuiColor background = GuiMeta.DefaultPanelColor;
+        public MoGuiColor background = MoGuiMeta.DefaultPanelColor;
         public Vector2 size;
         public TextAnchor childAlignment = TextAnchor.UpperLeft;
 

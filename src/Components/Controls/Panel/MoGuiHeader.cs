@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 
 namespace MoGUI
@@ -16,9 +17,7 @@ namespace MoGUI
 
         public MoGuiHeader(MoGuiMeta meta, GameObject canvas, MoGuiPanel panel, string name, bool topLevel) : base(meta, name, panel, topLevel)
         {
-            
             Canvas = canvas;
-            
         }
 
         public override void _Init()
@@ -28,21 +27,18 @@ namespace MoGUI
 
         public override void Init(bool topLevel)
         {
-            Meta.PanelColor.Color = Meta.HeaderColor;
-
-            Meta.FontSize = Meta.HeaderFontSize;
-            Meta.ButtonFontSize = Meta.HeaderExitFontSize;
             Obj = CreatePanel();
             Container.transform.SetParent(Obj.transform, false);
+            
             if (topLevel)
             {
                 DragHandle = Obj.AddComponent<DraggableHandle>();
                 DragHandle.BindParent(Panel.Obj);
                 AddTitleText("HeaderText", PluginName + " - " + Panel.Title ?? Name);
                 AddXButton("MinGui", "␣", () => MinGui());
-                Meta.ButtonColor = Meta.HeaderExitColor;
-                AddXButton("HideGui", "╳", () => ShowGui(false));
-                GetButton("HideGui").Background(MoGui.TestMeta.Panel.Header.hideColor);
+                
+                var hide = AddXButton("HideGui", "╳", () => ShowGui(false));
+                GetButton("HideGui").Background(Meta.Panel.Header.hideColor);
                 AddResize();
             } else
             {
@@ -52,30 +48,25 @@ namespace MoGUI
                 is_init = true;
         }
 
-
         public override GameObject CreatePanel()
         {
             var panelObject = new GameObject(PluginName + "_" + Name + "_" + "HeaderPanel");
 
             Image panelImage = panelObject.AddComponent<Image>();
-            panelImage.color = MoGui.TestMeta.Panel.background.Shade;
+            panelImage.color = Meta.Panel.Header.Color.Color;
             RectTransform panelRect = panelObject.GetComponent<RectTransform>();
             panelRect.anchorMin = new Vector2(0, 1);
             panelRect.anchorMax = new Vector2(1, 1);
-            panelRect.offsetMin = new Vector2(0, -MoGui.TestMeta.Panel.Header.size);
+            panelRect.offsetMin = new Vector2(0, -Meta.Panel.Header.size);
             panelRect.offsetMax = new Vector2(0, 0);
-
 
             AddLayoutElement(panelObject);
             SetLayout();
-            
-
             return panelObject;
         }
 
         public override GameObject CreateContainer()
         {
-
             GameObject layoutObject = new GameObject(PluginName + "_" + Name + "_" + "HeaderContainer");
 
             HorizontalLayoutGroup headerLayoutGroup = layoutObject.AddComponent<HorizontalLayoutGroup>();
@@ -83,9 +74,8 @@ namespace MoGUI
             headerLayoutGroup.childControlHeight = true;
             headerLayoutGroup.childForceExpandHeight = false;
             headerLayoutGroup.childForceExpandWidth = false;
-            headerLayoutGroup.padding = new RectOffset(MoGui.TestMeta.Margin, MoGui.TestMeta.Margin, MoGui.TestMeta.Margin, MoGui.TestMeta.Margin);
-            headerLayoutGroup.spacing = MoGui.TestMeta.Margin;
-
+            headerLayoutGroup.padding = new RectOffset(Meta.Margin, Meta.Margin, Meta.Margin, Meta.Margin);
+            headerLayoutGroup.spacing = Meta.Margin;
             
             RectTransform layoutRect = layoutObject.GetComponent<RectTransform>();
             layoutRect.anchorMin = Vector2.zero;
@@ -93,14 +83,12 @@ namespace MoGUI
             layoutRect.offsetMin = new Vector2(0, 0);
             layoutRect.offsetMax = new Vector2(0, 0);
             return layoutObject;
-
         }
 
         public override void SetLayout()
         {
-            minHeight = MoGui.TestMeta.Panel.Header.size;
+            minHeight = Meta.Panel.Header.size;
             minWidth = 100;
-            //preferredWidth = 250;
             flexibleWidth = 1;
         }
 
@@ -114,22 +102,23 @@ namespace MoGUI
             Panel.Container.SetActive(Panel.Container.activeSelf ? false : true);
         }
 
-        public void AddXButton(string label, string text, Action onUpdateAction)
+        public MoGuiButton AddXButton(string label, string text, Action onUpdateAction)
         {
+            MoGuiMeta btMeta = new MoGuiMeta(Meta, "headerButtons");
+            btMeta.Button.labelSettings = Meta.Panel.Header.buttonSettings;
             MoGuiButton newTxt;
             if (Components.ContainsKey(label))
             {
                 newTxt = (MoGuiButton)Components[label];
-
                 newTxt.Obj.transform.SetParent(Container.transform, false);
             }
             else
             {
-                newTxt = new MoGuiButton(Meta, Name + "_" + label, text, onUpdateAction);
+                newTxt = new MoGuiButton(btMeta, Name + "_" + label, text, onUpdateAction);
                 newTxt.Obj.transform.SetParent(Container.transform, false);
 
-                var width = MoGui.TestMeta.Panel.Header.size - 2 * MoGui.TestMeta.Margin;
-                var height = MoGui.TestMeta.Panel.Header.size - 2 * MoGui.TestMeta.Margin;
+                var width = Meta.Panel.Header.size - 2 * Meta.Margin;
+                var height = Meta.Panel.Header.size - 2 * Meta.Margin;
 
                 newTxt.minWidth = width;
                 newTxt.minHeight = height;
@@ -137,19 +126,17 @@ namespace MoGUI
                 newTxt.preferredHeight = width;
                 newTxt.preferredWidth = width;
 
-                newTxt.Text.minWidth = width - 2 * MoGui.TestMeta.Margin;
-                newTxt.Text.minHeight = width - 2 * MoGui.TestMeta.Margin;
+                newTxt.Text.minWidth = width - 2 * Meta.Margin;
+                newTxt.Text.minHeight = width - 2 * Meta.Margin;
 
-                newTxt.Text.preferredHeight = width - 2 * MoGui.TestMeta.Margin;
-                newTxt.Text.preferredWidth = width - 2 * MoGui.TestMeta.Margin;
+                newTxt.Text.preferredHeight = width - 2 * Meta.Margin;
+                newTxt.Text.preferredWidth = width - 2 * Meta.Margin;
 
-                newTxt.Text.Text.fontSize = MoGui.TestMeta.Panel.Header.btFontSize;
                 newTxt.flexibleWidth = 0.1f;
                 newTxt.Text.flexibleWidth = 0.1f;
                 Components.Add(label, newTxt);
-
             }
-
+            return newTxt;
         }
 
         public void AddTitleText(string label, object text)
@@ -163,10 +150,8 @@ namespace MoGUI
             }
             else
             {
-                newTxt = new MoGuiTxt(Meta, Name + "_" + label, text);
+                newTxt = new MoGuiTxt(Meta, Name + "_" + label, text:text , Meta.Panel.Header.titleSettings);
                 newTxt.Obj.transform.SetParent(Container.transform, false);
-                newTxt.Text.alignment = TextAnchor.MiddleLeft;
-                newTxt.Text.fontSize = MoGui.TestMeta.Panel.Header.titleFontSize;
                 LayoutElement titleLayoutElement = newTxt.Obj.AddComponent<LayoutElement>();
                 titleLayoutElement.flexibleWidth = 1;
                 Components.Add(label, newTxt);
@@ -174,24 +159,22 @@ namespace MoGUI
 
         }
 
-
         public void AddResize()
         {
             GameObject resizeIconObject = new GameObject("ResizeIcon");
             resizeIconObject.transform.SetParent(Container.transform, false);
-            
 
             LayoutElement resizeLayoutElement = resizeIconObject.AddComponent<LayoutElement>();
             
-            resizeLayoutElement.minWidth = MoGui.TestMeta.Panel.Header.size - 2 * MoGui.TestMeta.Margin;
-            resizeLayoutElement.minHeight = MoGui.TestMeta.Panel.Header.size - 2 * MoGui.TestMeta.Margin;
+            resizeLayoutElement.minWidth = Meta.Panel.Header.size - 2 * Meta.Margin;
+            resizeLayoutElement.minHeight = Meta.Panel.Header.size - 2 * Meta.Margin;
 
             Text dragSymbol = resizeIconObject.AddComponent<Text>();
             dragSymbol.text = "❏";
-            dragSymbol.font = Meta.Font;
-            dragSymbol.fontSize = Meta.HeaderExitFontSize;
-            dragSymbol.color = Meta.FontColor;
-            dragSymbol.alignment = TextAnchor.MiddleCenter;
+            dragSymbol.font = Meta.Panel.Header.buttonSettings.FontFace;
+            dragSymbol.fontSize = Meta.Panel.Header.buttonSettings.FontSize;
+            dragSymbol.color = Meta.Panel.Header.buttonSettings.FontColor;
+            dragSymbol.alignment = Meta.Panel.Header.buttonSettings.Alignment;
 
             ResizableUI resizeHandle = resizeIconObject.AddComponent<ResizableUI>();
             resizeHandle.BindParent(Panel.Obj);
@@ -205,6 +188,8 @@ namespace MoGUI
 
         public MoGuiColor Color;
 
+        public TypographySettings titleSettings = new TypographySettings(18, 1, FontStyle.Bold, TextAnchor.MiddleLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
+        public TypographySettings buttonSettings = new TypographySettings(18, 1, FontStyle.Bold, TextAnchor.MiddleCenter, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
         public HeaderMeta(MoGuiColor color)
         {
             Color = new MoGuiColor(color.Shade);
@@ -241,7 +226,7 @@ namespace MoGUI
             return this;
         }
 
-        public Color hideColor = GuiMeta.DefaultHeaderExitColor;
+        public Color hideColor = MoGuiMeta.DefaultHeaderExitColor;
         public HeaderMeta HhideColor(Color _color)
         {
             hideColor = _color;

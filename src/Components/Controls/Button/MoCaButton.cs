@@ -29,13 +29,14 @@ namespace MoGUI
 
     public class ButtonMeta : ControlMeta
     {
-        Font font;
-        int fontsize;
-        public MoGuiColor background = new MoGuiColor(GuiMeta.DefaultPanelColor.Tint);
-        // Vector2 minSize;
-        // Vector2 Size;
+        private SizeSettings _sizeSettings = new SizeSettings(60,30,1,0,100,40);
+        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, 1, FontStyle.Bold, TextAnchor.MiddleCenter, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
+        public MoGuiColor background = new MoGuiColor(MoGuiMeta.DefaultPanelColor.TintRaw, 0.6f);
 
-        public ButtonMeta(string name) : base(name) { }
+        public ButtonMeta(string name) : base(name) 
+        {
+            Sizing(_sizeSettings);
+        }
 
         public ButtonMeta Background(Color _color)
         {

@@ -32,7 +32,9 @@ namespace MoGUI
 
     public class ColorBlockMeta : ControlMeta
     {
-        public ColorBlockMeta(string name) : base(name) { MinSize(new Vector2(10, 10)); }
+        private SizeSettings _sizeSettings = new SizeSettings(20, 20, 1, 1);
+        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, 1, FontStyle.Bold, TextAnchor.MiddleCenter, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
+        public ColorBlockMeta(string name) : base(name) { Sizing(_sizeSettings); }
 
 
     }

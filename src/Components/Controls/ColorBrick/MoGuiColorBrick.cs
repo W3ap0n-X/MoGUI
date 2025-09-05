@@ -28,25 +28,17 @@ namespace MoGUI
             }
             set
             {
-
                 _value = value;
-
             }
         }
 
         public MoGuiColorBrick(MoGuiMeta meta, string name, MoCaColor args) : base(meta, name)
         {
             BoundValue = args.Value;
-            Meta.FontSize = Meta.ButtonFontSize;
             Obj = CreateBrick();
             
         }
 
-
-        //public override void _Init()
-        //{
-        //    Container = CreateContainer();
-        //}
         public GameObject CreateBrick()
         {
             GameObject buttonObject = new GameObject(PluginName + "_" + Name + "_" + "Button");
@@ -67,10 +59,8 @@ namespace MoGUI
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, text);
+                Text = new MoGuiTxt(Meta, Name + "_" + label, text:text, Meta.ColorBlock.labelSettings);
                 Text.Obj.transform.SetParent(Obj.transform, false);
-                //HorizontalLayoutGroup layoutGroup = Text.Container.GetComponent<HorizontalLayoutGroup>();
-                //layoutGroup.childForceExpandHeight = true;
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
             }
 
@@ -86,22 +76,20 @@ namespace MoGUI
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
+                Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction, Meta.ColorBlock.labelSettings);
                 Text.Obj.transform.SetParent(Obj.transform, false);
-                //HorizontalLayoutGroup layoutGroup = Text.Container.GetComponent<HorizontalLayoutGroup>();
-                //layoutGroup.childForceExpandHeight = true;
-                Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
             }
 
         }
 
         public override void SetLayout()
         {
-            minWidth = MoGui.TestMeta.ColorBlock.minSize.x;
-            minHeight = MoGui.TestMeta.ColorBlock.minSize.y;
-
-            flexibleWidth = 1;
-            flexibleHeight = 1;
+            minWidth = Meta.ColorBlock.sizing.minWidth;
+            minHeight = Meta.ColorBlock.sizing.minHeight;
+            if (Meta.ColorBlock.sizing.preferredWidth != null) { preferredWidth = (float)Meta.ColorBlock.sizing.preferredWidth; }
+            if (Meta.ColorBlock.sizing.preferredHeight != null) { preferredHeight = (float)Meta.ColorBlock.sizing.preferredHeight; }
+            flexibleWidth = Meta.ColorBlock.sizing.flexibleWidth ?? 0;
+            flexibleHeight = Meta.ColorBlock.sizing.flexibleHeight ?? 0;
         }
         public override void Update() 
         {

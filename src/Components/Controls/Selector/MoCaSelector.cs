@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Collections;
 
 namespace MoGUI
 {
@@ -10,22 +11,28 @@ namespace MoGUI
     public class MoCaSelector : MoGCArgs
     {
         public Dictionary<string, object> Options;
+        public ControlOrientation? Direction = null;
         public MoCaSelector(Dictionary<string, object> options,
             string text,
+            ControlOrientation? direction = null,
             MoGuiMeta meta = null
         ) : base(typeof(MoGuiSelector), meta:meta, text: text)
         {
             Options = options;
+            Direction = direction;
         }
-
 
     }
 
     public class SelectorMeta : ControlMeta
     {
-
-        public SelectorMeta(string name) : base(name) { }
-
+        private ControlOrientation _orientation = ControlOrientation.vertical;
+        public ControlOrientation direction = ControlOrientation.vertical;
+        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, 1, FontStyle.Bold, TextAnchor.MiddleCenter, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
+        public SelectorMeta(string name) : base(name) 
+        {
+            orientation = _orientation;
+        }
 
     }
 }

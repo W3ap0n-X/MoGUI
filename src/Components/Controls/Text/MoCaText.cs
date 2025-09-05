@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using System.Xml.Linq;
 
 namespace MoGUI
 {
@@ -12,45 +11,50 @@ namespace MoGUI
     {
         public new string Text;
         public TextElement Element;
+        public TypographySettings? Settings;
 
         public MoCaText(Func<object> onUpdateAction,
             TextElement element = TextElement.text,
+            TypographySettings? settings = null,
             MoGuiMeta meta = null
         ) : base(typeof(MoGuiTxt), meta)
         {
             Element = element;
             OnUpdateAction = onUpdateAction;
+            Settings = settings;
+
         }
 
         public MoCaText(string text,
             TextElement element = TextElement.text,
+            TypographySettings? settings = null,
             MoGuiMeta meta = null
         ) : base(typeof(MoGuiTxt), meta)
         {
             Element = element;
             Text = text;
+            Settings = settings;
+
         }
     }
-
 
     public class TypographyMeta : ControlMeta
     {
         private SizeSettings _sizeSettings = new SizeSettings(20,20, 1,1);
         public Dictionary<TextElement, TextMeta> Type = new Dictionary<TextElement, TextMeta>();
-        public Dictionary<string, TypographyDefaults> elementSettings = new Dictionary<string, TypographyDefaults>()
+        public Dictionary<string, TypographySettings> elementSettings = new Dictionary<string, TypographySettings>()
         {
-            { "text", new TypographyDefaults(1, FontStyle.Normal, TextAnchor.UpperLeft) },
-            { "title", new TypographyDefaults(2, FontStyle.Bold, TextAnchor.MiddleCenter) },
-            { "h1", new TypographyDefaults(1.8f, FontStyle.Bold, TextAnchor.LowerCenter) },
-            { "h2", new TypographyDefaults(1.6f, FontStyle.Bold, TextAnchor.UpperLeft) },
-            { "h3", new TypographyDefaults(1.5f, FontStyle.Bold, TextAnchor.UpperLeft) },
-            { "h4", new TypographyDefaults(1.4f, FontStyle.Normal, TextAnchor.UpperLeft) },
-            { "h5", new TypographyDefaults(1.3f, FontStyle.Bold, TextAnchor.UpperLeft) },
-            { "h6", new TypographyDefaults(1.2f, FontStyle.Normal, TextAnchor.UpperLeft) },
-            { "label" ,new TypographyDefaults(1, FontStyle.Bold, TextAnchor.UpperLeft) },
-            { "small", new TypographyDefaults(0.8f, FontStyle.Bold, TextAnchor.UpperLeft) }
+            { "text", new TypographySettings( 1, FontStyle.Normal, TextAnchor.UpperLeft) },
+            { "title", new TypographySettings(2, FontStyle.Bold, TextAnchor.MiddleCenter) },
+            { "h1", new TypographySettings(1.8f, FontStyle.Bold, TextAnchor.LowerCenter) },
+            { "h2", new TypographySettings(1.6f, FontStyle.Bold, TextAnchor.UpperLeft) },
+            { "h3", new TypographySettings(1.5f, FontStyle.Bold, TextAnchor.UpperLeft) },
+            { "h4", new TypographySettings(1.4f, FontStyle.Normal, TextAnchor.UpperLeft) },
+            { "h5", new TypographySettings(1.3f, FontStyle.Bold, TextAnchor.UpperLeft) },
+            { "h6", new TypographySettings(1.2f, FontStyle.Normal, TextAnchor.UpperLeft) },
+            { "label" ,new TypographySettings(1, FontStyle.Bold, TextAnchor.UpperLeft) },
+            { "small", new TypographySettings(0.8f, FontStyle.Italic, TextAnchor.UpperLeft) }
         };
-
 
         public int fontSize = 14;
         public TypographyMeta(string name) : base(name)
@@ -79,7 +83,7 @@ namespace MoGUI
             return this;
         }
 
-        public TypographyMeta SetElementSettings(Dictionary<string, TypographyDefaults> settings)
+        public TypographyMeta SetElementSettings(Dictionary<string, TypographySettings> settings)
         {
             foreach(var item in settings)
             {
@@ -95,7 +99,7 @@ namespace MoGUI
             return this;
         }
 
-        public TypographyMeta SetElementSetting(string element, TypographyDefaults settings)
+        public TypographyMeta SetElementSetting(string element, TypographySettings settings)
         {
 
             if (elementSettings.ContainsKey(element))
@@ -114,27 +118,29 @@ namespace MoGUI
 
             if (elementSettings.ContainsKey(element))
             {
-                elementSettings[element] = new TypographyDefaults(sizeFactor, style, alignment);
+                elementSettings[element] = new TypographySettings( sizeFactor, style, alignment);
             }
             else
             {
-                elementSettings.Add(element, new TypographyDefaults(sizeFactor, style, alignment));
+                elementSettings.Add(element, new TypographySettings( sizeFactor, style, alignment));
             }
             return this;
         }
     }
 
-    public struct TypographyDefaults
+    public struct TypographySettings
     {
         public float FontSizeFactor;
+        public int FontSize;
         public FontStyle Style;
         public TextAnchor Alignment;
         public Font FontFace;
         public Color FontColor;
 
-        public TypographyDefaults(float size, FontStyle style, TextAnchor alignment, Font fontFace = null, Color? color = null)
+        public TypographySettings(int size, float sizeFactor, FontStyle style, TextAnchor alignment, Font fontFace = null, Color? color = null)
         {
-            FontSizeFactor = size;
+            FontSize = size;
+            FontSizeFactor = sizeFactor;
             Style = style;
             Alignment = alignment;
             if(fontFace != null)
@@ -142,24 +148,24 @@ namespace MoGUI
                 FontFace = fontFace;
             } else
             {
-                FontFace = GuiMeta.DefaultFont;
+                FontFace = MoGuiMeta.DefaultFont;
             }
             if(color != null)
             {
                 FontColor = (Color)color;
             } else
             {
-                FontColor = GuiMeta.DefaultFontColor.Color;
+                FontColor = MoGuiMeta.DefaultFontColor.Color;
             }
             
         }
 
-        public TypographyDefaults(float size, FontStyle style, TextAnchor alignment, string fontFace, Color? color = null)
+        public TypographySettings(int size, float sizeFactor, FontStyle style, TextAnchor alignment, string fontFace, Color? color = null)
         {
-            FontSizeFactor = size;
+            FontSize = size;
+            FontSizeFactor = sizeFactor;
             Style = style;
             Alignment = alignment;
-
 
             bool isvalid = false;
             foreach (var item in UnityEngine.Font.GetOSInstalledFontNames())
@@ -175,7 +181,7 @@ namespace MoGUI
             }
             else
             {
-                FontFace = GuiMeta.DefaultFont;
+                FontFace = MoGuiMeta.DefaultFont;
             }
             if (color != null)
             {
@@ -183,7 +189,64 @@ namespace MoGUI
             }
             else
             {
-                FontColor = GuiMeta.DefaultFontColor.Color;
+                FontColor = MoGuiMeta.DefaultFontColor.Color;
+            }
+        }
+
+        public TypographySettings( float sizeFactor, FontStyle style, TextAnchor alignment, string fontFace, Color? color = null)
+        {
+            FontSize = MoGuiMeta.DefaultFontSize;
+            FontSizeFactor = sizeFactor;
+            Style = style;
+            Alignment = alignment;
+
+            bool isvalid = false;
+            foreach (var item in UnityEngine.Font.GetOSInstalledFontNames())
+            {
+                if (item == fontFace)
+                {
+                    isvalid = true; break;
+                }
+            }
+            if (isvalid)
+            {
+                FontFace = UnityEngine.Font.CreateDynamicFontFromOSFont(fontFace, 24);
+            }
+            else
+            {
+                FontFace = MoGuiMeta.DefaultFont;
+            }
+            if (color != null)
+            {
+                FontColor = (Color)color;
+            }
+            else
+            {
+                FontColor = MoGuiMeta.DefaultFontColor.Color;
+            }
+        }
+
+        public TypographySettings(float sizeFactor, FontStyle style, TextAnchor alignment, Font fontFace = null, Color? color = null)
+        {
+            FontSize = MoGuiMeta.DefaultFontSize;
+            FontSizeFactor = sizeFactor;
+            Style = style;
+            Alignment = alignment;
+
+            if(fontFace != null)
+            {
+                FontFace = fontFace;
+            } else
+            {
+                FontFace = MoGuiMeta.DefaultFont;
+            }
+            if (color != null)
+            {
+                FontColor = (Color)color;
+            }
+            else
+            {
+                FontColor = MoGuiMeta.DefaultFontColor.Color;
             }
         }
 
@@ -191,15 +254,35 @@ namespace MoGUI
 
     public class TextMeta
     {
-        
-        public Font font = GuiMeta.DefaultFont;
-        public int fontSize = GuiMeta.DefaultFontSize;
-        public Color fontColor = GuiMeta.DefaultFontColor.Color;
+        public TypographySettings settings = new TypographySettings(MoGuiMeta.DefaultFontSize, 1, FontStyle.Normal, TextAnchor.UpperLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
+
+        public Font font
+        {
+            get { return settings.FontFace; }
+            set { settings.FontFace = value; }
+        }
+        public int fontSize
+        {
+            get { return settings.FontSize; }
+            set { settings.FontSize = value; }
+        }
+        public Color fontColor
+        {
+            get { return settings.FontColor; }
+            set { settings.FontColor = value; }
+        }
         
         public TextElement element = TextElement.text;
-        public TextAnchor textAnchor = TextAnchor.UpperLeft;
-        public FontStyle textStyle = FontStyle.Normal;
-
+        public TextAnchor textAnchor
+        {
+            get { return settings.Alignment; }
+            set { settings.Alignment = value; }
+        }
+        public FontStyle textStyle
+        {
+            get { return settings.Style; }
+            set { settings.Style = value; }
+        }
 
         public TextMeta Element(string _element)
         {
@@ -283,9 +366,9 @@ namespace MoGUI
             }
             else
             {
-                font = GuiMeta.DefaultFont;
+                font = MoGuiMeta.DefaultFont;
             }
-                return this;
+            return this;
         }
 
         public TextMeta Font(Font _font)

@@ -65,7 +65,7 @@ namespace MoGUI
             ContainerSize.anchorMin = new Vector2(0, 0);
             ContainerSize.anchorMax = new Vector2(1, 1);
             ContainerSize.offsetMin = new Vector2(0, 0);
-            ContainerSize.offsetMax = new Vector2(0, -MoGui.TestMeta.Panel.Header.size);
+            ContainerSize.offsetMax = new Vector2(0, -Meta.Panel.Header.size);
 
             Header = new MoGuiHeader(Meta, canvas, this, name, true);
             Header.Obj.transform.SetParent(Obj.transform, false);
@@ -90,11 +90,10 @@ namespace MoGUI
             Obj = CreatePanel();
             if (includeHeader)
             {
-
                 ContainerSize.anchorMin = new Vector2(0, 0);
                 ContainerSize.anchorMax = new Vector2(1, 1);
                 ContainerSize.offsetMin = new Vector2(0, 0);
-                ContainerSize.offsetMax = new Vector2(0, -MoGui.TestMeta.Panel.Header.size);
+                ContainerSize.offsetMax = new Vector2(0, -Meta.Panel.Header.size);
 
                 PanelSize.anchorMin = new Vector2(0, 0);
                 PanelSize.anchorMax = new Vector2(1, 1);
@@ -117,15 +116,11 @@ namespace MoGUI
             GameObject layoutObject = new GameObject(PluginName + "_" + Name + "_" + "DrawContainer");
             VerticalLayoutGroup layoutGroup = layoutObject.AddComponent<VerticalLayoutGroup>();
 
-
             AddLayoutElement(layoutObject);
             SetLayout();
-            
 
             Image panelImage = layoutObject.AddComponent<Image>();
-            panelImage.color = MoGui.TestMeta.Panel.background.Color;
-
-
+            panelImage.color = Meta.Panel.background.Color;
 
             ContainerSize = new SizeWrapper(layoutObject.GetComponent<RectTransform>());
 
@@ -134,7 +129,7 @@ namespace MoGUI
             ContainerSize.offsetMin = new Vector2(0, 0);
             ContainerSize.offsetMax = new Vector2(0, 0);
 
-            layoutGroup.spacing = MoGui.TestMeta.Margin;
+            layoutGroup.spacing = Meta.Margin;
             layoutGroup.childForceExpandWidth = false;
             layoutGroup.childForceExpandHeight = false;
             return layoutObject;
@@ -162,7 +157,6 @@ namespace MoGUI
         {
             minWidth = 100;
             minHeight = 100;
-            //preferredWidth = 100;
             flexibleWidth = 1;
             flexibleHeight = 1;
         }
@@ -229,8 +223,6 @@ namespace MoGUI
             return newComponent;
         }
 
-        
-
         private MoGuiControl CreateComponent(string name, MoGCArgs args)
         {
             if (args.Type == typeof(MoGuiButton))
@@ -264,7 +256,6 @@ namespace MoGUI
             {
 
                 MoCaSelector _args = (MoCaSelector)args;
-                
                 return new MoGuiSelector(_args.Meta ?? Meta, Name + "_" + name, _args);
 
             }
@@ -288,7 +279,7 @@ namespace MoGUI
             else
             {
                 MoCaText _args = (MoCaText)args;
-                return  new MoGuiTxt(_args.Meta ?? Meta, Name + "_" + name, _args.Text);
+                return  new MoGuiTxt(_args.Meta ?? Meta, Name + "_" + name, _args);
             }
         }
 

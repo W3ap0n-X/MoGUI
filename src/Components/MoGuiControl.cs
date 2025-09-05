@@ -20,8 +20,6 @@ namespace MoGUI
         public Vector2 Pos;
         public MoGuiMeta Meta;
 
-        public GuiMeta _Meta;
-
         public ControlOrientation Orientation = ControlOrientation.horizontal;
         public ControlLabelPlacement LabelPlacement = ControlLabelPlacement.after;
 
@@ -46,7 +44,6 @@ namespace MoGUI
 
         }
 
-
         public MoGuiControl(MoGuiMeta meta, string name, Vector2 size, Vector2 pos)
         {
 
@@ -60,7 +57,6 @@ namespace MoGUI
 
         public abstract void Update();
 
-
         public virtual void _Init()
         {
             
@@ -72,18 +68,18 @@ namespace MoGUI
             if (orientation == ControlOrientation.vertical)
             {
                 VerticalLayoutGroup layoutGroup = layoutObject.AddComponent<VerticalLayoutGroup>();
-                layoutGroup.padding = new RectOffset(Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin);
+                layoutGroup.padding = new RectOffset(Meta.Margin, Meta.Margin, Meta.Margin, Meta.Margin);
 
-                layoutGroup.spacing = Meta.TxtMargin;
+                layoutGroup.spacing = Meta.Margin;
                 layoutGroup.childForceExpandWidth = false;
                 layoutGroup.childForceExpandHeight = false;
             }
             else
             {
                 HorizontalLayoutGroup layoutGroup = layoutObject.AddComponent<HorizontalLayoutGroup>();
-                layoutGroup.padding = new RectOffset(Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin);
+                layoutGroup.padding = new RectOffset(Meta.Margin, Meta.Margin, Meta.Margin, Meta.Margin);
 
-                layoutGroup.spacing = Meta.TxtMargin;
+                layoutGroup.spacing = Meta.Margin;
                 layoutGroup.childForceExpandWidth = false;
                 layoutGroup.childForceExpandHeight = false;
             }
@@ -93,7 +89,7 @@ namespace MoGUI
         }
         public virtual GameObject CreateContainer()
         {
-            GameObject layoutObject = this.CreateContainer(Meta.Orientation);
+            GameObject layoutObject = this.CreateContainer(Meta.orientation);
             return layoutObject;
         }
 

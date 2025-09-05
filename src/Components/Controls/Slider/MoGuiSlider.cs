@@ -11,6 +11,8 @@ namespace MoGUI
         string Type;
         MoGuiTxt Text;
         Slider Slider;
+
+        public ControlOrientation Direction;
         public float Value => Slider.value;
         Image Fill;
         public Func<Color> BoundFillColor;
@@ -25,7 +27,7 @@ namespace MoGUI
                 }
                 else
                 {
-                    return MoGui.TestMeta.Slider.Color.Shade;
+                    return Meta.Slider.Color.Shade;
                 }
             }
         }
@@ -42,8 +44,6 @@ namespace MoGUI
                 _maxValue = value.y;
             }
         }
-
-
 
         float _minValue;
         float _maxValue;
@@ -97,7 +97,7 @@ namespace MoGUI
             Type = type;
             OnEditAction = onEditAction;
 
-            switch (Meta.SliderLabelPlacement)
+            switch (Meta.Slider.labelPlacement)
             {
                 case ControlLabelPlacement.before:
                     AddText("SliderTxt", text);
@@ -131,7 +131,7 @@ namespace MoGUI
             OnUpdateAction = onUpdateAction;
             Type = type;
             OnEditAction = onEditAction;
-            switch (Meta.SliderLabelPlacement)
+            switch (Meta.Slider.labelPlacement)
             {
                 case ControlLabelPlacement.before:
                     AddText("SliderTxt", text);
@@ -163,10 +163,12 @@ namespace MoGUI
             MinValue = args.Range.x;
             MaxValue = args.Range.y;
 
+            Direction = args.Direction ?? Meta.Slider.direction;
+
             OnUpdateAction = args.OnUpdateAction;
             Type = args.ValType;
             OnEditAction = args.OnEditAction;
-            switch (Meta.SliderLabelPlacement)
+            switch (Meta.Slider.labelPlacement)
             {
                 case ControlLabelPlacement.before:
                     AddText("SliderTxt", args.Text);
@@ -195,12 +197,28 @@ namespace MoGUI
 
         public override void _Init()
         {
-            Container = CreateContainer(Meta.SliderOrientation);
+            Container = CreateContainer(Meta.Slider.orientation);
         }
 
         public override void SetLayout()
         {
-
+            if (Direction == ControlOrientation.vertical)
+            {
+                minWidth = Meta.Slider.sizing.minHeight;
+                minHeight = Meta.Slider.sizing.minWidth;
+                if (Meta.Slider.sizing.preferredWidth != null) { preferredWidth = (float)Meta.Slider.sizing.preferredWidth; }
+                if (Meta.Slider.sizing.preferredHeight != null) { preferredHeight = (float)Meta.Slider.sizing.preferredHeight; }
+                flexibleWidth = Meta.Slider.sizing.flexibleWidth ?? 0;
+                flexibleHeight = Meta.Slider.sizing.flexibleHeight ?? 0;
+            } else
+            {
+                minWidth = Meta.Slider.sizing.minWidth;
+                minHeight = Meta.Slider.sizing.minHeight;
+                if (Meta.Slider.sizing.preferredWidth != null) { preferredWidth = (float)Meta.Slider.sizing.preferredWidth; }
+                if (Meta.Slider.sizing.preferredHeight != null) { preferredHeight = (float)Meta.Slider.sizing.preferredHeight; }
+                flexibleWidth = Meta.Slider.sizing.flexibleWidth ?? 0;
+                flexibleHeight = Meta.Slider.sizing.flexibleHeight ?? 0;
+            }
         }
 
         public GameObject CreateSlider()
@@ -213,10 +231,10 @@ namespace MoGUI
             
 
 
-            LayoutElement layoutElement = sliderObject.AddComponent<LayoutElement>();
+            AddLayoutElement(sliderObject);
+            SetLayout();
 
-            
-                
+
 
             Slider = sliderObject.AddComponent<Slider>();
             Slider.minValue = MinValue;
@@ -231,7 +249,7 @@ namespace MoGUI
             
 
             Image backgroundImage = backgroundObject.AddComponent<Image>();
-            backgroundImage.color = MoGui.TestMeta.Slider.Color.Shade;
+            backgroundImage.color = Meta.Slider.Color.Shade;
 
             GameObject fillAreaObject = new GameObject(PluginName + "_" + Name + "_" + "SliderFillArea");
             fillAreaObject.transform.SetParent(sliderObject.transform, false);
@@ -252,12 +270,12 @@ namespace MoGUI
             
 
             Image handleImage = handleObject.AddComponent<Image>();
-            handleImage.color = MoGui.TestMeta.Slider.Color.Tint;
+            handleImage.color = Meta.Slider.Color.Tint;
             Slider.handleRect = handleRect;
 
 
 
-            if (Meta.SliderDirection == SliderDirection.vertical)
+            if (Direction == ControlOrientation.vertical)
             {
                 
                 backgroundRect.anchorMin = Vector2.zero;
@@ -266,11 +284,6 @@ namespace MoGUI
                 backgroundRect.offsetMin = new Vector2(10, 0);
                 backgroundRect.offsetMax = new Vector2(-10, 0);
 
-                layoutElement.minWidth = Meta.SliderSize.y;
-                layoutElement.minHeight = Meta.SliderSize.x;
-                layoutElement.preferredWidth = Meta.SliderSize.w;
-                layoutElement.preferredHeight = Meta.SliderSize.z;
-                layoutElement.flexibleHeight = 1;
 
                 fillAreaRect.anchorMin = Vector2.zero;
                 fillAreaRect.anchorMax = Vector2.one;
@@ -297,11 +310,6 @@ namespace MoGUI
                 backgroundRect.offsetMin = new Vector2(0, 10);
                 backgroundRect.offsetMax = new Vector2(0, -10);
 
-                layoutElement.minWidth = Meta.SliderSize.x;
-                layoutElement.minHeight = Meta.SliderSize.y;
-                layoutElement.preferredWidth = Meta.SliderSize.z;
-                layoutElement.preferredHeight = Meta.SliderSize.w;
-                layoutElement.flexibleWidth = 1;
 
                 fillAreaRect.anchorMin = Vector2.zero;
                 fillAreaRect.anchorMax = Vector2.one;
@@ -368,7 +376,7 @@ namespace MoGUI
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, text);
+                Text = new MoGuiTxt(Meta, Name + "_" + label, text:text, Meta.Slider.labelSettings);
                 Text.Obj.transform.SetParent(Container.transform, false);
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
@@ -384,7 +392,7 @@ namespace MoGUI
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
+                Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction, Meta.Slider.labelSettings);
                 Text.Obj.transform.SetParent(Container.transform, false);
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }

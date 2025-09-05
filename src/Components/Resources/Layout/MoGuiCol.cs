@@ -33,21 +33,14 @@ namespace MoGUI
         {
             GameObject layoutObject = new GameObject(Meta.PluginName + "_" + Meta.Name + "_" + _parent.Name + "_" + "Column_" + name);
             VerticalLayoutGroup layoutGroup = layoutObject.AddComponent<VerticalLayoutGroup>();
-            layoutGroup.padding = new RectOffset(Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin, Meta.TxtMargin);
+            layoutGroup.padding = new RectOffset(Meta.Margin, Meta.Margin, Meta.Margin, Meta.Margin);
             layoutGroup.childForceExpandWidth = false;
             layoutGroup.childForceExpandHeight = false;
-            layoutGroup.spacing = Meta.TxtMargin;
-
-            if (MoGUIManager._LayoutDebug)
+            layoutGroup.spacing = Meta.Margin;
+            if (Meta.Cols.background != null)
             {
                 Image bg = layoutObject.AddComponent<Image>();
-                bg.color = MoGUIManager._LayoutDebugColColor;
-            }
-
-            if (MoGui.TestMeta.Cols.background != null)
-            {
-                Image bg = layoutObject.AddComponent<Image>();
-                bg.color = (Color)MoGui.TestMeta.Cols.background;
+                bg.color = (Color)Meta.Cols.background;
             }
             return layoutObject;
         }
@@ -64,14 +57,12 @@ namespace MoGUI
 
     public class ColMeta : LayoutMeta
     {
-
         public ColMeta(string name) : base(name)
         {
-            MinSize(GuiMeta.DefaultColMinSize);
-            FlexSize(GuiMeta.DefaultColFlex);
+            MinSize(MoGuiMeta.DefaultColMinSize);
+            FlexSize(MoGuiMeta.DefaultColFlex);
         }
 
     }
-
     
 }

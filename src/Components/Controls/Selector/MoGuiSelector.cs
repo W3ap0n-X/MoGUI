@@ -15,13 +15,14 @@ namespace MoGUI
 
         List<MoGuiToggle> moGuiToggles = new List<MoGuiToggle>();
         ToggleGroup ToggleGroup;
-
+        public ControlOrientation Direction;
         public object Value;
 
         public MoGuiSelector(MoGuiMeta meta, string name, MoCaSelector args) : base(meta, name)
         {
+            Direction = args.Direction ?? Meta.Selector.direction;
             Options = args.Options;
-            switch (Meta.SliderLabelPlacement)
+            switch (Meta.Selector.labelPlacement)
             {
                 case ControlLabelPlacement.before:
                     AddText("SelectorTxt", args.Text);
@@ -53,7 +54,7 @@ namespace MoGUI
 
         public override void _Init()
         {
-            Container = CreateContainer(Meta.SliderOrientation);
+            Container = CreateContainer(Meta.Selector.orientation);
         }
         public override void SetLayout()
         {
@@ -70,7 +71,7 @@ namespace MoGUI
 
 
             ToggleGroup = selectorObject.AddComponent<ToggleGroup>();
-            if (Meta.SelectorOrientation == ControlOrientation.vertical)
+            if (Direction == ControlOrientation.vertical)
             {
                 VerticalLayoutGroup layoutGroup = selectorObject.AddComponent<VerticalLayoutGroup>();
                 layoutGroup.childForceExpandWidth = false;
@@ -101,7 +102,7 @@ namespace MoGUI
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, text);
+                Text = new MoGuiTxt(Meta, Name + "_" + label, text:text, Meta.Selector.labelSettings);
                 Text.Obj.transform.SetParent(Container.transform, false);
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
@@ -117,7 +118,7 @@ namespace MoGUI
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction);
+                Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction, Meta.Selector.labelSettings);
                 Text.Obj.transform.SetParent(Container.transform, false);
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
