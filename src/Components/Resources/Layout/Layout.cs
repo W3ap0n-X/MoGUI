@@ -109,6 +109,9 @@ namespace MoGUI
 
         public Color? background = null;
         TextAnchor childAlignment = TextAnchor.UpperLeft;
+        
+
+
         public LayoutMeta(MoGuiMeta parent, string name) : base(parent, name) 
         {
 
@@ -125,6 +128,8 @@ namespace MoGUI
             return this;
         }
 
+        
+
     }
 
     public class BlockMeta : ComponentMeta
@@ -133,6 +138,8 @@ namespace MoGUI
         public Vector2 size;
         public Vector2 Flex;
         public SizeSettings sizing;
+
+
         public BlockMeta(MoGuiMeta parent, string name) : base(parent, name) { }
 
         public BlockMeta Size(Vector2 _size)

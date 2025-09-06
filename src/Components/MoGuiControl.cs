@@ -107,6 +107,8 @@ namespace MoGUI
         public float preferredWidth { get => LoElement.preferredWidth; set { LoElement.preferredWidth = value; } }
         public float preferredHeight { get => LoElement.preferredHeight; set { LoElement.preferredHeight = value; } }
 
+        
+
 
         // Used for getting a control's meta sheet for use as a template for other controls.
         public MoGuiMeta CopyMeta()

@@ -27,7 +27,7 @@ namespace MoGUI
                 }
                 else
                 {
-                    return Meta.Slider.Color.Shade;
+                    return Color.clear;
                 }
             }
         }
@@ -204,12 +204,12 @@ namespace MoGUI
         {
             if (Direction == ControlOrientation.vertical)
             {
-                minWidth = Meta.Slider.verticallizeSettings.minHeight;
-                minHeight = Meta.Slider.verticallizeSettings.minWidth;
-                if (Meta.Slider.verticallizeSettings.preferredWidth != null) { preferredWidth = (float)Meta.Slider.verticallizeSettings.preferredWidth; }
-                if (Meta.Slider.verticallizeSettings.preferredHeight != null) { preferredHeight = (float)Meta.Slider.verticallizeSettings.preferredHeight; }
-                flexibleWidth = Meta.Slider.verticallizeSettings.flexibleWidth ?? 0;
-                flexibleHeight = Meta.Slider.verticallizeSettings.flexibleHeight ?? 0;
+                minWidth = Meta.Slider.verticalsizeSettings.minHeight;
+                minHeight = Meta.Slider.verticalsizeSettings.minWidth;
+                if (Meta.Slider.verticalsizeSettings.preferredWidth != null) { preferredWidth = (float)Meta.Slider.verticalsizeSettings.preferredWidth; }
+                if (Meta.Slider.verticalsizeSettings.preferredHeight != null) { preferredHeight = (float)Meta.Slider.verticalsizeSettings.preferredHeight; }
+                flexibleWidth = Meta.Slider.verticalsizeSettings.flexibleWidth ?? 0;
+                flexibleHeight = Meta.Slider.verticalsizeSettings.flexibleHeight ?? 0;
             } else
             {
                 minWidth = Meta.Slider.horizontalizeSettings.minWidth;
@@ -249,7 +249,7 @@ namespace MoGUI
             
 
             Image backgroundImage = backgroundObject.AddComponent<Image>();
-            backgroundImage.color = Meta.Slider.Color.Shade;
+            backgroundImage.color = Meta.Panel.background.Shade;
 
             GameObject fillAreaObject = new GameObject(PluginName + "_" + Name + "_" + "SliderFillArea");
             fillAreaObject.transform.SetParent(sliderObject.transform, false);
@@ -270,7 +270,7 @@ namespace MoGUI
             
 
             Image handleImage = handleObject.AddComponent<Image>();
-            handleImage.color = Meta.Slider.Color.Tint;
+            handleImage.color = Meta.Slider.Color.Color;
             Slider.handleRect = handleRect;
 
 

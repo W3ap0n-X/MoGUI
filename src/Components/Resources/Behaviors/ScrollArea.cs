@@ -92,7 +92,7 @@ namespace MoGUI
             //layoutElement.flexibleHeight = 1;
 
             GameObject verticalScrollbarObject = new GameObject(Meta.PluginName + "_" + Meta.Name + "_" + "ScrollViewVerticalScrollbar");
-            verticalScrollbarObject.AddComponent<Image>().color = Meta.Panel.background.Shade;
+            verticalScrollbarObject.AddComponent<Image>().color = Meta.Panel.background.ShadeRaw;
             verticalScrollbarObject.transform.SetParent(Obj.transform, false);
 
             scrollRect.verticalScrollbar = verticalBar(verticalScrollbarObject);
@@ -100,7 +100,7 @@ namespace MoGUI
             //scrollRect.verticalScrollbarSpacing = 5;
 
             GameObject horizontalScrollbarObject = new GameObject(Meta.PluginName + "_" + Meta.Name + "_" + "ScrollViewHorizontalScrollbar");
-            horizontalScrollbarObject.AddComponent<Image>().color = Meta.Panel.background.Shade;
+            horizontalScrollbarObject.AddComponent<Image>().color = Meta.Panel.background.ShadeRaw;
             horizontalScrollbarObject.transform.SetParent(Obj.transform, false);
             scrollRect.horizontalScrollbar = horizontalBar(horizontalScrollbarObject);
             scrollRect.horizontalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
@@ -123,7 +123,7 @@ namespace MoGUI
             handleObject.transform.SetParent(parent.transform, false);
 
             Image handleImage = handleObject.AddComponent<Image>();
-            handleImage.color = Meta.Panel.background.Tint; 
+            handleImage.color = Meta.Panel.background.TintRaw; 
 
             scrollbar.handleRect = handleObject.GetComponent<RectTransform>();
             scrollbar.handleRect.anchorMin = new Vector2(0, 0);
@@ -151,7 +151,7 @@ namespace MoGUI
             handleObject.transform.SetParent(parent.transform, false);
 
             Image handleImage = handleObject.AddComponent<Image>();
-            handleImage.color = Meta.Panel.background.Tint;
+            handleImage.color = Meta.Colors.Control.TintRaw;
 
             scrollbar.handleRect = handleObject.GetComponent<RectTransform>();
             scrollbar.handleRect.anchorMin = new Vector2(0, 0);

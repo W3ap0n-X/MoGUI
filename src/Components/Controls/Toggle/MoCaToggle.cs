@@ -70,7 +70,7 @@ namespace MoGUI
         public ToggleMeta(MoGuiMeta parent, string name) : base(parent, name) 
         {
             background = _parent.Colors.Panel.Shade;
-            checkBox = _parent.Colors.Panel.Tint;
+            checkBox = _parent.Colors.Control.Color;
             labelSettings = new TypographySettings(_parent.fontSize, FontStyle.Bold, TextAnchor.UpperLeft, _parent.fontColor.Color, _parent.font);
         }
 

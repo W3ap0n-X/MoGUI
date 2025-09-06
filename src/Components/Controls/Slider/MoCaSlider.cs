@@ -53,14 +53,14 @@ namespace MoGUI
         public ControlOrientation direction = ControlOrientation.horizontal;
 
         public SizeSettings horizontalizeSettings = new SizeSettings(50, 25, 1, 0, 100, 40);
-        public SizeSettings verticallizeSettings = new SizeSettings(25, 25, 1, 0, 40, 100);
+        public SizeSettings verticalsizeSettings = new SizeSettings(25, 25, 1, 0, 40, 100);
 
         public MoGuiColor Color;
 
         public TypographySettings labelSettings;
         public SliderMeta(MoGuiMeta parent, string name) : base(parent, name) 
         {
-            Color = _parent.Colors.Panel;
+            Color = _parent.Colors.Control;
             labelSettings = new TypographySettings(_parent.fontSize, FontStyle.Bold, TextAnchor.MiddleLeft, _parent.fontColor.Color, _parent.font);
         }
 

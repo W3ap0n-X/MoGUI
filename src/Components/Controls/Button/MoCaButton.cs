@@ -35,7 +35,7 @@ namespace MoGUI
 
         public ButtonMeta(MoGuiMeta parent, string name) : base(parent, name) 
         {
-            background = new MoGuiColor(_parent.Colors.Panel.TintRaw, 0.6f);
+            background = new MoGuiColor(_parent.Colors.Control.Color);
             labelSettings = new TypographySettings(_parent.fontSize, FontStyle.Bold, TextAnchor.MiddleCenter, _parent.Colors.Text.Color, _parent.font);
             Sizing(_sizeSettings);
         }

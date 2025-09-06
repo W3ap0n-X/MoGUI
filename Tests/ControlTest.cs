@@ -278,11 +278,15 @@ namespace MoGUI.Tests
                     () => ((MoGuiSlider)Panel.Components["TestSlider6"]).Value
                 ));
 
+
+            Panel.Meta.Slider.Orientation(ControlOrientation.vertical).LabelPlacement(ControlLabelPlacement.after);
             // create vertical slider
             Panel.AddControl("row4", "col0", "TestSlider7", new MoCaSlider(testRange, (value) => float0 = (float)value, () => float0, () => "float0=" + float0, "float", direction: ControlOrientation.vertical));
             Panel.AddControl("row4", "col1", "TestSlider8", new MoCaSlider(testRange0, (value) => float1 = (float)value, () => float1, () => "float1=" + float1, "float", direction: ControlOrientation.vertical));
             Panel.AddControl("row4", "col3", "TestSlider9", new MoCaSlider(testRange, (value) => float0 = (float)value, () => float0, () => "float0=" + float0, "float", direction: ControlOrientation.vertical));
             Panel.AddControl("row4", "col4", "TestSlider10", new MoCaSlider(testRange0, (value) => float1 = (float)value, () => float1, () => "float1=" + float1, "float", direction: ControlOrientation.vertical));
+
+            Panel.Meta.Slider.Orientation(ControlOrientation.horizontal).LabelPlacement(ControlLabelPlacement.before);
         }
 
         // used for input tests

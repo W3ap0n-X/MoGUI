@@ -57,7 +57,7 @@ namespace MoGUI
             background = _parent.Colors.Panel.Shade;
             labelSettings = new TypographySettings(_parent.fontSize, FontStyle.Bold, TextAnchor.MiddleLeft, _parent.fontColor.Color, _parent.font);
             inputSettings = new TypographySettings(_parent.fontSize, FontStyle.Normal, TextAnchor.MiddleLeft, _parent.fontColor.Color, _parent.font);
-            placeholderSettings = new TypographySettings(_parent.fontSize, FontStyle.Italic, TextAnchor.MiddleLeft, _parent.fontColor.Shade, _parent.font);
+            placeholderSettings = new TypographySettings(labelSettings.FontSize, FontStyle.Italic, labelSettings.Alignment, _parent.fontColor.Shade, labelSettings.FontFace);
         }
 
     }

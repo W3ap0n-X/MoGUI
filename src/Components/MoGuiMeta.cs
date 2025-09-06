@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using static System.Net.Mime.MediaTypeNames;
+using UnityEngine.Analytics;
+using System.Xml.Linq;
 
 
 
@@ -52,24 +55,29 @@ namespace MoGUI
         public GuiColorSet(Color? baseColor = null )
         {
 
-
+            Debug.Log("GuiColorSet: " + (baseColor ?? new Color(0.2f, 0.2f, 0.2f, 0.8f)).ToString());
 
             Panel = new MoGuiColor( ( baseColor ?? new Color(0.2f, 0.2f, 0.2f, 0.8f)) );
 
             
-            if (Panel.Luminance <= 0.5f) 
+            if (Panel.Luminance2 <= 0f) 
             {
-                Panel.setRange(0.25f, 0.4f);
-                Text = new MoGuiColor(Color.white);
+                Panel.setRange(0.25f,  0.4f);
+
+                Color txColor = Color.white - Panel.Shade;
+                txColor.a = 1;
+                Text = new MoGuiColor(txColor);
                 Header = new MoGuiColor(Panel.Shade);
-                Control = new MoGuiColor(Panel.Tint);
+                Control = new MoGuiColor(Panel.TintRaw);
             }
             else
             {
-                Panel.setRange(-0.25f, 0.4f);
-                Text = new MoGuiColor(Color.black);
+                Panel.setRange(-0.25f, 0.6f);
+                Color txColor = Color.white - Panel.Tint;
+                txColor.a = 1;
+                Text = new MoGuiColor(txColor);
                 Header = new MoGuiColor(Panel.Shade);
-                Control = new MoGuiColor(Panel.Tint);
+                Control = new MoGuiColor(Panel.TintRaw);
             }
         }
 
@@ -91,6 +99,40 @@ namespace MoGUI
             Control = new MoGuiColor(Panel.Tint);
         }
 
+        public GuiColorSet(GuiColorSet set)
+        {
+            Panel = set.Panel;
+            Text = set.Text;
+            Header = set.Header;
+            Control = set.Control;
+        }
+
+        public GuiColorSet(MoGuiColor panel)
+        {
+
+            Panel = panel;
+
+            if (Panel.Luminance2 <= 0f)
+            {
+                
+
+                Color txColor = Color.white - Panel.Shade;
+                txColor.a = 1;
+                Text = new MoGuiColor(txColor);
+                Header = new MoGuiColor(Panel.Shade);
+                Control = new MoGuiColor(Panel.TintRaw);
+            }
+            else
+            {
+                
+                Color txColor = Color.grey * (Color.white - Panel.Tint);
+                txColor.a = 1;
+                Text = new MoGuiColor(txColor);
+                Header = new MoGuiColor(Panel.Shade);
+                Control = new MoGuiColor(Panel.TintRaw);
+            }
+        }
+
     }
 
     public class MoGuiMeta
@@ -104,8 +146,6 @@ namespace MoGUI
         public static int DefaultFontSize = 14;
         public static int DefaultMargin = 5;
         public static Color DefaultHeaderExitColor = new Color(0.75f, 0.25f, 0.25f, 1f);
-
-        public Color? _baseColor = null;
         
 
         public GuiColorSet Colors;
@@ -125,54 +165,94 @@ namespace MoGUI
             fontColor = Colors.Text;
         }
 
-        public MoGuiMeta(string pluginName, string name)
+        public MoGuiMeta SetMargin(int margin)
         {
-            _baseColor = Color.cyan;
+            Margin = margin;
+            return this;
+        }
 
-            Colors = new GuiColorSet(_baseColor);
+        public MoGuiMeta(string pluginName, string name, Color? baseColor = null)
+        {
+            //_baseColor = Color.cyan;
+
+            Colors = new GuiColorSet(baseColor);
             PluginName = pluginName;
             Name = name;
 
             Defaults();
+            Build();
 
-            SetPanel(name + "-Panel");
-            SetRows(name + "-Row");
-            SetCols(name + "-Col");
-            SetButton(name + "-Button");
-            SetTypography(name + "-Text");
-            SetToggle(name + "-Toggle");
-            SetColorBlock(name + "-ColorBlock");
-            SetInput(name + "-Input");
-            SetSlider(name + "-Slider");
-            SetSelector(name + "-Selector");
-            SetDDL(name + "-DDL");
+
+
+            Debug.Log("Name: " + name + "\n" + this.ToString());
+        }
+
+        public MoGuiMeta(string pluginName, string name, GuiColorSet set)
+        {
+            //_baseColor = Color.cyan;
+
+            Colors = new GuiColorSet(set);
+            PluginName = pluginName;
+            Name = name;
+
+            Defaults();
+            Build();
+
+
 
             Debug.Log("Name: " + name + "\n" + this.ToString());
         }
 
         public MoGuiMeta(MoGuiMeta meta, string name)
         {
-            Colors = meta.Colors;
-
+            Colors = new GuiColorSet(meta.Colors);
             PluginName = meta.PluginName;
             Name = name;
 
             Defaults();
+            Build(meta);
 
-            SetPanel(meta.Panel);
-            SetRows(meta.Rows);
-            SetCols(meta.Cols);
-            SetButton(meta.Button);
-            SetTypography(meta.Text);
-            SetToggle(meta.Toggle);
-            SetColorBlock(meta.ColorBlock);
-            SetInput(meta.Input);
-            SetSlider(meta.Slider);
-            SetSelector(meta.Selector);
-            SetDDL(meta.DDL);
+
 
             Debug.Log("Name: " + name + "\n" + this.ToString());
         }
+
+
+        public MoGuiMeta Build(MoGuiMeta meta = null)
+        {
+            if (meta == null)
+            {
+                SetPanel(Name + "-Panel");
+                SetRows(Name + "-Row");
+                SetCols(Name + "-Col");
+                SetButton(Name + "-Button");
+                SetTypography(Name + "-Text");
+                SetToggle(Name + "-Toggle");
+                SetColorBlock(Name + "-ColorBlock");
+                SetInput(Name + "-Input");
+                SetSlider(Name + "-Slider");
+                SetSelector(Name + "-Selector");
+                SetDDL(Name + "-DDL");
+            }
+            else 
+            {
+                SetPanel(meta.Panel);
+                SetRows(meta.Rows);
+                SetCols(meta.Cols);
+                SetButton(meta.Button);
+                SetTypography(meta.Text);
+                SetToggle(meta.Toggle);
+                SetColorBlock(meta.ColorBlock);
+                SetInput(meta.Input);
+                SetSlider(meta.Slider);
+                SetSelector(meta.Selector);
+                SetDDL(meta.DDL);
+            }
+            
+            return this;
+        }
+
+
 
         public PanelMeta Panel;
         public MoGuiMeta SetPanel(string name)
@@ -320,6 +400,16 @@ namespace MoGUI
         {
             return (MoGuiMeta)this.MemberwiseClone();
         }
+
+        public void SetPalette(Color newColor)
+        {
+            Colors = new GuiColorSet(newColor);
+        }
+
+        public void SetPalette(MoGuiColor newColor)
+        {
+            Colors = new GuiColorSet(newColor);
+        }
     }
 
     public class MoGuiColor
@@ -398,7 +488,12 @@ namespace MoGUI
         {
             get
             {
-                return MutateColor(Color, DarkFactor);
+                Color shade = MutateColor(Color, Luminance2 <= 0 ? DarkFactor : DarkFactor * Factor);
+                if (A <= 0)
+                {
+                    shade.a = Factor;
+                }
+                return shade;
             }
         }
 
@@ -414,7 +509,12 @@ namespace MoGUI
         {
             get
             {
-                return MutateColor(Color, Factor);
+                Color tint = MutateColor(Color, Luminance2 <=0 ? Factor : Factor *-1);
+                if (A <= 0)
+                {
+                    tint.a = Factor;
+                }
+                return tint;
             }
         }
 
@@ -426,6 +526,106 @@ namespace MoGUI
         {
             get { return 0.2126f * R + 0.7152f * G + 0.0722f * B; }
         }
+
+
+        public float Contrast
+        {
+            get { return MathF.Abs(Luminance - 0.5f) + MathF.Abs(A - 0.5f); }
+        }
+        public float ContrastS
+        {
+            get { return MathF.Abs(Tv - 0.5f) + MathF.Abs(A - 0.5f); }
+        }
+        public float ContrastT
+        {
+            get { return MathF.Abs(Tv3 - 0.5f) + MathF.Abs(A - 0.5f); }
+        }
+
+        public float Luminance2
+        {
+            get { return (Luminance - 0.5f)*2; }
+        }
+
+        public float LBShade
+        {
+            get { return (Tv - 0.5f)*2; }
+        }
+
+        public float LBTint
+        {
+            get { return (Tv3 - 0.5f) * 2; }
+        }
+
+        public float Tv
+        {
+            get { return 0.2126f * Shade.r + 0.7152f * Shade.g + 0.0722f * Shade.b; }
+        }
+
+        public float Tv3
+        {
+            get { return 0.2126f * Tint.r + 0.7152f * Tint.g + 0.0722f * Tint.b; }
+        }
+
+        public float Tv2
+        {
+            get
+            { 
+                // Calculate the luminance of the current color
+                //float currentLuminance = (0.2126f * R + 0.7152f * G + 0.0722f * B);
+
+                // Calculate the luminance of the background color
+                // This assumes you have a way to get the parent's color.
+                // Placeholder, you need to get this from your parent meta
+                //float parentLuminance = 0.5f;
+
+                // The values must be the lighter and darker of the two colors
+                float L1 = Mathf.Max(Tv, Luminance);
+                float L2 = Mathf.Min(Tv, Luminance);
+
+                return (L1 + 0.05f) / (L2 + 0.05f);
+            }
+        }
+
+        public float Tv4
+        {
+            get
+            {
+                // Calculate the luminance of the current color
+                //float currentLuminance = (0.2126f * R + 0.7152f * G + 0.0722f * B);
+
+                // Calculate the luminance of the background color
+                // This assumes you have a way to get the parent's color.
+                // Placeholder, you need to get this from your parent meta
+                //float parentLuminance = 0.5f;
+
+                // The values must be the lighter and darker of the two colors
+                float L1 = Mathf.Max(Tv3, Luminance);
+                float L2 = Mathf.Min(Tv3, Luminance);
+
+                return (L1 + 0.05f) / (L2 + 0.05f);
+            }
+        }
+
+        public float Tv5
+        {
+            get
+            {
+                // Calculate the luminance of the current color
+                //float currentLuminance = (0.2126f * R + 0.7152f * G + 0.0722f * B);
+
+                // Calculate the luminance of the background color
+                // This assumes you have a way to get the parent's color.
+                // Placeholder, you need to get this from your parent meta
+                //float parentLuminance = 0.5f;
+
+                // The values must be the lighter and darker of the two colors
+                float L1 = Mathf.Max(Tv, Tv3);
+                float L2 = Mathf.Min(Tv, Tv3);
+
+                return (L1 + 0.05f) / (L2 + 0.05f);
+            }
+        }
+
 
         public float DarkFactor
         {
