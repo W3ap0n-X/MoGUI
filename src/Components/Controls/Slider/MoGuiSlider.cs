@@ -97,7 +97,7 @@ namespace MoGUI
             Type = type;
             OnEditAction = onEditAction;
 
-            switch (Meta.Slider.labelPlacement)
+            switch (LabelPlacement ?? Meta.Slider.labelPlacement)
             {
                 case ControlLabelPlacement.before:
                     AddText("SliderTxt", text);
@@ -131,7 +131,7 @@ namespace MoGUI
             OnUpdateAction = onUpdateAction;
             Type = type;
             OnEditAction = onEditAction;
-            switch (Meta.Slider.labelPlacement)
+            switch (LabelPlacement ?? Meta.Slider.labelPlacement)
             {
                 case ControlLabelPlacement.before:
                     AddText("SliderTxt", text);
@@ -168,7 +168,7 @@ namespace MoGUI
             OnUpdateAction = args.OnUpdateAction;
             Type = args.ValType;
             OnEditAction = args.OnEditAction;
-            switch (Meta.Slider.labelPlacement)
+            switch (LabelPlacement ?? Meta.Slider.labelPlacement)
             {
                 case ControlLabelPlacement.before:
                     AddText("SliderTxt", args.Text);
@@ -197,7 +197,7 @@ namespace MoGUI
 
         public override void _Init()
         {
-            Container = CreateContainer(Meta.Slider.orientation);
+            Container = CreateContainer(Orientation ?? Meta.Slider.orientation);
         }
 
         public override void SetLayout()

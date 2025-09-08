@@ -78,7 +78,7 @@ namespace MoGUI
             }
             else
             {
-                switch (Meta.Toggle.labelPlacement)
+                switch (LabelPlacement ?? Meta.Toggle.labelPlacement)
                 {
                     case ControlLabelPlacement.before:
                         AddText("ToggleTxt", text);
@@ -98,7 +98,7 @@ namespace MoGUI
 
         public override void _Init()
         {
-            Container = CreateContainer(Meta.Toggle.orientation);
+            Container = CreateContainer(Orientation ?? Meta.Toggle.orientation);
         }
 
         public override void SetLayout()

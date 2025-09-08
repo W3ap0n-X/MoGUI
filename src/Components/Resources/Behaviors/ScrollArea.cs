@@ -39,11 +39,6 @@ namespace MoGUI
             ObjlayoutElement.flexibleWidth = 1;
             ObjlayoutElement.flexibleHeight = 1;
 
-            if (MoGUIManager._LayoutDebug)
-            {
-                Image SAbg = Obj.AddComponent<Image>();
-                SAbg.color = MoGUIManager._LayoutDebugScrollColor;
-            }
 
 
             GameObject viewportObject = new GameObject(Meta.PluginName + "_" + Meta.Name + "_" + "ScrollViewViewport");
@@ -79,11 +74,6 @@ namespace MoGUI
             scrollRect.scrollSensitivity = 30f;
 
 
-            if (MoGUIManager._LayoutDebug)
-            {
-                Image CObg = contentObject.AddComponent<Image>();
-                CObg.color = MoGUIManager._LayoutDebugScrollContentColor;
-            }
             //LayoutElement layoutElement = contentObject.AddComponent<LayoutElement>();
             //layoutElement.minWidth = 100;
             //layoutElement.minHeight = 100;
@@ -151,7 +141,7 @@ namespace MoGUI
             handleObject.transform.SetParent(parent.transform, false);
 
             Image handleImage = handleObject.AddComponent<Image>();
-            handleImage.color = Meta.Colors.Control.TintRaw;
+            handleImage.color = Meta.Panel.background.TintRaw;
 
             scrollbar.handleRect = handleObject.GetComponent<RectTransform>();
             scrollbar.handleRect.anchorMin = new Vector2(0, 0);

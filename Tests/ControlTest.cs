@@ -379,8 +379,8 @@ namespace MoGUI.Tests
 
             // defined first so that text displays above ddl
             Panel.AddControl("row7", "col0", "TestDropdown3Text0", new MoCaText(() => "Option3 is \"" + Option3 + "\""));
-            // Test standard ddl with dictionary
-            var DDL3 = (MoGuiDDL)Panel.AddControl("row8", "col0", "DDL3", new MoCaDDL(list3));
+            // Test standard ddl with dictionary and a label
+            var DDL3 = (MoGuiDDL)Panel.AddControl("row8", "col0", "DDL3", new MoCaDDL(list3, text:"List3"));
             // get string value of selected option
             Panel.AddControl("row7", "col1", "TestDropdown3Text", new MoCaText(() => DDL3.Selected.Key + " is selected"));
             // get numeric value of selected option

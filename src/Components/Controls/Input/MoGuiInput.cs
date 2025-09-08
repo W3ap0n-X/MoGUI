@@ -20,7 +20,7 @@ namespace MoGUI
             OnUpdateAction = onUpdateAction;
             Type = type;
             OnEditAction = onEditAction;
-            switch (Meta.Input.labelPlacement)
+            switch (LabelPlacement ?? Meta.Input.labelPlacement)
             {
                 case ControlLabelPlacement.before:
                     AddText("InputTxt", text);
@@ -41,7 +41,7 @@ namespace MoGUI
             OnUpdateAction = onUpdateAction;
             OnEditAction = onEditAction;
             Type = type;
-            switch (Meta.Input.labelPlacement)
+            switch (LabelPlacement ?? Meta.Input.labelPlacement)
             {
                 case ControlLabelPlacement.before:
                     AddText("InputTxt", text);
@@ -86,7 +86,7 @@ namespace MoGUI
             {
                 Value = args.OnUpdateAction();
             }
-            switch (Meta.Input.labelPlacement)
+            switch (LabelPlacement ?? Meta.Input.labelPlacement)
             {
                 case ControlLabelPlacement.before:
                     AddText("InputTxt", args.Text);
@@ -104,7 +104,7 @@ namespace MoGUI
 
         public override void _Init()
         {
-            Container = CreateContainer(Meta.Input.orientation);
+            Container = CreateContainer(Orientation ?? Meta.Input.orientation);
         }
 
         public InputField.CharacterValidation getTypeValidation(string type)

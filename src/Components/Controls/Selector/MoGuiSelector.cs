@@ -22,7 +22,7 @@ namespace MoGUI
         {
             Direction = args.Direction ?? Meta.Selector.direction;
             Options = args.Options;
-            switch (Meta.Selector.labelPlacement)
+            switch (LabelPlacement ?? Meta.Selector.labelPlacement)
             {
                 case ControlLabelPlacement.before:
                     AddText("SelectorTxt", args.Text);
@@ -54,7 +54,7 @@ namespace MoGUI
 
         public override void _Init()
         {
-            Container = CreateContainer(Meta.Selector.orientation);
+            Container = CreateContainer(Orientation ?? Meta.Selector.orientation);
         }
         public override void SetLayout()
         {
