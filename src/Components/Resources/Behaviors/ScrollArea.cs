@@ -74,13 +74,6 @@ namespace MoGUI
             scrollRect.scrollSensitivity = 30f;
 
 
-            //LayoutElement layoutElement = contentObject.AddComponent<LayoutElement>();
-            //layoutElement.minWidth = 100;
-            //layoutElement.minHeight = 100;
-            ////layoutElement.preferredWidth = 100;
-            //layoutElement.flexibleWidth = 1;
-            //layoutElement.flexibleHeight = 1;
-
             GameObject verticalScrollbarObject = new GameObject(Meta.PluginName + "_" + Meta.Name + "_" + "ScrollViewVerticalScrollbar");
             verticalScrollbarObject.AddComponent<Image>().color = Meta.Panel.background.ShadeRaw;
             verticalScrollbarObject.transform.SetParent(Obj.transform, false);

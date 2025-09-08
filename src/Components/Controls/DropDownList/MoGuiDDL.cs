@@ -17,7 +17,7 @@ namespace MoGUI
 
 
         public MoGuiDDL(MoGuiMeta meta, string name, MoCaDDL args)
-            : base(meta, name)
+            : base(meta, name, args)
         {
             Type = args.ValType;
             

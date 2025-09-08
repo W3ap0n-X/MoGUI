@@ -30,7 +30,7 @@ namespace MoGUI
             AddText("ButtonText", text);
         }
 
-        public MoGuiButton(MoGuiMeta meta, string name, MoCaButton args) : base(meta, name)
+        public MoGuiButton(MoGuiMeta meta, string name, MoCaButton args) : base(meta, name, args)
         {
             Obj = CreateButton(args.OnClickAction);
 

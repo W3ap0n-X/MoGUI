@@ -20,8 +20,11 @@ namespace MoGUI
             Func<float> boundMin = null,
             Func<float> boundMax = null,
             ControlOrientation? direction = null,
+
+            ControlOrientation? orientation = null,
+            ControlLabelPlacement? labelPlacement = null,
             MoGuiMeta meta = null
-        ) : base(typeof(MoGuiSlider), meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType)
+        ) : base(typeof(MoGuiSlider), meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType, orientation: orientation, labelPlacement: labelPlacement)
         {
             Range = range;
             if (boundMin != null) { BoundMin = boundMin; }
@@ -37,8 +40,11 @@ namespace MoGUI
             Func<float> boundMin = null,
             Func<float> boundMax = null,
             ControlOrientation? direction = null,
+
+            ControlOrientation? orientation = null,
+            ControlLabelPlacement? labelPlacement = null,
             MoGuiMeta meta = null
-        ) : base(typeof(MoGuiSlider), meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType)
+        ) : base(typeof(MoGuiSlider), meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType, orientation: orientation, labelPlacement: labelPlacement)
         {
             Range = range;
             if (boundMin != null) { BoundMin = boundMin; }
@@ -48,22 +54,6 @@ namespace MoGUI
 
     }
 
-    public class SliderMeta : ControlMeta
-    {
-        public ControlOrientation direction = ControlOrientation.horizontal;
 
-        public SizeSettings horizontalizeSettings = new SizeSettings(50, 25, 1, 0, 100, 40);
-        public SizeSettings verticalsizeSettings = new SizeSettings(25, 25, 1, 0, 40, 100);
-
-        public MoGuiColor Color;
-
-        public TypographySettings labelSettings;
-        public SliderMeta(MoGuiMeta parent, string name) : base(parent, name) 
-        {
-            Color = _parent.Colors.Control;
-            labelSettings = new TypographySettings(_parent.fontSize, FontStyle.Bold, TextAnchor.MiddleLeft, _parent.fontColor.Color, _parent.font);
-        }
-
-    }
 
 }

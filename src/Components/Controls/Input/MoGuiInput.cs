@@ -15,59 +15,8 @@ namespace MoGUI
         public object Value;
         string Type;
 
-        public MoGuiInput(MoGuiMeta meta, string name, Func<object> text, Func<object> onUpdateAction, Action<object> onEditAction, string type) : base(meta, name)
-        {
-            OnUpdateAction = onUpdateAction;
-            Type = type;
-            OnEditAction = onEditAction;
-            switch (LabelPlacement ?? Meta.Input.labelPlacement)
-            {
-                case ControlLabelPlacement.before:
-                    AddText("InputTxt", text);
-                    Obj = CreateInput();
-                    break;
-                case ControlLabelPlacement.after:
-                    Obj = CreateInput();
-                    AddText("InputTxt", text);
-                    break;
-                default:
-                    Obj = CreateInput();
-                    break;
-            }
-        }
 
-        public MoGuiInput(MoGuiMeta meta, string name, object text, Func<object> onUpdateAction, Action<object> onEditAction, string type) : base(meta, name)
-        {
-            OnUpdateAction = onUpdateAction;
-            OnEditAction = onEditAction;
-            Type = type;
-            switch (LabelPlacement ?? Meta.Input.labelPlacement)
-            {
-                case ControlLabelPlacement.before:
-                    AddText("InputTxt", text);
-                    Obj = CreateInput();
-                    break;
-                case ControlLabelPlacement.after:
-                    Obj = CreateInput();
-                    AddText("InputTxt", text);
-                    break;
-                default:
-                    Obj = CreateInput();
-                    break;
-            }
-        }
-
-        public override void SetLayout()
-        {
-            minWidth = Meta.Input.sizing.minWidth;
-            minHeight = Meta.Input.sizing.minHeight;
-            if (Meta.Input.sizing.preferredWidth != null) { preferredWidth = (float)Meta.Input.sizing.preferredWidth; }
-            if (Meta.Input.sizing.preferredHeight != null) { preferredHeight = (float)Meta.Input.sizing.preferredHeight; }
-            flexibleWidth = Meta.Input.sizing.flexibleWidth ?? 0;
-            flexibleHeight = Meta.Input.sizing.flexibleHeight ?? 0;
-        }
-
-        public MoGuiInput(MoGuiMeta meta, string name, MoCaInput args) : base(meta, name)
+        public MoGuiInput(MoGuiMeta meta, string name, MoCaInput args) : base(meta, name, args)
         {
             if (args.OnUpdateAction != null)
             {
@@ -81,7 +30,7 @@ namespace MoGUI
             if (args.Value != null)
             {
                 Value = args.Value;
-            }  
+            }
             if (args.OnUpdateAction != null)
             {
                 Value = args.OnUpdateAction();
@@ -101,6 +50,18 @@ namespace MoGUI
                     break;
             }
         }
+
+        public override void SetLayout()
+        {
+            minWidth = Meta.Input.sizing.minWidth;
+            minHeight = Meta.Input.sizing.minHeight;
+            if (Meta.Input.sizing.preferredWidth != null) { preferredWidth = (float)Meta.Input.sizing.preferredWidth; }
+            if (Meta.Input.sizing.preferredHeight != null) { preferredHeight = (float)Meta.Input.sizing.preferredHeight; }
+            flexibleWidth = Meta.Input.sizing.flexibleWidth ?? 0;
+            flexibleHeight = Meta.Input.sizing.flexibleHeight ?? 0;
+        }
+
+        
 
         public override void _Init()
         {

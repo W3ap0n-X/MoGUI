@@ -18,7 +18,7 @@ namespace MoGUI
         public ControlOrientation Direction;
         public object Value;
 
-        public MoGuiSelector(MoGuiMeta meta, string name, MoCaSelector args) : base(meta, name)
+        public MoGuiSelector(MoGuiMeta meta, string name, MoCaSelector args) : base(meta, name, args)
         {
             Direction = args.Direction ?? Meta.Selector.direction;
             Options = args.Options;

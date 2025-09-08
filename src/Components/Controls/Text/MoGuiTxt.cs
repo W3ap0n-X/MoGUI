@@ -42,7 +42,7 @@ namespace MoGUI
             Obj = CreateText(text.ToString());
         }
 
-        public MoGuiTxt(MoGuiMeta meta, string name, MoCaText args) : base(meta, name)
+        public MoGuiTxt(MoGuiMeta meta, string name, MoCaText args) : base(meta, name, args)
         {
             TxtElement = args.Element;
             if (args.Settings != null)

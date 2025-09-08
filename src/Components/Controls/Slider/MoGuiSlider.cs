@@ -87,78 +87,7 @@ namespace MoGUI
         Func<float> _boundMin;
         Func<float> _boundMax;
 
-        public MoGuiSlider(MoGuiMeta meta, string name, Func<object> text, Vector2 range, Func<object> onUpdateAction, Action<object> onEditAction, string type, Func<float> boundMin = null, Func<float> boundMax = null) : base(meta, name)
-        {
-            MinValue = range.x;
-            MaxValue = range.y;
-            
-            
-            OnUpdateAction = onUpdateAction;
-            Type = type;
-            OnEditAction = onEditAction;
-
-            switch (LabelPlacement ?? Meta.Slider.labelPlacement)
-            {
-                case ControlLabelPlacement.before:
-                    AddText("SliderTxt", text);
-                    Obj = CreateSlider();
-                    break;
-                case ControlLabelPlacement.after:
-                    Obj = CreateSlider();
-                    AddText("SliderTxt", text);
-                    break;
-                default:
-                    Obj = CreateSlider();
-                    break;
-            }
-
-            if (boundMin != null)
-            {
-                bindMin(boundMin);
-            }
-            if (boundMax != null)
-            {
-                bindMax(boundMax);
-            }
-
-        }
-
-        public MoGuiSlider(MoGuiMeta meta, string name, string text, Vector2 range, Func<object> onUpdateAction, Action<object> onEditAction, string type, Func<float> boundMin = null, Func<float> boundMax = null) : base(meta, name)
-        {
-            MinValue = range.x;
-            MaxValue = range.y;
-            
-            OnUpdateAction = onUpdateAction;
-            Type = type;
-            OnEditAction = onEditAction;
-            switch (LabelPlacement ?? Meta.Slider.labelPlacement)
-            {
-                case ControlLabelPlacement.before:
-                    AddText("SliderTxt", text);
-                    Obj = CreateSlider();
-                    break;
-                case ControlLabelPlacement.after:
-                    Obj = CreateSlider();
-                    AddText("SliderTxt", text);
-                    break;
-                default:
-                    Obj = CreateSlider();
-                    break;
-            }
-
-            if (boundMin != null)
-            {
-                bindMin(boundMin);
-            }
-            if (boundMax != null)
-            {
-                bindMax(boundMax);
-            }
-
-
-        }
-
-        public MoGuiSlider(MoGuiMeta meta, string name, MoCaSlider args) : base(meta, name)
+        public MoGuiSlider(MoGuiMeta meta, string name, MoCaSlider args) : base(meta, name, args)
         {
             MinValue = args.Range.x;
             MaxValue = args.Range.y;

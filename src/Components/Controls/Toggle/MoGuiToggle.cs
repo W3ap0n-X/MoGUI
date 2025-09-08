@@ -52,7 +52,7 @@ namespace MoGUI
 
         
 
-        public MoGuiToggle(MoGuiMeta meta, string name, MoCaToggle args) : base(meta, name)
+        public MoGuiToggle(MoGuiMeta meta, string name, MoCaToggle args) : base(meta, name, args)
         {
             ToggleType = args.ToggleType;
             if (args.boundValue != null)
