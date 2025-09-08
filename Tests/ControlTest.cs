@@ -108,6 +108,10 @@ namespace MoGUI.Tests
             var TestPanel5 = (MoGuiPanel)rootPanel.AddControl("row0", "col0", "TestPanel5", new MoCaPanel(true, "Select Groups"));
             BuildSelectGroups(TestPanel5);
 
+            // Create Panel for ColorBricks
+            var TestPanel7 = (MoGuiPanel)rootPanel.AddControl("row0", "col0", "TestPanel7", new MoCaPanel(true, "ColorBricks"));
+            BuildColorBricks(TestPanel7);
+
             // Create a non collapsing panel with several text controls to see how the layout reacts
             var TestPanel1 = (MoGuiPanel)rootPanel.AddControl("row0", "col1", "TestPanel1", new MoCaPanel(false));
             TestPanel1.AddScrollArea();
@@ -408,6 +412,17 @@ namespace MoGUI.Tests
             var TestSelectGroup1 = (MoGuiSelector)Panel.AddControl("row2", "col0", "TestSelectGroup1", new MoCaSelector(testOptions0, "TestSelectGroup1", direction:ControlOrientation.horizontal));
             Panel.AddControl("row1", "col1", "TestSelectGroup0Text", new MoCaText(() => "TestSelectGroup0.Value: " + TestSelectGroup0.Value));
             Panel.AddControl("row1", "col1", "TestSelectGroup1Text", new MoCaText(() => "TestSelectGroup1.Value: " + TestSelectGroup1.Value));
+        }
+
+        void BuildColorBricks(MoGuiPanel Panel)
+        {
+            Panel.AddControl("row0", "col0", "ColorBrickTest-Text-0", new MoCaText("ColorBricks"));
+            Panel.AddControl("row0", "col0", "ColorBrickTest-Color-0", new MoCaColor(Color.red));
+            Panel.AddControl("row0", "col0", "ColorBrickTest-Color-1", new MoCaColor(Color.green, "green") );
+            Panel.AddControl("row0", "col0", "ColorBrickTest-Color-2", new MoCaColor(Color.blue, "blue", labelPlacement:ControlLabelPlacement.after));
+            Panel.AddControl("row0", "col0", "ColorBrickTest-Color-3", new MoCaColor(Color.black, "black", labelPlacement: ControlLabelPlacement.none));
+            Panel.AddControl("row0", "col0", "ColorBrickTest-Color-4", new MoCaColor(Color.white, "white", labelPlacement: ControlLabelPlacement.before, orientation:ControlOrientation.vertical));
+            Panel.AddControl("row0", "col0", "ColorBrickTest-Color-5", new MoCaColor(Color.grey, "grey", labelPlacement: ControlLabelPlacement.after, orientation: ControlOrientation.vertical));
         }
     }
 }

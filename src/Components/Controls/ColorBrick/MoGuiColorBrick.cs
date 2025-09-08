@@ -13,6 +13,7 @@ namespace MoGUI
 
         public Func<Color> BoundValue;
         public Color _value;
+
         public Color Value
         {
             get
@@ -32,16 +33,54 @@ namespace MoGUI
             }
         }
 
-        public MoGuiColorBrick(MoGuiMeta meta, string name, MoCaColor args) : base(meta, name)
+        public MoGuiColorBrick(MoGuiMeta meta, string name, MoCaColor args) : base(meta, name, args)
         {
             BoundValue = args.Value;
-            Obj = CreateBrick();
-            
+            if (args.Text != null) { OnUpdateAction = args.Text; }
+            Init();
+
+
+
+
+        }
+
+
+        void Init()
+        {
+            if(OnUpdateAction != null)
+            {
+                
+                switch (LabelPlacement ?? Meta.ColorBlock.labelPlacement)
+                {
+                    case ControlLabelPlacement.before:
+                        Container = CreateContainer(Orientation ?? Meta.ColorBlock.orientation);
+                        AddText("ColorBrickTxt", OnUpdateAction);
+                        Obj = CreateBrick();
+                        Obj.transform.SetParent(Container.transform, false);
+                        break;
+                    case ControlLabelPlacement.after:
+                        Container = CreateContainer(Orientation ?? Meta.ColorBlock.orientation);
+                        Obj = CreateBrick();
+                        Obj.transform.SetParent(Container.transform, false);
+                        AddText("ColorBrickTxt", OnUpdateAction);
+                        break;
+                    default:
+                        Obj = CreateBrick();
+                        AddText("ColorBrickTxt", OnUpdateAction);
+                        break;
+                }
+            } 
+            else
+            {
+                Obj = CreateBrick();
+            }
+
+                
         }
 
         public GameObject CreateBrick()
         {
-            GameObject buttonObject = new GameObject(PluginName + "_" + Name + "_" + "Button");
+            GameObject buttonObject = new GameObject(PluginName + "_" + Name + "_" + "ColorBrick");
 
             Brick = buttonObject.AddComponent<Image>();
             Brick.color = Value;
@@ -55,12 +94,12 @@ namespace MoGUI
             if (Text != null)
             {
                 Text.Update(text);
-                Text.Obj.transform.SetParent(Obj.transform, false);
+                Text.Obj.transform.SetParent(Container!=null ? Container.transform : Obj.transform, false);
             }
             else
             {
                 Text = new MoGuiTxt(Meta, Name + "_" + label, text:text, Meta.ColorBlock.labelSettings);
-                Text.Obj.transform.SetParent(Obj.transform, false);
+                Text.Obj.transform.SetParent(Container != null ? Container.transform : Obj.transform, false);
                 Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
             }
 
@@ -72,12 +111,12 @@ namespace MoGUI
             {
                 Text.Update(onUpdateAction());
 
-                Text.Obj.transform.SetParent(Obj.transform, false);
+                Text.Obj.transform.SetParent(Container != null ? Container.transform : Obj.transform, false);
             }
             else
             {
                 Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction, Meta.ColorBlock.labelSettings);
-                Text.Obj.transform.SetParent(Obj.transform, false);
+                Text.Obj.transform.SetParent(Container != null ? Container.transform : Obj.transform, false);
             }
 
         }
