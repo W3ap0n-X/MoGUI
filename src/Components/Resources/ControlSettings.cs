@@ -540,19 +540,14 @@ namespace MoGUI
             if (Panel.Luminance2 <= 0f)
             {
                 Panel.setRange(0.25f, 0.4f);
-
-                Color txColor = Color.white - Panel.Shade;
-                txColor.a = 1;
-                Text = new MoGuiColor(txColor);
+                Text = new MoGuiColor(Color.white);
                 Header = new MoGuiColor(Panel.Shade);
                 Control = new MoGuiColor(Panel.TintRaw);
             }
             else
             {
-                Panel.setRange(-0.25f, 0.6f);
-                Color txColor = Color.white - Panel.Tint;
-                txColor.a = 1;
-                Text = new MoGuiColor(txColor);
+                Panel.setRange(0.25f, 0.4f);
+                Text = new MoGuiColor(Color.black);
                 Header = new MoGuiColor(Panel.Shade);
                 Control = new MoGuiColor(Panel.TintRaw);
             }
@@ -591,20 +586,13 @@ namespace MoGUI
 
             if (Panel.Luminance2 <= 0f)
             {
-
-
-                Color txColor = Color.white - Panel.Shade;
-                txColor.a = 1;
-                Text = new MoGuiColor(txColor);
+                Text = new MoGuiColor(Color.white);
                 Header = new MoGuiColor(Panel.Shade);
                 Control = new MoGuiColor(Panel.TintRaw);
             }
             else
             {
-
-                Color txColor = Color.grey * (Color.white - Panel.Tint);
-                txColor.a = 1;
-                Text = new MoGuiColor(txColor);
+                Text = new MoGuiColor(Color.black);
                 Header = new MoGuiColor(Panel.Shade);
                 Control = new MoGuiColor(Panel.TintRaw);
             }
