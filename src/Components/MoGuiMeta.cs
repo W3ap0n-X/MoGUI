@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using Unity.VisualScripting;
+
 
 
 namespace MoGUI
@@ -42,6 +42,8 @@ namespace MoGUI
     }
 
 
+    
+
     public class MoGuiMeta
     {
         public static Vector2 DefaultTextMinSize = new Vector4(20, 20);
@@ -52,60 +54,114 @@ namespace MoGUI
         public static Font DefaultFont = UnityEngine.Font.CreateDynamicFontFromOSFont("Arial", 24);
         public static int DefaultFontSize = 14;
         public static int DefaultMargin = 5;
-        public static MoGuiColor DefaultPanelColor = new MoGuiColor(new Color(0.2f, 0.2f, 0.2f, 0.8f), 0.25f, 0.4f);
-        public static MoGuiColor DefaultFontColor = new MoGuiColor(Color.white);
         public static Color DefaultHeaderExitColor = new Color(0.75f, 0.25f, 0.25f, 1f);
+        
 
+        public GuiColorSet Colors;
 
         public Font font = DefaultFont;
         public int fontSize = DefaultFontSize;
-        public MoGuiColor fontColor = DefaultFontColor;
+        public MoGuiColor fontColor;
         public Vector2 TextMinSize = DefaultTextMinSize;
-        public MoGuiColor PanelColor = DefaultPanelColor;
         public int Margin = DefaultMargin;
         public ControlOrientation orientation = ControlOrientation.horizontal;
 
         public string Name;
         public string PluginName;
-        public MoGuiMeta(string pluginName, string name)
+
+        private void Defaults()
         {
+            fontColor = Colors.Text;
+        }
+
+        public MoGuiMeta SetMargin(int margin)
+        {
+            Margin = margin;
+            return this;
+        }
+
+        public MoGuiMeta(string pluginName, string name, Color? baseColor = null)
+        {
+            //_baseColor = Color.cyan;
+
+            Colors = new GuiColorSet(baseColor);
             PluginName = pluginName;
             Name = name;
-            SetPanel(name + "-Panel");
-            SetRows(name + "-Row");
-            SetCols(name + "-Col");
-            SetButton(name + "-Button");
-            SetTypography(name + "-Text");
-            SetToggle(name + "-Toggle");
-            SetColorBlock(name + "-ColorBlock");
-            SetInput(name + "-Input");
-            SetSlider(name + "-Slider");
-            SetSelector(name + "-Selector");
-            SetDDL(name + "-DDL");
+
+            Defaults();
+            Build();
+
+
+
+            Debug.Log("Name: " + name + "\n" + this.ToString());
+        }
+
+        public MoGuiMeta(string pluginName, string name, GuiColorSet set)
+        {
+            //_baseColor = Color.cyan;
+
+            Colors = new GuiColorSet(set);
+            PluginName = pluginName;
+            Name = name;
+
+            Defaults();
+            Build();
+
+
 
             Debug.Log("Name: " + name + "\n" + this.ToString());
         }
 
         public MoGuiMeta(MoGuiMeta meta, string name)
         {
-            
-            
+            Colors = new GuiColorSet(meta.Colors);
             PluginName = meta.PluginName;
             Name = name;
-            SetPanel(meta.Panel);
-            SetRows(meta.Rows);
-            SetCols(meta.Cols);
-            SetButton(meta.Button);
-            SetTypography(meta.Text);
-            SetToggle(meta.Toggle);
-            SetColorBlock(meta.ColorBlock);
-            SetInput(meta.Input);
-            SetSlider(meta.Slider);
-            SetSelector(meta.Selector);
-            SetDDL(meta.DDL);
+
+            Defaults();
+            Build(meta);
+
+
 
             Debug.Log("Name: " + name + "\n" + this.ToString());
         }
+
+
+        public MoGuiMeta Build(MoGuiMeta meta = null)
+        {
+            if (meta == null)
+            {
+                SetPanel(Name + "-Panel");
+                SetRows(Name + "-Row");
+                SetCols(Name + "-Col");
+                SetButton(Name + "-Button");
+                SetTypography(Name + "-Text");
+                SetToggle(Name + "-Toggle");
+                SetColorBlock(Name + "-ColorBlock");
+                SetInput(Name + "-Input");
+                SetSlider(Name + "-Slider");
+                SetSelector(Name + "-Selector");
+                SetDDL(Name + "-DDL");
+            }
+            else 
+            {
+                SetPanel(meta.Panel);
+                SetRows(meta.Rows);
+                SetCols(meta.Cols);
+                SetButton(meta.Button);
+                SetTypography(meta.Text);
+                SetToggle(meta.Toggle);
+                SetColorBlock(meta.ColorBlock);
+                SetInput(meta.Input);
+                SetSlider(meta.Slider);
+                SetSelector(meta.Selector);
+                SetDDL(meta.DDL);
+            }
+            
+            return this;
+        }
+
+
 
         public PanelMeta Panel;
         public MoGuiMeta SetPanel(string name)
@@ -253,185 +309,17 @@ namespace MoGUI
         {
             return (MoGuiMeta)this.MemberwiseClone();
         }
+
+        public void SetPalette(Color newColor)
+        {
+            Colors = new GuiColorSet(newColor);
+        }
+
+        public void SetPalette(MoGuiColor newColor)
+        {
+            Colors = new GuiColorSet(newColor);
+        }
     }
 
-    public class MoGuiColor
-    {
-
-        Color _base;
-        public Func<Color> BoundBase;
-        public Action<Color> BoundOut;
-
-        public Color Raw
-        {
-            get
-            {
-                if (BoundBase != null)
-                {
-                    Color color = BoundBase();
-                    return new Color(color.r, color.g, color.b, 1); ;
-
-                }
-                else
-                {
-                    return new Color(_base.r, _base.g, _base.b, 1);
-                }
-            }
-            set
-            {
-                if (BoundOut != null)
-                {
-                    BoundOut(new Color(value.r, value.g, value.b, A));
-
-                }
-                else
-                {
-                    _base = new Color(value.r, value.g, value.b, A);
-                }
-
-            }
-        }
-        public Color Color
-        { 
-            get 
-            {
-                if (BoundBase != null) 
-                {
-                    return BoundBase();
-                
-                } else
-                {
-                    return _base;
-                }
-            }
-            set 
-            {
-                if (BoundOut != null)
-                {
-                    BoundOut(value);
-
-                }
-                else
-                {
-                    _base = value;
-                }
-                
-            }
-        }
-
-        public Color ShadeRaw
-        {
-            get
-            {
-                Color color = Shade;
-                return new Color(color.r, color.g, color.b, 1);
-            }
-        }
-        public Color Shade
-        {
-            get
-            {
-                return MutateColor(Color, DarkFactor);
-            }
-        }
-
-        public Color TintRaw
-        {
-            get
-            {
-                Color color = Tint;
-                return new Color(color.r, color.g, color.b, 1);
-            }
-        }
-        public Color Tint
-        {
-            get
-            {
-                return MutateColor(Color, Factor);
-            }
-        }
-
-
-        public float Factor;
-        float? darkFactor = null;
-
-
-        public float DarkFactor
-        {
-            get 
-            { 
-                if (darkFactor != null && float.TryParse(darkFactor.ToString(), out float dfactor)) 
-                { return dfactor; }
-                else { return Factor * -1; }
-            }
-            set { darkFactor = value; }
-        }
-
-        public float R
-        {
-            get => Color.r;
-            set { Color = new Color(value, Color.g, Color.b, Color.a); }
-        }
-        public float G
-        {
-            get => Color.g;
-            set { Color = new Color( Color.r, value, Color.b, Color.a); }
-        }
-        public float B
-        {
-            get => Color.b;
-            set { Color = new Color(Color.r, Color.g, value, Color.a); }
-        }
-        public float A
-        {
-            get => Color.a;
-            set { Color = new Color(Color.r, Color.g, Color.b, value); }
-        }
-
-        public MoGuiColor(Color color, float factor = 0.5f, float? darkfactor = null)
-        {
-            BoundBase = () => color;
-            BoundOut = (val) => color = val;
-            darkFactor = darkfactor * -1;
-            Factor = factor;
-        }
-
-        public MoGuiColor(ColorWrapper color, float factor = 0.5f, float? darkfactor = null)
-        {
-            BoundBase = () => color.Color;
-            darkFactor = darkfactor * -1;
-            Factor = factor;
-        }
-
-        public MoGuiColor(Func<Color> color, float factor = 0.5f, float? darkfactor = null)
-        {
-            BoundBase = color;
-            darkFactor = darkfactor * -1;
-            Factor = factor;
-        }
-
-
-
-
-        public Color MutateColor( Color color, float factor)
-        {
-            float r = MutateColorPart(color.r , factor);
-            float g = MutateColorPart(color.g, factor);
-            float b = MutateColorPart(color.b, factor);
-            return new Color(r,g,b,color.a);
-        }
-
-        public float MutateColorPart(float value, float factor)
-        {
-            if(factor >= 0)
-            {
-                return value + (1 - value) * factor;
-            } else
-            {
-                return value * (1 + factor);
-
-            }
-        }
-
-    }
+    
 }

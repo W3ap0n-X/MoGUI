@@ -8,7 +8,7 @@ namespace MoGUI
 {
     public class MoGuiButton : MoGuiControl
     {
-        public MoGuiTxt Text;
+        public MoGuiTxt Label;
         public Image background;
 
         public bool interactible
@@ -30,7 +30,7 @@ namespace MoGUI
             AddText("ButtonText", text);
         }
 
-        public MoGuiButton(MoGuiMeta meta, string name, MoCaButton args) : base(meta, name)
+        public MoGuiButton(MoGuiMeta meta, string name, MoCaButton args) : base(meta, name, args)
         {
             Obj = CreateButton(args.OnClickAction);
 
@@ -87,41 +87,41 @@ namespace MoGUI
 
         public void AddText(string label, object text)
         {
-            if (Text != null)
+            if (Label != null)
             {
-                Text.Update(text);
-                Text.Obj.transform.SetParent(Obj.transform, false);
+                Label.Update(text);
+                Label.Obj.transform.SetParent(Obj.transform, false);
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, text:text, Meta.Button.labelSettings);
-                Text.Obj.transform.SetParent(Obj.transform, false);
-                Text.minHeight = minHeight - (2 * Meta.Margin);
-                Text.minWidth = minWidth - (2 * Meta.Margin);
+                Label = new MoGuiTxt(Meta, Name + "_" + label, text:text, Meta.Button.labelSettings);
+                Label.Obj.transform.SetParent(Obj.transform, false);
+                Label.minHeight = minHeight - (2 * Meta.Margin);
+                Label.minWidth = minWidth - (2 * Meta.Margin);
             }
 
         }
 
         public void AddText(string label, Func<object> onUpdateAction)
         {
-            if (Text != null)
+            if (Label != null)
             {
-                Text.Update(onUpdateAction());
+                Label.Update(onUpdateAction());
 
-                Text.Obj.transform.SetParent(Obj.transform, false);
+                Label.Obj.transform.SetParent(Obj.transform, false);
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction, Meta.Button.labelSettings);
-                Text.Obj.transform.SetParent(Obj.transform, false);
-                Text.minHeight = minHeight - (2* Meta.Margin);
-                Text.minWidth = minWidth - (2 * Meta.Margin);
+                Label = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction, Meta.Button.labelSettings);
+                Label.Obj.transform.SetParent(Obj.transform, false);
+                Label.minHeight = minHeight - (2* Meta.Margin);
+                Label.minWidth = minWidth - (2 * Meta.Margin);
             }
 
         }
 
 
-        public override void Update() => Text.Update();
+        public override void Update() => Label.Update();
 
         public void Background(Color _color)
         {

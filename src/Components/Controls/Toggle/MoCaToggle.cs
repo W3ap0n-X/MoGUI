@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
+
 namespace MoGUI
 {
     public class MoCaToggle : MoGCArgs
@@ -22,8 +23,11 @@ namespace MoGUI
             string text = null,
             Func<object> boundText = null,
             ToggleType? toggleType = null,
+
+            ControlOrientation? orientation = null,
+            ControlLabelPlacement? labelPlacement = null,
             MoGuiMeta meta = null
-        ) : base(typeof(MoGuiToggle), meta)
+        ) : base(typeof(MoGuiToggle), meta, orientation: orientation, labelPlacement: labelPlacement)
         {
             if (boundValue != null)
             {
@@ -55,78 +59,5 @@ namespace MoGUI
         }
     }
 
-    public class ToggleMeta :ControlMeta
-    {
-
-        public Color background = MoGuiMeta.DefaultPanelColor.Shade;
-        public Color checkBox = MoGuiMeta.DefaultPanelColor.Tint;
-
-        public SizeSettings checkBoxSize = new SizeSettings(15, 15, 0, 0, 20, 20);
-        public SizeSettings buttonSize = new SizeSettings(60, 30, 1, 0);
-        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, FontStyle.Bold, TextAnchor.UpperLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
-        public ToggleType toggleType = MoGUI.ToggleType.checkbox;
-
-        public ToggleMeta(MoGuiMeta parent, string name) : base(parent, name) { }
-
-        public ToggleMeta Background(Color _color)
-        {
-            background = _color;
-            return this;
-        }
-
-        public ToggleMeta CheckBox(Color _color)
-        {
-            checkBox = _color;
-            return this;
-        }
-
-        public ToggleMeta ToggleType(ToggleType type)
-        {
-            toggleType = type;
-            return this;
-        }
-
-    }
-
-    public struct SizeSettings
-    {
-        public float minWidth;
-        public float minHeight;
-        public float? flexibleHeight;
-        public float? flexibleWidth;
-        public float? preferredWidth;
-        public float? preferredHeight;
-
-        public SizeSettings(float minW, float minH, float? flexW = null, float? flexH = null, float? prefW = null, float? prefH = null)
-        {
-            minWidth = minW;
-            minHeight = minH;
-            flexibleWidth = flexW;
-            flexibleHeight = flexH;
-            preferredWidth = prefW;
-            preferredHeight = prefH;
-        }
-
-        public SizeSettings SetMin(Vector2 sizes)
-        {
-            minWidth = sizes.x;
-            minHeight = sizes.y;
-            return this;
-        }
-
-        public SizeSettings SetFlex(Vector2 sizes) 
-        {
-            flexibleWidth = sizes.x;
-            flexibleHeight = sizes.y;
-            return this;
-        }
-
-        public SizeSettings SetPref(Vector2 sizes)
-        {
-            preferredWidth = sizes.x;
-            preferredHeight = sizes.y;
-            return this;
-        }
-    }
 
 }

@@ -71,7 +71,7 @@ namespace MoGUI
             Header.Obj.transform.SetParent(Obj.transform, false);
             Container.transform.SetParent(Obj.transform, false);
 
-            MoGuiScrollArea scrollArea = new MoGuiScrollArea(Meta);
+            MoGuiScrollArea scrollArea = new MoGuiScrollArea(this);
             scrollArea.Obj.transform.SetParent(Container.transform, false);
 
             Content = scrollArea.Content;
@@ -137,7 +137,7 @@ namespace MoGUI
 
         public void AddScrollArea()
         {
-            MoGuiScrollArea scrollArea = new MoGuiScrollArea(Meta);
+            MoGuiScrollArea scrollArea = new MoGuiScrollArea(this);
             scrollArea.Obj.transform.SetParent(Container.transform, false);
 
             Content = scrollArea.Content;

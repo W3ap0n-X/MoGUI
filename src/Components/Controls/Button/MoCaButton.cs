@@ -27,27 +27,4 @@ namespace MoGUI
         }
     }
 
-    public class ButtonMeta : ControlMeta
-    {
-        private SizeSettings _sizeSettings = new SizeSettings(60,30,1,0,100,40);
-        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, FontStyle.Bold, TextAnchor.MiddleCenter, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
-        public MoGuiColor background = new MoGuiColor(MoGuiMeta.DefaultPanelColor.TintRaw, 0.6f);
-
-        public ButtonMeta(MoGuiMeta parent, string name) : base(parent, name) 
-        {
-            Sizing(_sizeSettings);
-        }
-
-        public ButtonMeta Background(Color _color)
-        {
-            background = new MoGuiColor(_color);
-            return this;
-        }
-
-        public ButtonMeta Background(MoGuiColor _color)
-        {
-            background = _color;
-            return this;
-        }
-    }
 }

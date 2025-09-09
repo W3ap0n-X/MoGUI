@@ -15,9 +15,9 @@ namespace MoGUI
         public MoGuiMeta Meta;
 
         public Dictionary<string, MoGuiPanel> Panels = new Dictionary<string, MoGuiPanel>();
-        public MoGui(string pluginName, Vector2 size, Vector2 pos)
+        public MoGui(string pluginName, Vector2 size, Vector2 pos, Color? baseColor = null)
         {
-            Meta = new MoGuiMeta(pluginName, pluginName);
+            Meta = new MoGuiMeta(pluginName, pluginName, baseColor);
             Init(size, pos);
         }
 
@@ -95,7 +95,25 @@ namespace MoGUI
     {
         public MoGuiMeta _parent;
         string ClassName;
-        int margin;
+        
+
+        int? _margin = null;
+
+        public int margin
+        {
+            get { return _margin ?? _parent.Margin; }
+            set { _margin = value; }
+        }
+
+
+        int? _spacing = null;
+
+        public int spacing
+        {
+            get { return _spacing ?? _parent.Margin; }
+            set { _spacing = value; }
+        }
+
 
         public ComponentMeta(MoGuiMeta parent, string name)
         {
@@ -107,6 +125,12 @@ namespace MoGUI
         public ComponentMeta Margin(int _margin)
         {
             margin = _margin;
+            return this;
+        }
+
+        public ComponentMeta Spacing(int __spacing)
+        {
+            spacing = __spacing;
             return this;
         }
 
@@ -124,7 +148,7 @@ namespace MoGUI
 
         public T Copy<T>(MoGuiMeta parent)
         {
-            Debug.Log("Name: " + ClassName + " copied");
+            //Debug.Log("Name: " + ClassName + " copied");
             var newmeta = this.MemberwiseClone();
             // a little bit of syntax sorcery :: I csst... CAST!!! 
             return (T)((object)((ComponentMeta)newmeta).SetParent(parent));

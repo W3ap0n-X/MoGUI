@@ -14,8 +14,11 @@ namespace MoGUI
             Func<object> onUpdateAction,
             Func<object> text,
             string valType = "none",
+
+            ControlOrientation? orientation = null,
+            ControlLabelPlacement? labelPlacement = null,
             MoGuiMeta meta = null
-        ) : base(typeof(MoGuiInput), meta:meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType)
+        ) : base(typeof(MoGuiInput), meta:meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType, orientation: orientation, labelPlacement: labelPlacement)
         {
 
         }
@@ -24,8 +27,11 @@ namespace MoGUI
             Func<object> onUpdateAction,
             object text = null,
             string valType = "none",
+
+            ControlOrientation? orientation = null,
+            ControlLabelPlacement? labelPlacement = null,
             MoGuiMeta meta = null
-        ) : base(typeof(MoGuiInput), meta:meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType)
+        ) : base(typeof(MoGuiInput), meta:meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType, orientation: orientation, labelPlacement: labelPlacement)
         {
 
         }
@@ -36,26 +42,16 @@ namespace MoGUI
             object text = null,
             Action<object> onEditAction = null,
             Func<object> onUpdateAction = null,
+
+            ControlOrientation? orientation = null,
+            ControlLabelPlacement? labelPlacement = null,
             MoGuiMeta meta = null
-        ) : base(typeof(MoGuiInput), meta:meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType)
+        ) : base(typeof(MoGuiInput), meta:meta, text: text, onEditAction: onEditAction, onUpdateAction: onUpdateAction, valType: valType, orientation: orientation, labelPlacement: labelPlacement)
         {
             Value = value;
         }
 
     }
 
-    public class InputMeta : ControlMeta
-    {
-        private SizeSettings _sizeSettings = new SizeSettings(20, 30, 1, 0, 80, 40);
-        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, FontStyle.Bold, TextAnchor.MiddleLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
-        public TypographySettings inputSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, FontStyle.Normal, TextAnchor.MiddleLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
-        public TypographySettings placeholderSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, FontStyle.Italic, TextAnchor.MiddleLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Shade);
-        public Color background = MoGuiMeta.DefaultPanelColor.Shade;
-        public MoGuiColor textColor = MoGuiMeta.DefaultFontColor;
-        public InputMeta(MoGuiMeta parent, string name) : base(parent, name)
-        {
-            Sizing(_sizeSettings);
-        }
 
-    }
 }

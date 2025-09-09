@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
+
 
 
 namespace MoGUI
@@ -126,14 +126,14 @@ namespace MoGUI
                 newTxt.preferredHeight = width;
                 newTxt.preferredWidth = width;
 
-                newTxt.Text.minWidth = width - 2 * Meta.Margin;
-                newTxt.Text.minHeight = width - 2 * Meta.Margin;
+                newTxt.Label.minWidth = width - 2 * Meta.Margin;
+                newTxt.Label.minHeight = width - 2 * Meta.Margin;
 
-                newTxt.Text.preferredHeight = width - 2 * Meta.Margin;
-                newTxt.Text.preferredWidth = width - 2 * Meta.Margin;
+                newTxt.Label.preferredHeight = width - 2 * Meta.Margin;
+                newTxt.Label.preferredWidth = width - 2 * Meta.Margin;
 
                 newTxt.flexibleWidth = 0.1f;
-                newTxt.Text.flexibleWidth = 0.1f;
+                newTxt.Label.flexibleWidth = 0.1f;
                 Components.Add(label, newTxt);
             }
             return newTxt;
@@ -182,63 +182,6 @@ namespace MoGUI
 
     }
 
-    public class HeaderMeta
-    {
-        public int size = 40;
-
-        public MoGuiColor Color;
-
-        public TypographySettings titleSettings = new TypographySettings(18, FontStyle.Bold, TextAnchor.MiddleLeft, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
-        public TypographySettings buttonSettings = new TypographySettings(18, FontStyle.Bold, TextAnchor.MiddleCenter, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
-        public HeaderMeta(MoGuiColor color)
-        {
-            Color = new MoGuiColor(color.Shade);
-        }
-
-        public HeaderMeta(Color color)
-        {
-            Color = new MoGuiColor(new MoGuiColor(color).Shade);
-        }
-
-        public HeaderMeta Size(int _size)
-        {
-            size = _size;
-            return this;
-        }
-        public int titleFontSize = 18;
-
-        public HeaderMeta TitleFontSize(int _size)
-        {
-            titleFontSize = _size;
-            return this;
-        }
-        public int btFontSize = 18;
-
-        public HeaderMeta BtFontSize(int _size)
-        {
-            btFontSize = _size;
-            return this;
-        }
-        public Color background;
-        public HeaderMeta Background(Color _color)
-        {
-            background = _color;
-            return this;
-        }
-
-        public Color hideColor = MoGuiMeta.DefaultHeaderExitColor;
-        public HeaderMeta HhideColor(Color _color)
-        {
-            hideColor = _color;
-            return this;
-        }
-
-        public Color minColor;
-        public HeaderMeta MinColor(Color _color)
-        {
-            minColor = _color;
-            return this;
-        }
-    }
+    
 
 }

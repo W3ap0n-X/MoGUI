@@ -20,8 +20,8 @@ namespace MoGUI
         public Vector2 Pos;
         public MoGuiMeta Meta;
 
-        public ControlOrientation Orientation = ControlOrientation.horizontal;
-        public ControlLabelPlacement LabelPlacement = ControlLabelPlacement.after;
+        public ControlOrientation? Orientation;
+        public ControlLabelPlacement? LabelPlacement;
 
         public Action<object> OnEditAction;
         public Func<object> OnUpdateAction;
@@ -40,6 +40,21 @@ namespace MoGUI
             Name = name;
             Meta = new MoGuiMeta(meta, name);
             PluginName = Meta.PluginName;
+            _Init();
+
+        }
+
+        public MoGuiControl(MoGuiMeta meta, string name, MoGCArgs args)
+        {
+            Name = name;
+            Meta = new MoGuiMeta(meta, name);
+
+            
+
+            PluginName = Meta.PluginName;
+
+            Orientation = args.Orientation;
+            LabelPlacement = args.LabelPlacement;
             _Init();
 
         }
@@ -106,6 +121,8 @@ namespace MoGUI
         public float flexibleHeight { get => LoElement.flexibleHeight; set { LoElement.flexibleHeight = value; } }
         public float preferredWidth { get => LoElement.preferredWidth; set { LoElement.preferredWidth = value; } }
         public float preferredHeight { get => LoElement.preferredHeight; set { LoElement.preferredHeight = value; } }
+
+        
 
 
         // Used for getting a control's meta sheet for use as a template for other controls.

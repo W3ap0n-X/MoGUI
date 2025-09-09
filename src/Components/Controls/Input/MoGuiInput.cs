@@ -8,48 +8,42 @@ namespace MoGUI
 {
     public class MoGuiInput : MoGuiControl
     {
-        MoGuiTxt Text;
+        MoGuiTxt Label;
         Text InputText;
         Text PlaceHolderText;
         InputField Input;
         public object Value;
         string Type;
 
-        public MoGuiInput(MoGuiMeta meta, string name, Func<object> text, Func<object> onUpdateAction, Action<object> onEditAction, string type) : base(meta, name)
-        {
-            OnUpdateAction = onUpdateAction;
-            Type = type;
-            OnEditAction = onEditAction;
-            switch (Meta.Input.labelPlacement)
-            {
-                case ControlLabelPlacement.before:
-                    AddText("InputTxt", text);
-                    Obj = CreateInput();
-                    break;
-                case ControlLabelPlacement.after:
-                    Obj = CreateInput();
-                    AddText("InputTxt", text);
-                    break;
-                default:
-                    Obj = CreateInput();
-                    break;
-            }
-        }
 
-        public MoGuiInput(MoGuiMeta meta, string name, object text, Func<object> onUpdateAction, Action<object> onEditAction, string type) : base(meta, name)
+        public MoGuiInput(MoGuiMeta meta, string name, MoCaInput args) : base(meta, name, args)
         {
-            OnUpdateAction = onUpdateAction;
-            OnEditAction = onEditAction;
-            Type = type;
-            switch (Meta.Input.labelPlacement)
+            if (args.OnUpdateAction != null)
+            {
+                OnUpdateAction = args.OnUpdateAction;
+            }
+            if (args.OnEditAction != null)
+            {
+                OnEditAction = args.OnEditAction;
+            }
+            Type = args.ValType;
+            if (args.Value != null)
+            {
+                Value = args.Value;
+            }
+            if (args.OnUpdateAction != null)
+            {
+                Value = args.OnUpdateAction();
+            }
+            switch (LabelPlacement ?? Meta.Input.labelPlacement)
             {
                 case ControlLabelPlacement.before:
-                    AddText("InputTxt", text);
+                    AddText("InputTxt", args.Text);
                     Obj = CreateInput();
                     break;
                 case ControlLabelPlacement.after:
                     Obj = CreateInput();
-                    AddText("InputTxt", text);
+                    AddText("InputTxt", args.Text);
                     break;
                 default:
                     Obj = CreateInput();
@@ -67,44 +61,11 @@ namespace MoGUI
             flexibleHeight = Meta.Input.sizing.flexibleHeight ?? 0;
         }
 
-        public MoGuiInput(MoGuiMeta meta, string name, MoCaInput args) : base(meta, name)
-        {
-            if (args.OnUpdateAction != null)
-            {
-                OnUpdateAction = args.OnUpdateAction;
-            }
-            if (args.OnEditAction != null)
-            {
-                OnEditAction = args.OnEditAction;
-            }
-            Type = args.ValType;
-            if (args.Value != null)
-            {
-                Value = args.Value;
-            }  
-            if (args.OnUpdateAction != null)
-            {
-                Value = args.OnUpdateAction();
-            }
-            switch (Meta.Input.labelPlacement)
-            {
-                case ControlLabelPlacement.before:
-                    AddText("InputTxt", args.Text);
-                    Obj = CreateInput();
-                    break;
-                case ControlLabelPlacement.after:
-                    Obj = CreateInput();
-                    AddText("InputTxt", args.Text);
-                    break;
-                default:
-                    Obj = CreateInput();
-                    break;
-            }
-        }
+        
 
         public override void _Init()
         {
-            Container = CreateContainer(Meta.Input.orientation);
+            Container = CreateContainer(Orientation ?? Meta.Input.orientation);
         }
 
         public InputField.CharacterValidation getTypeValidation(string type)
@@ -216,29 +177,29 @@ namespace MoGUI
 
         public void AddText(string label, object text)
         {
-            if (Text != null)
+            if (Label != null)
             {
-                Text.Update(text);
-                Text.Obj.transform.SetParent(Container.transform, false);
+                Label.Update(text);
+                Label.Obj.transform.SetParent(Container.transform, false);
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, text:text, Meta.Input.labelSettings);
-                Text.Obj.transform.SetParent(Container.transform, false);
+                Label = new MoGuiTxt(Meta, Name + "_" + label, text:text, Meta.Input.labelSettings);
+                Label.Obj.transform.SetParent(Container.transform, false);
             }
 
         }
         public void AddText(string label, Func<object> onUpdateAction)
         {
-            if (Text != null)
+            if (Label != null)
             {
-                Text.Update(onUpdateAction);
-                Text.Obj.transform.SetParent(Container.transform, false);
+                Label.Update(onUpdateAction);
+                Label.Obj.transform.SetParent(Container.transform, false);
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction, Meta.Input.labelSettings);
-                Text.Obj.transform.SetParent(Container.transform, false);
+                Label = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction, Meta.Input.labelSettings);
+                Label.Obj.transform.SetParent(Container.transform, false);
             }
 
         }
@@ -280,9 +241,9 @@ namespace MoGUI
         }
         public override void Update()
         {
-            if (Text != null)
+            if (Label != null)
             {
-                Text.Update();
+                Label.Update();
             }
             if (!Input.isFocused)
             {

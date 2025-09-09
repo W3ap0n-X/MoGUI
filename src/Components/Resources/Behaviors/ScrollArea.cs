@@ -11,12 +11,13 @@ namespace MoGUI
 
     public class MoGuiScrollArea
     {
-        MoGuiMeta Meta;
+        MoGuiControl _parent;
+        MoGuiMeta Meta => _parent.Meta;
         public GameObject Content;
         public GameObject Obj;
-        public MoGuiScrollArea(MoGuiMeta meta)
+        public MoGuiScrollArea(MoGuiControl parent)
         {
-            Meta = meta;
+            _parent = parent;
             Content = CreateViewPort();
         }
 
@@ -38,11 +39,6 @@ namespace MoGUI
             ObjlayoutElement.flexibleWidth = 1;
             ObjlayoutElement.flexibleHeight = 1;
 
-            if (MoGUIManager._LayoutDebug)
-            {
-                Image SAbg = Obj.AddComponent<Image>();
-                SAbg.color = MoGUIManager._LayoutDebugScrollColor;
-            }
 
 
             GameObject viewportObject = new GameObject(Meta.PluginName + "_" + Meta.Name + "_" + "ScrollViewViewport");
@@ -78,20 +74,8 @@ namespace MoGUI
             scrollRect.scrollSensitivity = 30f;
 
 
-            if (MoGUIManager._LayoutDebug)
-            {
-                Image CObg = contentObject.AddComponent<Image>();
-                CObg.color = MoGUIManager._LayoutDebugScrollContentColor;
-            }
-            //LayoutElement layoutElement = contentObject.AddComponent<LayoutElement>();
-            //layoutElement.minWidth = 100;
-            //layoutElement.minHeight = 100;
-            ////layoutElement.preferredWidth = 100;
-            //layoutElement.flexibleWidth = 1;
-            //layoutElement.flexibleHeight = 1;
-
             GameObject verticalScrollbarObject = new GameObject(Meta.PluginName + "_" + Meta.Name + "_" + "ScrollViewVerticalScrollbar");
-            verticalScrollbarObject.AddComponent<Image>().color = Meta.PanelColor.Shade;
+            verticalScrollbarObject.AddComponent<Image>().color = Meta.Panel.background.ShadeRaw;
             verticalScrollbarObject.transform.SetParent(Obj.transform, false);
 
             scrollRect.verticalScrollbar = verticalBar(verticalScrollbarObject);
@@ -99,7 +83,7 @@ namespace MoGUI
             //scrollRect.verticalScrollbarSpacing = 5;
 
             GameObject horizontalScrollbarObject = new GameObject(Meta.PluginName + "_" + Meta.Name + "_" + "ScrollViewHorizontalScrollbar");
-            horizontalScrollbarObject.AddComponent<Image>().color = Meta.PanelColor.Shade;
+            horizontalScrollbarObject.AddComponent<Image>().color = Meta.Panel.background.ShadeRaw;
             horizontalScrollbarObject.transform.SetParent(Obj.transform, false);
             scrollRect.horizontalScrollbar = horizontalBar(horizontalScrollbarObject);
             scrollRect.horizontalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
@@ -122,7 +106,7 @@ namespace MoGUI
             handleObject.transform.SetParent(parent.transform, false);
 
             Image handleImage = handleObject.AddComponent<Image>();
-            handleImage.color = Meta.PanelColor.Tint; 
+            handleImage.color = Meta.Panel.background.TintRaw; 
 
             scrollbar.handleRect = handleObject.GetComponent<RectTransform>();
             scrollbar.handleRect.anchorMin = new Vector2(0, 0);
@@ -150,7 +134,7 @@ namespace MoGUI
             handleObject.transform.SetParent(parent.transform, false);
 
             Image handleImage = handleObject.AddComponent<Image>();
-            handleImage.color = Meta.PanelColor.Tint;
+            handleImage.color = Meta.Panel.background.TintRaw;
 
             scrollbar.handleRect = handleObject.GetComponent<RectTransform>();
             scrollbar.handleRect.anchorMin = new Vector2(0, 0);

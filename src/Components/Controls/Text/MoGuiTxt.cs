@@ -42,7 +42,7 @@ namespace MoGUI
             Obj = CreateText(text.ToString());
         }
 
-        public MoGuiTxt(MoGuiMeta meta, string name, MoCaText args) : base(meta, name)
+        public MoGuiTxt(MoGuiMeta meta, string name, MoCaText args) : base(meta, name, args)
         {
             TxtElement = args.Element;
             if (args.Settings != null)
@@ -212,11 +212,11 @@ namespace MoGUI
         }
         public void FontSettings(Font fontFace = null, int? fontSize = null,  FontStyle? style = null, TextAnchor? alignment = null, Color? color = null )
         {
-            FontSettings( new TypographySettings(fontSize ?? Settings.FontSize, style ?? Settings.Style, alignment ?? Settings.Alignment, fontFace ?? Settings.FontFace, color ?? Settings.FontColor) );
+            FontSettings( new TypographySettings(fontSize ?? Settings.FontSize, style ?? Settings.Style, alignment ?? Settings.Alignment, color ?? Settings.FontColor, fontFace ?? Settings.FontFace) );
         }
         public void FontSettings(string fontFace = null, int? fontSize = null, FontStyle? style = null, TextAnchor? alignment = null, Color? color = null)
         {
-            FontSettings(new TypographySettings(fontSize ?? Settings.FontSize, style ?? Settings.Style, alignment ?? Settings.Alignment, fontFace ?? Settings.FontFace.name, color ?? Settings.FontColor));
+            FontSettings(new TypographySettings(fontSize ?? Settings.FontSize, style ?? Settings.Style, alignment ?? Settings.Alignment, color ?? Settings.FontColor, fontFace ?? Settings.FontFace.name));
         }
 
     }

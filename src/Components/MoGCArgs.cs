@@ -15,8 +15,8 @@ namespace MoGUI
         public Action<object> OnEditAction;
         public Func<object> Text;
         public string ValType;
-        public string Orientation;
-        public string LabelPlacement;
+        public ControlOrientation? Orientation;
+        public ControlLabelPlacement? LabelPlacement;
         public Type Type;
         public MoGuiMeta Meta;
 
@@ -28,6 +28,8 @@ namespace MoGUI
              Func<object> onUpdateAction = null,
              Action<object> onEditAction = null,
              Func<object> text = null,
+             ControlLabelPlacement? labelPlacement = null,
+             ControlOrientation? orientation = null,
              string valType = "none"
         )
         {
@@ -38,6 +40,8 @@ namespace MoGUI
             OnEditAction = onEditAction;
             Text = text;
             ValType = valType;
+            LabelPlacement = labelPlacement;
+            Orientation = orientation;
         }
 
         public MoGCArgs(Type type, object value = null,
@@ -46,6 +50,8 @@ namespace MoGUI
              Action<object> onEditAction = null,
              object text = null,
              string valType = null,
+             ControlLabelPlacement? labelPlacement = null,
+             ControlOrientation? orientation = null,
             MoGuiMeta meta = null
         )
         {
@@ -56,6 +62,8 @@ namespace MoGUI
             OnEditAction = onEditAction;
             Text = ConvertString(text);
             ValType = valType;
+            LabelPlacement = labelPlacement;
+            Orientation = orientation;
         }
 
         public Func<object> ConvertString(object obj)

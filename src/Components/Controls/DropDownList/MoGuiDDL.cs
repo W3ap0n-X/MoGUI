@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 
 namespace MoGUI
 {
@@ -10,47 +9,26 @@ namespace MoGUI
     {
         private Dropdown _dropdown;
         private List<string> _baseOptions;
+        MoGuiTxt Label;
         private Dictionary<string, int> _valOptions;
         public KeyValuePair<string,object> Selected;
         string Type;
 
-        public MoGuiDDL(MoGuiMeta meta, string name, Dictionary<string, int> options, Action<object> onValueChanged, string type)
-            : base(meta, name)
-        {
-            Type = type;
-            OnEditAction = onValueChanged;
-            
-            _valOptions = options;
-            _baseOptions = new List<string>();
-            foreach (var option in _valOptions)
-            {
-                _baseOptions.Add(option.Key);
-            }
-            Obj = CreateDropdown();
-        }
-
-        public MoGuiDDL(MoGuiMeta meta, string name, List<string> options, Action<object> onValueChanged, string type)
-            : base(meta, name)
-        {
-            Type = type;
-            OnEditAction = onValueChanged;
-            
-            _baseOptions = options;
-
-            Obj = CreateDropdown();
-
-        }
-
 
 
         public MoGuiDDL(MoGuiMeta meta, string name, MoCaDDL args)
-            : base(args.Meta ?? meta, name)
+            : base(meta, name, args)
         {
             Type = args.ValType;
             
             if (args.OnEditAction != null) 
             {
                 OnEditAction = args.OnEditAction;
+            }
+
+            if (args.Text != null)
+            {
+                OnUpdateAction = args.Text;
             }
 
             if (args.DDLBoundOptions != null)
@@ -68,15 +46,37 @@ namespace MoGUI
             }
 
 
-                
+            Init();
 
-            Obj = CreateDropdown();
 
+
+
+        }
+
+        void Init()
+        {
+            
+
+            switch (LabelPlacement ?? Meta.DDL.labelPlacement)
+            {
+                case ControlLabelPlacement.before:
+                    if (OnUpdateAction != null) { AddText("DDLTxt", OnUpdateAction); }
+
+                    Obj = CreateDropdown();
+                    break;
+                case ControlLabelPlacement.after:
+                    Obj = CreateDropdown();
+                    if (OnUpdateAction != null) { AddText("DDLTxt", OnUpdateAction); }
+                    break;
+                default:
+                    Obj = CreateDropdown();
+                    break;
+            }
         }
 
         public override void _Init()
         {
-            Container = CreateContainer();
+            Container = CreateContainer(Orientation ?? Meta.DDL.orientation);
         }
 
         public override void SetLayout()
@@ -144,7 +144,9 @@ namespace MoGUI
 
 
 
+
             GameObject templateObject = new GameObject(PluginName + "_" + Name + "_DropdownTemplate");
+
             templateObject.transform.SetParent(dropdownObject.transform, false);
             RectTransform templateRect = templateObject.AddComponent<RectTransform>();
             
@@ -193,11 +195,16 @@ namespace MoGUI
             contentLayout.childControlHeight = true;
             contentLayout.childControlWidth = true;
 
+
+
             ScrollRect scrollRect = templateObject.AddComponent<ScrollRect>();
             scrollRect.content = contentRect;
             scrollRect.viewport = viewportRect;
             scrollRect.horizontal = false;
             scrollRect.scrollSensitivity = 30f;
+
+
+
 
             GameObject itemObject = new GameObject(PluginName + "_" + Name + "_DropdownItem");
             itemObject.transform.SetParent(contentObject.transform, false);
@@ -280,6 +287,35 @@ namespace MoGUI
             
         }
 
+        public void AddText(string label, object text)
+        {
+            if (Label != null)
+            {
+                Label.Update(text);
+                Label.Obj.transform.SetParent(Container.transform, false);
+            }
+            else
+            {
+                Label = new MoGuiTxt(Meta, Name + "_" + label, text: text, Meta.DDL.labelSettings);
+                Label.Obj.transform.SetParent(Container.transform, false);
+            }
+
+        }
+        public void AddText(string label, Func<object> onUpdateAction)
+        {
+            if (Label != null)
+            {
+                Label.Update(onUpdateAction);
+                Label.Obj.transform.SetParent(Container.transform, false);
+            }
+            else
+            {
+                Label = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction, Meta.DDL.labelSettings);
+                Label.Obj.transform.SetParent(Container.transform, false);
+            }
+
+        }
+
         public KeyValuePair<string,object> GetSelected(int selectedOption)
         {
             
@@ -299,6 +335,10 @@ namespace MoGUI
 
         public override void Update()
         {
+            if (Label != null)
+            {
+                Label.Update();
+            }
             Selected = GetSelected(_dropdown.value);
         }
     }

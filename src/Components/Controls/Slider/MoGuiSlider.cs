@@ -9,7 +9,7 @@ namespace MoGUI
     public class MoGuiSlider : MoGuiControl
     {
         string Type;
-        MoGuiTxt Text;
+        MoGuiTxt Label;
         Slider Slider;
 
         public ControlOrientation Direction;
@@ -27,7 +27,7 @@ namespace MoGUI
                 }
                 else
                 {
-                    return Meta.Slider.Color.Shade;
+                    return Color.clear;
                 }
             }
         }
@@ -87,78 +87,7 @@ namespace MoGUI
         Func<float> _boundMin;
         Func<float> _boundMax;
 
-        public MoGuiSlider(MoGuiMeta meta, string name, Func<object> text, Vector2 range, Func<object> onUpdateAction, Action<object> onEditAction, string type, Func<float> boundMin = null, Func<float> boundMax = null) : base(meta, name)
-        {
-            MinValue = range.x;
-            MaxValue = range.y;
-            
-            
-            OnUpdateAction = onUpdateAction;
-            Type = type;
-            OnEditAction = onEditAction;
-
-            switch (Meta.Slider.labelPlacement)
-            {
-                case ControlLabelPlacement.before:
-                    AddText("SliderTxt", text);
-                    Obj = CreateSlider();
-                    break;
-                case ControlLabelPlacement.after:
-                    Obj = CreateSlider();
-                    AddText("SliderTxt", text);
-                    break;
-                default:
-                    Obj = CreateSlider();
-                    break;
-            }
-
-            if (boundMin != null)
-            {
-                bindMin(boundMin);
-            }
-            if (boundMax != null)
-            {
-                bindMax(boundMax);
-            }
-
-        }
-
-        public MoGuiSlider(MoGuiMeta meta, string name, string text, Vector2 range, Func<object> onUpdateAction, Action<object> onEditAction, string type, Func<float> boundMin = null, Func<float> boundMax = null) : base(meta, name)
-        {
-            MinValue = range.x;
-            MaxValue = range.y;
-            
-            OnUpdateAction = onUpdateAction;
-            Type = type;
-            OnEditAction = onEditAction;
-            switch (Meta.Slider.labelPlacement)
-            {
-                case ControlLabelPlacement.before:
-                    AddText("SliderTxt", text);
-                    Obj = CreateSlider();
-                    break;
-                case ControlLabelPlacement.after:
-                    Obj = CreateSlider();
-                    AddText("SliderTxt", text);
-                    break;
-                default:
-                    Obj = CreateSlider();
-                    break;
-            }
-
-            if (boundMin != null)
-            {
-                bindMin(boundMin);
-            }
-            if (boundMax != null)
-            {
-                bindMax(boundMax);
-            }
-
-
-        }
-
-        public MoGuiSlider(MoGuiMeta meta, string name, MoCaSlider args) : base(meta, name)
+        public MoGuiSlider(MoGuiMeta meta, string name, MoCaSlider args) : base(meta, name, args)
         {
             MinValue = args.Range.x;
             MaxValue = args.Range.y;
@@ -168,7 +97,7 @@ namespace MoGUI
             OnUpdateAction = args.OnUpdateAction;
             Type = args.ValType;
             OnEditAction = args.OnEditAction;
-            switch (Meta.Slider.labelPlacement)
+            switch (LabelPlacement ?? Meta.Slider.labelPlacement)
             {
                 case ControlLabelPlacement.before:
                     AddText("SliderTxt", args.Text);
@@ -197,19 +126,19 @@ namespace MoGUI
 
         public override void _Init()
         {
-            Container = CreateContainer(Meta.Slider.orientation);
+            Container = CreateContainer(Orientation ?? Meta.Slider.orientation);
         }
 
         public override void SetLayout()
         {
             if (Direction == ControlOrientation.vertical)
             {
-                minWidth = Meta.Slider.verticallizeSettings.minHeight;
-                minHeight = Meta.Slider.verticallizeSettings.minWidth;
-                if (Meta.Slider.verticallizeSettings.preferredWidth != null) { preferredWidth = (float)Meta.Slider.verticallizeSettings.preferredWidth; }
-                if (Meta.Slider.verticallizeSettings.preferredHeight != null) { preferredHeight = (float)Meta.Slider.verticallizeSettings.preferredHeight; }
-                flexibleWidth = Meta.Slider.verticallizeSettings.flexibleWidth ?? 0;
-                flexibleHeight = Meta.Slider.verticallizeSettings.flexibleHeight ?? 0;
+                minWidth = Meta.Slider.verticalsizeSettings.minHeight;
+                minHeight = Meta.Slider.verticalsizeSettings.minWidth;
+                if (Meta.Slider.verticalsizeSettings.preferredWidth != null) { preferredWidth = (float)Meta.Slider.verticalsizeSettings.preferredWidth; }
+                if (Meta.Slider.verticalsizeSettings.preferredHeight != null) { preferredHeight = (float)Meta.Slider.verticalsizeSettings.preferredHeight; }
+                flexibleWidth = Meta.Slider.verticalsizeSettings.flexibleWidth ?? 0;
+                flexibleHeight = Meta.Slider.verticalsizeSettings.flexibleHeight ?? 0;
             } else
             {
                 minWidth = Meta.Slider.horizontalizeSettings.minWidth;
@@ -249,7 +178,7 @@ namespace MoGUI
             
 
             Image backgroundImage = backgroundObject.AddComponent<Image>();
-            backgroundImage.color = Meta.Slider.Color.Shade;
+            backgroundImage.color = Meta.Panel.background.Shade;
 
             GameObject fillAreaObject = new GameObject(PluginName + "_" + Name + "_" + "SliderFillArea");
             fillAreaObject.transform.SetParent(sliderObject.transform, false);
@@ -270,7 +199,7 @@ namespace MoGUI
             
 
             Image handleImage = handleObject.AddComponent<Image>();
-            handleImage.color = Meta.Slider.Color.Tint;
+            handleImage.color = Meta.Slider.Color.Color;
             Slider.handleRect = handleRect;
 
 
@@ -369,41 +298,41 @@ namespace MoGUI
 
         public void AddText(string label, object text)
         {
-            if (Text != null)
+            if (Label != null)
             {
-                Text.Update(text);
-                Text.Obj.transform.SetParent(Container.transform, false);
+                Label.Update(text);
+                Label.Obj.transform.SetParent(Container.transform, false);
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, text:text, Meta.Slider.labelSettings);
-                Text.Obj.transform.SetParent(Container.transform, false);
-                Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
+                Label = new MoGuiTxt(Meta, Name + "_" + label, text:text, Meta.Slider.labelSettings);
+                Label.Obj.transform.SetParent(Container.transform, false);
+                Label.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
 
         }
 
         public void AddText(string label, Func<object> onUpdateAction)
         {
-            if (Text != null)
+            if (Label != null)
             {
-                Text.Update(onUpdateAction);
-                Text.Container.transform.SetParent(Container.transform, false);
+                Label.Update(onUpdateAction);
+                Label.Container.transform.SetParent(Container.transform, false);
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction, Meta.Slider.labelSettings);
-                Text.Obj.transform.SetParent(Container.transform, false);
-                Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
+                Label = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction, Meta.Slider.labelSettings);
+                Label.Obj.transform.SetParent(Container.transform, false);
+                Label.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
 
         }
 
         public override void Update()
         {
-            if(Text != null)
+            if(Label != null)
             {
-                Text.Update();
+                Label.Update();
             }
             
             if (OnUpdateAction != null)

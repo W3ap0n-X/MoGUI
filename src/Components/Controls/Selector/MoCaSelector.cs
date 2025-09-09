@@ -15,8 +15,11 @@ namespace MoGUI
         public MoCaSelector(Dictionary<string, object> options,
             string text,
             ControlOrientation? direction = null,
+
+            ControlOrientation? orientation = null,
+            ControlLabelPlacement? labelPlacement = null,
             MoGuiMeta meta = null
-        ) : base(typeof(MoGuiSelector), meta:meta, text: text)
+        ) : base(typeof(MoGuiSelector), meta:meta, text: text, orientation: orientation, labelPlacement: labelPlacement)
         {
             Options = options;
             Direction = direction;
@@ -24,15 +27,4 @@ namespace MoGUI
 
     }
 
-    public class SelectorMeta : ControlMeta
-    {
-        private ControlOrientation _orientation = ControlOrientation.vertical;
-        public ControlOrientation direction = ControlOrientation.vertical;
-        public TypographySettings labelSettings = new TypographySettings(MoGuiMeta.DefaultFontSize, FontStyle.Bold, TextAnchor.MiddleCenter, MoGuiMeta.DefaultFont, MoGuiMeta.DefaultFontColor.Color);
-        public SelectorMeta(MoGuiMeta parent, string name) : base(parent, name) 
-        {
-            orientation = _orientation;
-        }
-
-    }
 }
