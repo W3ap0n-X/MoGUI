@@ -39,9 +39,6 @@ namespace MoGUI
             if (args.Text != null) { OnUpdateAction = args.Text; }
             Init();
 
-
-
-
         }
 
 
@@ -64,6 +61,8 @@ namespace MoGUI
                         Obj.transform.SetParent(Container.transform, false);
                         AddText("ColorBrickTxt", OnUpdateAction);
                         break;
+                    
+                    // If label text is included but label placement is none embed text in Obj
                     default:
                         Obj = CreateBrick();
                         AddText("ColorBrickTxt", OnUpdateAction);
