@@ -9,7 +9,7 @@ namespace MoGUI
     class MoGuiSelector : MoGuiControl
     {
         string Type;
-        MoGuiTxt Text;
+        MoGuiTxt Label;
         public Dictionary<string, object> Options;
         Dictionary<string, bool> _options = new Dictionary<string, bool>(); 
 
@@ -95,32 +95,32 @@ namespace MoGUI
 
         public void AddText(string label, object text)
         {
-            if (Text != null)
+            if (Label != null)
             {
-                Text.Update(text);
-                Text.Obj.transform.SetParent(Container.transform, false);
+                Label.Update(text);
+                Label.Obj.transform.SetParent(Container.transform, false);
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, text:text, Meta.Selector.labelSettings);
-                Text.Obj.transform.SetParent(Container.transform, false);
-                Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
+                Label = new MoGuiTxt(Meta, Name + "_" + label, text:text, Meta.Selector.labelSettings);
+                Label.Obj.transform.SetParent(Container.transform, false);
+                Label.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
 
         }
 
         public void AddText(string label, Func<object> onUpdateAction)
         {
-            if (Text != null)
+            if (Label != null)
             {
-                Text.Update(onUpdateAction);
-                Text.Obj.transform.SetParent(Obj.transform, false);
+                Label.Update(onUpdateAction);
+                Label.Obj.transform.SetParent(Obj.transform, false);
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction, Meta.Selector.labelSettings);
-                Text.Obj.transform.SetParent(Container.transform, false);
-                Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
+                Label = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction, Meta.Selector.labelSettings);
+                Label.Obj.transform.SetParent(Container.transform, false);
+                Label.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
 
         }
@@ -139,9 +139,9 @@ namespace MoGUI
 
         public override void Update()
         {
-            if (Text != null)
+            if (Label != null)
             {
-                Text.Update();
+                Label.Update();
             }
             if (OnUpdateAction != null)
             {

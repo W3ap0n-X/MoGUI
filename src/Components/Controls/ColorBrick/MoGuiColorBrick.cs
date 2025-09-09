@@ -8,7 +8,7 @@ namespace MoGUI
 {
     public class MoGuiColorBrick : MoGuiControl
     {
-        public MoGuiTxt Text;
+        public MoGuiTxt Label;
         Image Brick;
 
         public Func<Color> BoundValue;
@@ -91,32 +91,32 @@ namespace MoGUI
 
         public void AddText(string label, object text)
         {
-            if (Text != null)
+            if (Label != null)
             {
-                Text.Update(text);
-                Text.Obj.transform.SetParent(Container!=null ? Container.transform : Obj.transform, false);
+                Label.Update(text);
+                Label.Obj.transform.SetParent(Container!=null ? Container.transform : Obj.transform, false);
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, text:text, Meta.ColorBlock.labelSettings);
-                Text.Obj.transform.SetParent(Container != null ? Container.transform : Obj.transform, false);
-                Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
+                Label = new MoGuiTxt(Meta, Name + "_" + label, text:text, Meta.ColorBlock.labelSettings);
+                Label.Obj.transform.SetParent(Container != null ? Container.transform : Obj.transform, false);
+                Label.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleCenter;
             }
 
         }
 
         public void AddText(string label, Func<object> onUpdateAction)
         {
-            if (Text != null)
+            if (Label != null)
             {
-                Text.Update(onUpdateAction());
+                Label.Update(onUpdateAction());
 
-                Text.Obj.transform.SetParent(Container != null ? Container.transform : Obj.transform, false);
+                Label.Obj.transform.SetParent(Container != null ? Container.transform : Obj.transform, false);
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction, Meta.ColorBlock.labelSettings);
-                Text.Obj.transform.SetParent(Container != null ? Container.transform : Obj.transform, false);
+                Label = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction, Meta.ColorBlock.labelSettings);
+                Label.Obj.transform.SetParent(Container != null ? Container.transform : Obj.transform, false);
             }
 
         }
@@ -132,6 +132,10 @@ namespace MoGUI
         }
         public override void Update() 
         {
+            if (Label != null)
+            {
+                Label.Update();
+            }
             Brick.color = Value;
         }
     }

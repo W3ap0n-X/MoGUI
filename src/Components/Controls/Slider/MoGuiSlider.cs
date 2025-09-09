@@ -9,7 +9,7 @@ namespace MoGUI
     public class MoGuiSlider : MoGuiControl
     {
         string Type;
-        MoGuiTxt Text;
+        MoGuiTxt Label;
         Slider Slider;
 
         public ControlOrientation Direction;
@@ -298,41 +298,41 @@ namespace MoGUI
 
         public void AddText(string label, object text)
         {
-            if (Text != null)
+            if (Label != null)
             {
-                Text.Update(text);
-                Text.Obj.transform.SetParent(Container.transform, false);
+                Label.Update(text);
+                Label.Obj.transform.SetParent(Container.transform, false);
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, text:text, Meta.Slider.labelSettings);
-                Text.Obj.transform.SetParent(Container.transform, false);
-                Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
+                Label = new MoGuiTxt(Meta, Name + "_" + label, text:text, Meta.Slider.labelSettings);
+                Label.Obj.transform.SetParent(Container.transform, false);
+                Label.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
 
         }
 
         public void AddText(string label, Func<object> onUpdateAction)
         {
-            if (Text != null)
+            if (Label != null)
             {
-                Text.Update(onUpdateAction);
-                Text.Container.transform.SetParent(Container.transform, false);
+                Label.Update(onUpdateAction);
+                Label.Container.transform.SetParent(Container.transform, false);
             }
             else
             {
-                Text = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction, Meta.Slider.labelSettings);
-                Text.Obj.transform.SetParent(Container.transform, false);
-                Text.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
+                Label = new MoGuiTxt(Meta, Name + "_" + label, onUpdateAction, Meta.Slider.labelSettings);
+                Label.Obj.transform.SetParent(Container.transform, false);
+                Label.Obj.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
             }
 
         }
 
         public override void Update()
         {
-            if(Text != null)
+            if(Label != null)
             {
-                Text.Update();
+                Label.Update();
             }
             
             if (OnUpdateAction != null)
